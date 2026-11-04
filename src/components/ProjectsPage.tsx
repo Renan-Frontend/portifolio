@@ -432,7 +432,7 @@ function ProjectsPage({
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className={[
-                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-8 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-10",
+                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-4 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-5",
                 isDragging
                   ? "is-dragging cursor-grabbing select-none"
                   : "cursor-grab",
@@ -447,18 +447,17 @@ function ProjectsPage({
                     data-loop-index={slide.loopIndex}
                     data-logical-index={slide.logicalIndex}
                     className={[
-                      // overflow visible: o neon não é cortado; o clip fica só na capa
-                      "projects-carousel__card relative flex h-[min(64dvh,34rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-visible rounded-2xl origin-center md:h-[min(68dvh,40rem)] md:w-[min(52rem,62vw)]",
+                      "projects-carousel__card relative flex h-[min(64dvh,34rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl origin-center md:h-[min(68dvh,40rem)] md:w-[min(52rem,62vw)]",
                       isActive
                         ? "projects-carousel__card--active z-10 scale-100"
                         : "projects-carousel__card--side z-0 scale-[0.86]",
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
-                    {/* Capa com clip arredondado (opacidade só aqui — quinas nítidas) */}
+                    {/* Capa (opacidade só aqui — quinas ficam nítidas) */}
                     <div
                       className={[
-                        "projects-carousel__media pointer-events-none absolute inset-0 overflow-hidden rounded-2xl transition-opacity duration-300",
+                        "projects-carousel__media pointer-events-none absolute inset-0 overflow-hidden transition-opacity duration-300",
                         isActive ? "opacity-100" : "opacity-50",
                       ].join(" ")}
                     >
@@ -475,7 +474,10 @@ function ProjectsPage({
                       <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5" />
                     </div>
 
-                    {/* Cantoneiras + bordas finas saindo do meio de cada ponta */}
+                    {/*
+                      Moldura: borda fina contínua (CSS) + cantoneiras.
+                      Sem segmentos soltos — evita cantos vazando.
+                    */}
                     <div
                       className={[
                         "projects-carousel__corners pointer-events-none absolute inset-0 z-20",
@@ -485,14 +487,11 @@ function ProjectsPage({
                       ].join(" ")}
                       aria-hidden="true"
                     >
+                      <span className="projects-carousel__frame" />
                       <span className="projects-carousel__corner projects-carousel__corner--tl" />
                       <span className="projects-carousel__corner projects-carousel__corner--tr" />
                       <span className="projects-carousel__corner projects-carousel__corner--bl" />
                       <span className="projects-carousel__corner projects-carousel__corner--br" />
-                      <span className="projects-carousel__edge projects-carousel__edge--top" />
-                      <span className="projects-carousel__edge projects-carousel__edge--right" />
-                      <span className="projects-carousel__edge projects-carousel__edge--bottom" />
-                      <span className="projects-carousel__edge projects-carousel__edge--left" />
                     </div>
 
                     <div

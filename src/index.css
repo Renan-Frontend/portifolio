@@ -444,31 +444,34 @@ body,
     0 2px 8px -4px rgb(0 0 0 / 0.45);
 }
 
-/*
-  Neon do ativo: intenso perto da borda (spread curto evita
-  o “corte” duro pelo overflow do track).
-*/
+/* Sombra do ativo: profundidade + halo lilás suave (sem neon segmentado) */
 .projects-carousel__card--active {
   box-shadow:
-    0 18px 36px -14px rgb(0 0 0 / 0.75),
-    0 0 0 1px rgb(216 180 254 / 0.45),
-    0 0 12px 1px rgb(216 180 254 / 0.75),
-    0 0 24px 2px rgb(192 132 252 / 0.55),
-    0 0 36px 4px rgb(168 85 247 / 0.35);
+    0 28px 56px -20px rgb(0 0 0 / 0.85),
+    0 12px 28px -16px rgb(0 0 0 / 0.55),
+    0 0 42px -8px rgb(168 85 247 / 0.38),
+    0 0 88px -20px rgb(168 85 247 / 0.22);
 }
 
 /*
-  Cantoneiras grossas + bordas finas saindo do meio
-  de cada ponta da quina (sem borda contínua no card).
+  Moldura limpa: filete contínuo (mesmo raio do card) +
+  cantoneiras por cima. Sem emendas que vazam nos cantos.
 */
 .projects-carousel__corners {
   --corner-radius: 1rem;
   --corner-size: 1.6rem;
   --corner-stroke: 4px;
-  --edge-stroke: 1px;
-  --edge-center: calc((var(--corner-stroke) - var(--edge-stroke)) / 2);
-  --edge-gap: calc(var(--corner-size) - 2px);
+  --frame-stroke: 1px;
   transition: color 550ms ease, opacity 550ms ease;
+}
+
+.projects-carousel__frame {
+  position: absolute;
+  inset: 0;
+  border: var(--frame-stroke) solid currentColor;
+  border-radius: 1rem;
+  opacity: 0.9;
+  box-sizing: border-box;
 }
 
 .projects-carousel__corner {
@@ -511,40 +514,6 @@ body,
   border-bottom-width: var(--corner-stroke);
   border-right-width: var(--corner-stroke);
   border-bottom-right-radius: var(--corner-radius);
-}
-
-.projects-carousel__edge {
-  position: absolute;
-  background: currentColor;
-  opacity: 1;
-}
-
-.projects-carousel__edge--top {
-  top: var(--edge-center);
-  left: var(--edge-gap);
-  right: var(--edge-gap);
-  height: var(--edge-stroke);
-}
-
-.projects-carousel__edge--bottom {
-  bottom: var(--edge-center);
-  left: var(--edge-gap);
-  right: var(--edge-gap);
-  height: var(--edge-stroke);
-}
-
-.projects-carousel__edge--left {
-  left: var(--edge-center);
-  top: var(--edge-gap);
-  bottom: var(--edge-gap);
-  width: var(--edge-stroke);
-}
-
-.projects-carousel__edge--right {
-  right: var(--edge-center);
-  top: var(--edge-gap);
-  bottom: var(--edge-gap);
-  width: var(--edge-stroke);
 }
 
 @media (min-width: 768px) {
