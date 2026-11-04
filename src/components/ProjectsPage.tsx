@@ -73,7 +73,7 @@ const PROJECT_SLIDES: CarouselSlide[] = [
 ];
 
 /** Slides do carrossel de certificados (mesmo layout dos projetos). */
-const CERTIFICATE_SLIDES: CarouselSlide[] = [
+export const CERTIFICATE_SLIDES: CarouselSlide[] = [
   {
     id: "ui-design",
     name: "UI Design para Iniciantes",

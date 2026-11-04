@@ -5,7 +5,9 @@ import CertificatesPage from "./components/CertificatesPage";
 import CurriculumPage from "./components/CurriculumPage";
 import ExperiencePage from "./components/ExperiencePage";
 import IntroPresentation from "./components/IntroPresentation";
-import ProjectsPage from "./components/ProjectsPage";
+import ProjectsPage, {
+  CERTIFICATE_SLIDES,
+} from "./components/ProjectsPage";
 
 // =============================================================================
 // DADOS
@@ -26,11 +28,18 @@ const projects = [
 /** Projetos exibidos no menu (hoje: os 4 primeiros). */
 const visibleProjects = projects.slice(0, 4);
 
+/** Certificados exibidos no accordion da home. */
+const visibleCertificates = CERTIFICATE_SLIDES.map((slide) => ({
+  id: slide.id,
+  name: slide.name,
+  href: `#${slide.id}`,
+}));
+
 // =============================================================================
 // TIPOS
 // =============================================================================
 
-/** IDs válidos de navegação (home + seções + projetos). */
+/** IDs válidos de navegação (home + seções + projetos + certificados). */
 type NavId =
   | "home"
   | "about"
@@ -38,7 +47,8 @@ type NavId =
   | "projects"
   | "certificates"
   | "curriculum"
-  | (typeof projects)[number]["id"];
+  | (typeof projects)[number]["id"]
+  | (typeof visibleCertificates)[number]["id"];
 
 // =============================================================================
 // FUNÇÕES AUXILIARES (fora do componente)
@@ -70,6 +80,10 @@ function navFromHash(hash: string): NavId {
     return id as NavId;
   }
 
+  if (visibleCertificates.some((certificate) => certificate.id === id)) {
+    return id as NavId;
+  }
+
   return "home";
 }
 
@@ -78,6 +92,13 @@ function navFromHash(hash: string): NavId {
  */
 function isProjectId(id: NavId): boolean {
   return visibleProjects.some((project) => project.id === id);
+}
+
+/**
+ * Diz se o id informado pertence a um certificado da lista.
+ */
+function isCertificateId(id: NavId): boolean {
+  return visibleCertificates.some((certificate) => certificate.id === id);
 }
 
 /**
@@ -104,6 +125,9 @@ function App() {
   /** Controla se a lista de projetos está aberta ou fechada (aberta por padrão). */
   const [projectsOpen, setProjectsOpen] = useState(true);
 
+  /** Controla se a lista de certificados está aberta ou fechada. */
+  const [certificatesOpen, setCertificatesOpen] = useState(false);
+
   /**
    * Intro só na primeira visita à home nesta sessão de página.
    * Não repete ao voltar de Sobre Mim.
@@ -126,6 +150,10 @@ function App() {
       if (next === "projects" || isProjectId(next)) {
         setProjectsOpen(true);
       }
+
+      if (next === "certificates" || isCertificateId(next)) {
+        setCertificatesOpen(true);
+      }
     };
 
     syncFromUrl();
@@ -146,6 +174,10 @@ function App() {
     if (id === "projects" || isProjectId(id)) {
       setProjectsOpen(true);
     }
+
+    if (id === "certificates" || isCertificateId(id)) {
+      setCertificatesOpen(true);
+    }
   };
 
   /**
@@ -153,7 +185,9 @@ function App() {
    */
   const isActive = (id: NavId) =>
     active === id ||
-    (id === "projects" && (active === "projects" || isProjectId(active)));
+    (id === "projects" && (active === "projects" || isProjectId(active))) ||
+    (id === "certificates" &&
+      (active === "certificates" || isCertificateId(active)));
 
   /**
    * Monta as classes CSS de um item do menu (hover lilás + desloca pra frente).
@@ -231,6 +265,25 @@ function App() {
     );
   }
 
+  /** Abre a página Certificados pelo “Ver todos”. */
+  function openCertificatesPage(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    goCertificates();
+  }
+
+  /** Só abre/fecha o accordion de Certificados na home (não navega). */
+  function toggleCertificates(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    setActive("home");
+    setCertificatesOpen((open) => !open);
+    window.history.pushState(
+      null,
+      "",
+      `${window.location.pathname}${window.location.search}`,
+    );
+  }
+
   // ----- interface: página Sobre Mim -----
   if (active === "about") {
     return <AboutPage onBack={goHome} onExperience={goExperience} />;
@@ -258,9 +311,17 @@ function App() {
   }
 
   // ----- interface: página Certificados -----
-  if (active === "certificates") {
+  if (active === "certificates" || isCertificateId(active)) {
+    const certificateKey = isCertificateId(active) ? active : "certificates";
     return (
-      <CertificatesPage onBack={goHome} onCurriculum={goCurriculum} />
+      <CertificatesPage
+        key={certificateKey}
+        onBack={goHome}
+        onCurriculum={goCurriculum}
+        initialCertificateId={
+          isCertificateId(active) ? active : undefined
+        }
+      />
     );
   }
 
@@ -396,13 +457,63 @@ function App() {
               </div>
             </div>
 
-            <a
-              href="#certificates"
-              onClick={select("certificates")}
-              className={itemClass("certificates")}
-            >
-              Certificados
-            </a>
+            <div className="flex w-fit flex-col items-start gap-2.5 min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3">
+              <a
+                href="#certificates"
+                onClick={toggleCertificates}
+                aria-expanded={certificatesOpen}
+                className={`${itemClass("certificates")} inline-flex items-center gap-1.5`}
+              >
+                Certificados
+                <ChevronDown
+                  aria-hidden="true"
+                  className={[
+                    "h-4 w-4 shrink-0 transition-transform duration-300 min-[390px]:h-5 min-[390px]:w-5",
+                    certificatesOpen ? "rotate-180" : "rotate-0",
+                  ].join(" ")}
+                />
+              </a>
+
+              <div
+                className={[
+                  "grid w-fit transition-[grid-template-rows,opacity] duration-300 ease-out",
+                  certificatesOpen
+                    ? "grid-rows-[1fr] opacity-100"
+                    : "grid-rows-[0fr] opacity-0",
+                ].join(" ")}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex w-fit flex-col gap-2.5 border-l-2 border-purple-300/90 pt-1 pl-6 text-left min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3 md:pl-8">
+                    {visibleCertificates.map((certificate) => (
+                      <a
+                        key={certificate.id}
+                        href={certificate.href}
+                        onClick={select(certificate.id)}
+                        tabIndex={certificatesOpen ? 0 : -1}
+                        className={[
+                          "block max-w-[16rem] translate-x-0 text-left normal-case tracking-normal transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-300 min-[390px]:max-w-[18rem]",
+                          active === certificate.id
+                            ? "translate-x-1 text-purple-300"
+                            : "",
+                        ].join(" ")}
+                      >
+                        {certificate.name}
+                      </a>
+                    ))}
+
+                    <a
+                      href="#certificates"
+                      onClick={openCertificatesPage}
+                      tabIndex={certificatesOpen ? 0 : -1}
+                      className="inline-flex translate-x-0 items-center gap-2 text-purple-300 transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-200"
+                    >
+                      Ver todos os certificados
+                      <ArrowRight className="h-4 w-4 min-[390px]:h-5 min-[390px]:w-5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <a
               href="#curriculum"

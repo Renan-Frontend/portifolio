@@ -9,6 +9,8 @@ type CertificatesPageProps = {
   onBack: () => void;
   /** Vai para a página Currículo. */
   onCurriculum: () => void;
+  /** Id do certificado a focar no carrossel (hash individual). */
+  initialCertificateId?: string;
 };
 
 // =============================================================================
@@ -18,7 +20,11 @@ type CertificatesPageProps = {
 /**
  * Página Certificados: reutiliza o carrossel de Projetos com outro conteúdo.
  */
-function CertificatesPage({ onBack, onCurriculum }: CertificatesPageProps) {
+function CertificatesPage({
+  onBack,
+  onCurriculum,
+  initialCertificateId,
+}: CertificatesPageProps) {
   return (
     <ProjectsPage
       variant="certificates"
@@ -26,6 +32,7 @@ function CertificatesPage({ onBack, onCurriculum }: CertificatesPageProps) {
       onNext={onCurriculum}
       nextLabel="Currículo"
       nextHref="#curriculum"
+      initialSlideId={initialCertificateId}
     />
   );
 }
