@@ -334,7 +334,7 @@ body,
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   /* Card ativo no centro; vizinhos vazam pelas bordas da tela */
-  scroll-padding-inline: max(1.25rem, calc((100% - min(34rem, 72vw)) / 2));
+  scroll-padding-inline: max(1rem, calc((100% - min(42rem, 88vw)) / 2));
 }
 
 /* Durante o arraste com mouse: sem snap/smooth para acompanhar o cursor */
@@ -346,7 +346,7 @@ body,
 
 @media (min-width: 768px) {
   .projects-carousel {
-    scroll-padding-inline: max(2rem, calc((100% - min(40rem, 48vw)) / 2));
+    scroll-padding-inline: max(1.5rem, calc((100% - min(52rem, 62vw)) / 2));
   }
 }
 

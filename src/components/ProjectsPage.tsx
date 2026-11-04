@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import {
   useEffect,
   useRef,
@@ -87,7 +87,7 @@ function indexFromProjectId(id: string | undefined): number {
 
 /**
  * Página Projetos: marca d’água no topo e carrossel grande horizontal.
- * Desktop e mobile com scroll/snap; setas para avançar à direita.
+ * Navegação por arraste/swipe (setas e contador removidos por enquanto).
  */
 function ProjectsPage({
   onBack,
@@ -217,20 +217,6 @@ function ProjectsPage({
     onExperience();
   }
 
-  /** Vai para o slide anterior. */
-  function goPrev() {
-    setActiveIndex((index) =>
-      index === 0 ? PROJECT_SLIDES.length - 1 : index - 1,
-    );
-  }
-
-  /** Vai para o próximo slide (à direita). */
-  function goNext() {
-    setActiveIndex((index) =>
-      index === PROJECT_SLIDES.length - 1 ? 0 : index + 1,
-    );
-  }
-
   /** Índice do card cujo centro está mais perto do meio do track. */
   function closestSlideIndex(): number {
     const track = trackRef.current;
@@ -358,7 +344,7 @@ function ProjectsPage({
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className={[
-                "projects-carousel flex snap-x snap-mandatory items-center gap-5 overflow-x-auto overflow-y-visible px-[max(1.25rem,calc((100%-min(34rem,72vw))/2))] py-4 md:gap-7 md:px-[max(2rem,calc((100%-min(40rem,48vw))/2))] md:py-6",
+                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto overflow-y-visible px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-5 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-7",
                 isDragging
                   ? "is-dragging cursor-grabbing select-none"
                   : "cursor-grab",
@@ -373,10 +359,10 @@ function ProjectsPage({
                     data-slide-index={index}
                     className={[
                       "projects-carousel__card relative flex shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl border transition-[transform,opacity,height,box-shadow] duration-300 ease-out",
-                      "w-[min(34rem,78vw)] md:w-[min(40rem,48vw)]",
+                      "w-[min(42rem,88vw)] md:w-[min(52rem,62vw)]",
                       isActive
-                        ? "z-10 h-[min(56vh,32rem)] scale-100 border-purple-400/45 opacity-100 shadow-[0_18px_50px_-28px_rgba(168,85,247,0.55)] md:h-[min(60vh,34rem)]"
-                        : "z-0 h-[min(48vh,27rem)] scale-[0.94] border-white/10 opacity-55 md:h-[min(52vh,29rem)]",
+                        ? "z-10 h-[min(66vh,38rem)] scale-100 border-purple-400/45 opacity-100 shadow-[0_22px_56px_-28px_rgba(168,85,247,0.55)] md:h-[min(70vh,42rem)]"
+                        : "z-0 h-[min(56vh,32rem)] scale-[0.94] border-white/10 opacity-55 md:h-[min(60vh,36rem)]",
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
@@ -419,32 +405,6 @@ function ProjectsPage({
               className="projects-carousel-edge projects-carousel-edge--right pointer-events-none absolute inset-y-0 right-0 z-20 w-10 md:w-16 lg:w-24"
               aria-hidden="true"
             />
-          </div>
-
-          {/* Controles */}
-          <div className="relative z-30 mx-auto mt-5 flex w-full max-w-[1600px] items-center justify-between gap-3 px-5 min-[390px]:px-6 md:mt-6 md:px-10 lg:px-14 xl:px-20">
-            <p className="text-sm tracking-wide text-neutral-400 tabular-nums">
-              {String(activeIndex + 1).padStart(2, "0")} /{" "}
-              {String(PROJECT_SLIDES.length).padStart(2, "0")}
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={goPrev}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-neutral-700 text-neutral-200 transition hover:border-purple-400/60 hover:text-purple-300"
-                aria-label="Projeto anterior"
-              >
-                <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                onClick={goNext}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-purple-400/50 bg-purple-500/15 text-purple-200 transition hover:border-purple-300 hover:bg-purple-500/25"
-                aria-label="Próximo projeto"
-              >
-                <ChevronRight className="h-5 w-5" aria-hidden="true" />
-              </button>
-            </div>
           </div>
         </div>
       </section>
