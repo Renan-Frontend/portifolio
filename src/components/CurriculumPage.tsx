@@ -1,5 +1,5 @@
 import { ArrowLeft, Download, Mail } from "lucide-react";
-import type { MouseEvent } from "react";
+import { useState, type MouseEvent } from "react";
 import { avoidOrphan } from "../utils/text";
 
 // =============================================================================
@@ -27,8 +27,39 @@ const CV_PREVIEW_ALT =
 /** PDF completo para download. */
 const CV_PDF_HREF = "/cv/renan-naves.pdf";
 
-/** Contato direto (mailto). */
-const CV_MAILTO = "mailto:renan.naves.frontend@gmail.com";
+/**
+ * Mesmos canais do rodapé da home (Email, WhatsApp, LinkedIn, GitHub).
+ */
+const CV_CONTACTS = [
+  {
+    id: "email",
+    label: "Email",
+    value: "renan.naves.frontend@gmail.com",
+    href: "mailto:renan.naves.frontend@gmail.com",
+    external: false,
+  },
+  {
+    id: "whatsapp",
+    label: "Celular/Whatsapp",
+    value: "+55 (62) 98294-1455",
+    href: "https://wa.me/5562982941455",
+    external: true,
+  },
+  {
+    id: "linkedin",
+    label: "LinkedIn",
+    value: "linkedin.com/in/renannavesfrontend",
+    href: "https://www.linkedin.com/in/renannavesfrontend",
+    external: true,
+  },
+  {
+    id: "github",
+    label: "GitHub",
+    value: "github.com/Renan-Frontend",
+    href: "https://github.com/Renan-Frontend",
+    external: true,
+  },
+] as const;
 
 // =============================================================================
 // TIPOS
@@ -39,12 +70,22 @@ type CurriculumPageProps = {
   onBack: () => void;
 };
 
+type CurriculumActionsProps = {
+  /** Se o painel de redes está aberto. */
+  contactOpen: boolean;
+  /** Alterna a exibição das redes sociais. */
+  onToggleContact: () => void;
+};
+
 // =============================================================================
 // SUBCOMPONENTES
 // =============================================================================
 
-/** Botões de download e contato. */
-function CurriculumActions() {
+/** Botões de download e contato (abre as redes abaixo). */
+function CurriculumActions({
+  contactOpen,
+  onToggleContact,
+}: CurriculumActionsProps) {
   return (
     <div className="flex w-full flex-wrap items-center gap-3 md:gap-3.5">
       <a
@@ -56,13 +97,59 @@ function CurriculumActions() {
         Baixar currículo
       </a>
 
-      <a
-        href={CV_MAILTO}
-        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-purple-300/55 bg-transparent px-5 py-2.5 text-sm font-medium tracking-wide text-neutral-100 transition-[transform,background-color,border-color] duration-200 hover:scale-[1.02] hover:border-purple-200 hover:bg-purple-500/10"
+      <button
+        type="button"
+        onClick={onToggleContact}
+        aria-expanded={contactOpen}
+        aria-controls="curriculum-contacts"
+        className={[
+          "inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium tracking-wide transition-[transform,background-color,border-color,color] duration-200 hover:scale-[1.02]",
+          contactOpen
+            ? "border-purple-200 bg-purple-500/20 text-purple-100"
+            : "border-purple-300/55 bg-transparent text-neutral-100 hover:border-purple-200 hover:bg-purple-500/10",
+        ].join(" ")}
       >
         <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
         Entrar em contato
-      </a>
+      </button>
+    </div>
+  );
+}
+
+/** Painel com as redes do rodapé da home. */
+function CurriculumContacts({ open }: { open: boolean }) {
+  return (
+    <div
+      id="curriculum-contacts"
+      className={[
+        "grid transition-[grid-template-rows,opacity,margin] duration-300 ease-out",
+        open
+          ? "mt-4 grid-rows-[1fr] opacity-100 md:mt-5"
+          : "mt-0 grid-rows-[0fr] opacity-0",
+      ].join(" ")}
+      aria-hidden={!open}
+    >
+      <div className="overflow-hidden">
+        <div className="grid min-w-0 grid-cols-1 gap-4 border-t border-neutral-800 pt-4 sm:grid-cols-2 sm:gap-5">
+          {CV_CONTACTS.map((item) => (
+            <div key={item.id} className="min-w-0 text-left">
+              <p className="text-xs tracking-widest text-purple-300 uppercase md:text-[0.7rem]">
+                {item.label}
+              </p>
+              <a
+                href={item.href}
+                {...(item.external
+                  ? { target: "_blank", rel: "noreferrer" }
+                  : {})}
+                tabIndex={open ? 0 : -1}
+                className="mt-1 block text-sm break-all text-neutral-100 transition hover:text-purple-300 md:text-[0.9rem]"
+              >
+                {item.value}
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -101,9 +188,12 @@ function CurriculumPreview() {
 
 /**
  * Página Currículo em duas colunas no desktop (texto | imagem).
- * No mobile empilha: apresentação → imagem → ações.
+ * “Entrar em contato” revela Email, WhatsApp, LinkedIn e GitHub.
  */
 function CurriculumPage({ onBack }: CurriculumPageProps) {
+  // ----- estado -----
+  const [contactOpen, setContactOpen] = useState(false);
+
   // ----- handlers -----
 
   /** Volta para a home. */
@@ -112,9 +202,19 @@ function CurriculumPage({ onBack }: CurriculumPageProps) {
     onBack();
   }
 
+  /** Abre/fecha o painel de redes sociais. */
+  function toggleContact() {
+    setContactOpen((open) => !open);
+  }
+
   // ----- interface -----
   return (
-    <main className="curriculum-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white md:h-svh md:max-h-svh md:overflow-hidden">
+    <main
+      className={[
+        "curriculum-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white md:h-svh md:max-h-svh",
+        contactOpen ? "md:overflow-y-auto" : "md:overflow-hidden",
+      ].join(" ")}
+    >
       {/* Título (marca d’água) */}
       <h1
         className="about-enter__title font-script pointer-events-none absolute inset-x-0 top-2 z-0 px-4 text-center text-[clamp(2.25rem,9vw,5.75rem)] leading-none whitespace-nowrap text-[#9a92ad] select-none md:top-2"
@@ -126,7 +226,7 @@ function CurriculumPage({ onBack }: CurriculumPageProps) {
       <section className="about-layout relative z-10 mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-6 pt-[clamp(4.25rem,11vw,5.75rem)] min-[390px]:px-6 md:justify-center md:px-10 md:pb-4 lg:px-14 xl:px-20">
         {/* ----- Desktop: lado a lado ----- */}
         <div className="about-layout__row hidden w-full grid-cols-[minmax(0,0.88fr)_auto_minmax(0,1.12fr)] items-center md:grid">
-          {/* Esquerda: apresentação + CTAs */}
+          {/* Esquerda: apresentação + CTAs + redes */}
           <div className="about-enter__bio flex min-w-0 flex-col justify-center gap-3.5 pr-3 text-left lg:gap-4 lg:pr-4 xl:pr-5">
             <p className="inline-flex items-center gap-2 text-xs tracking-[0.22em] text-purple-300 uppercase">
               <span
@@ -151,7 +251,13 @@ function CurriculumPage({ onBack }: CurriculumPageProps) {
               ))}
             </div>
 
-            <CurriculumActions />
+            <div>
+              <CurriculumActions
+                contactOpen={contactOpen}
+                onToggleContact={toggleContact}
+              />
+              <CurriculumContacts open={contactOpen} />
+            </div>
           </div>
 
           {/* Divisória vertical */}
@@ -202,7 +308,13 @@ function CurriculumPage({ onBack }: CurriculumPageProps) {
             <CurriculumPreview />
           </div>
 
-          <CurriculumActions />
+          <div>
+            <CurriculumActions
+              contactOpen={contactOpen}
+              onToggleContact={toggleContact}
+            />
+            <CurriculumContacts open={contactOpen} />
+          </div>
         </div>
       </section>
 
