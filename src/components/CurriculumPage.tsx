@@ -70,8 +70,8 @@ function CurriculumActions() {
 /** Bloco com a imagem do currículo (object-contain, borda discreta). */
 function CurriculumPreview() {
   return (
-    <figure className="mx-auto w-full min-w-0 max-w-full">
-      <div className="mb-3 flex min-w-0 items-end justify-between gap-3 md:mb-4">
+    <figure className="mx-auto flex w-full min-w-0 max-w-full flex-col">
+      <div className="mb-2.5 flex min-w-0 items-end justify-between gap-3 md:mb-3">
         <h3 className="text-base font-semibold tracking-wide text-white md:text-lg">
           Meu currículo
         </h3>
@@ -80,14 +80,14 @@ function CurriculumPreview() {
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-purple-300/25 bg-neutral-900/40 shadow-[0_0_0_1px_rgb(0_0_0_/_0.4),0_18px_40px_-20px_rgb(0_0_0_/_0.85)]">
+      <div className="overflow-hidden rounded-xl border border-purple-300/25 bg-white shadow-[0_0_0_1px_rgb(168_85_247_/_0.18),0_18px_40px_-20px_rgb(0_0_0_/_0.85)]">
         <img
           src={CV_PREVIEW_SRC}
           alt={CV_PREVIEW_ALT}
-          width={908}
-          height={332}
+          width={905}
+          height={734}
           decoding="async"
-          className="mx-auto block h-auto w-full max-w-full object-contain"
+          className="mx-auto block h-auto max-h-[min(62dvh,34rem)] w-full max-w-full object-contain object-top md:max-h-[min(68dvh,38rem)]"
         />
       </div>
       <figcaption className="sr-only">Prévia visual do currículo em PDF</figcaption>
@@ -125,9 +125,9 @@ function CurriculumPage({ onBack }: CurriculumPageProps) {
 
       <section className="about-layout relative z-10 mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-6 pt-[clamp(4.25rem,11vw,5.75rem)] min-[390px]:px-6 md:justify-center md:px-10 md:pb-4 lg:px-14 xl:px-20">
         {/* ----- Desktop: lado a lado ----- */}
-        <div className="about-layout__row hidden w-full grid-cols-[minmax(0,0.95fr)_auto_minmax(0,1.05fr)] items-center md:grid">
+        <div className="about-layout__row hidden w-full grid-cols-[minmax(0,0.88fr)_auto_minmax(0,1.12fr)] items-center md:grid">
           {/* Esquerda: apresentação + CTAs */}
-          <div className="about-enter__bio flex min-w-0 flex-col justify-center gap-4 pr-3 text-left lg:gap-5 lg:pr-4 xl:pr-5">
+          <div className="about-enter__bio flex min-w-0 flex-col justify-center gap-3.5 pr-3 text-left lg:gap-4 lg:pr-4 xl:pr-5">
             <p className="inline-flex items-center gap-2 text-xs tracking-[0.22em] text-purple-300 uppercase">
               <span
                 className="h-1.5 w-1.5 shrink-0 rounded-full bg-purple-300"
