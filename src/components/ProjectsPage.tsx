@@ -1,5 +1,11 @@
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { avoidOrphan } from "../utils/text";
 
 // =============================================================================
@@ -96,6 +102,11 @@ function ProjectsPage({
   /** Ignora onScroll enquanto o scroll programático (setas / hash) ainda anima. */
   const ignoreScrollSyncRef = useRef(true);
   const scrollUnlockTimerRef = useRef<number | null>(null);
+  /** Arraste com mouse (pressionar e jogar para o lado). */
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragScrollLeftRef = useRef(0);
+  const [isDragging, setIsDragging] = useState(false);
 
   // ----- efeitos -----
 
@@ -106,7 +117,7 @@ function ProjectsPage({
    */
   useEffect(() => {
     const track = trackRef.current;
-    if (!track) return;
+    if (!track || isDraggingRef.current) return;
 
     const card = track.querySelector<HTMLElement>(
       `[data-slide-index="${activeIndex}"]`,
@@ -220,20 +231,15 @@ function ProjectsPage({
     );
   }
 
-  /**
-   * Atualiza o índice só no scroll manual (arrastar / swipe).
-   * Ignorado durante scrollIntoView das setas ou do hash inicial.
-   */
-  function handleTrackScroll() {
-    if (ignoreScrollSyncRef.current) return;
-
+  /** Índice do card cujo centro está mais perto do meio do track. */
+  function closestSlideIndex(): number {
     const track = trackRef.current;
-    if (!track) return;
+    if (!track) return activeIndex;
 
     const cards = Array.from(
       track.querySelectorAll<HTMLElement>("[data-slide-index]"),
     );
-    if (cards.length === 0) return;
+    if (cards.length === 0) return activeIndex;
 
     const trackBox = track.getBoundingClientRect();
     const trackCenter = trackBox.left + trackBox.width / 2;
@@ -250,7 +256,80 @@ function ProjectsPage({
       }
     });
 
+    return closest;
+  }
+
+  /**
+   * Atualiza o índice só no scroll manual (arrastar / swipe).
+   * Ignorado durante scrollIntoView das setas, hash inicial ou drag com mouse.
+   */
+  function handleTrackScroll() {
+    if (ignoreScrollSyncRef.current || isDraggingRef.current) return;
+    const closest = closestSlideIndex();
     setActiveIndex((current) => (current === closest ? current : closest));
+  }
+
+  /** Inicia o arraste horizontal com o mouse (touch continua nativo). */
+  function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+
+    const track = trackRef.current;
+    if (!track) return;
+
+    isDraggingRef.current = true;
+    dragStartXRef.current = event.clientX;
+    dragScrollLeftRef.current = track.scrollLeft;
+    ignoreScrollSyncRef.current = true;
+    setIsDragging(true);
+
+    track.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  }
+
+  /** Move o carrossel acompanhando o mouse. */
+  function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!isDraggingRef.current) return;
+
+    const track = trackRef.current;
+    if (!track) return;
+
+    const dx = event.clientX - dragStartXRef.current;
+    track.scrollLeft = dragScrollLeftRef.current - dx;
+  }
+
+  /** Encerra o arraste e encaixa o card mais próximo no centro. */
+  function handlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!isDraggingRef.current) return;
+
+    const track = trackRef.current;
+    isDraggingRef.current = false;
+    setIsDragging(false);
+
+    if (track?.hasPointerCapture(event.pointerId)) {
+      track.releasePointerCapture(event.pointerId);
+    }
+
+    const closest = closestSlideIndex();
+
+    if (closest === activeIndex) {
+      // Mesmo índice: o efeito não reexecuta; força o snap no centro.
+      ignoreScrollSyncRef.current = true;
+      const card = track?.querySelector<HTMLElement>(
+        `[data-slide-index="${closest}"]`,
+      );
+      card?.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+      window.setTimeout(() => {
+        ignoreScrollSyncRef.current = false;
+      }, 320);
+      return;
+    }
+
+    ignoreScrollSyncRef.current = false;
+    setActiveIndex(closest);
   }
 
   // ----- interface -----
@@ -273,7 +352,16 @@ function ProjectsPage({
           <div
             ref={trackRef}
             onScroll={handleTrackScroll}
-            className="projects-carousel flex snap-x snap-mandatory items-center gap-5 overflow-x-auto px-[max(1.25rem,calc((100%-min(34rem,58vw))/2))] pb-3 md:gap-6 md:px-[max(2.5rem,calc((100%-min(38rem,52vw))/2))]"
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+            className={[
+              "projects-carousel flex snap-x snap-mandatory items-center gap-5 overflow-x-auto px-[max(1.25rem,calc((100%-min(34rem,58vw))/2))] pb-3 md:gap-6 md:px-[max(2.5rem,calc((100%-min(38rem,52vw))/2))]",
+              isDragging
+                ? "is-dragging cursor-grabbing select-none"
+                : "cursor-grab",
+            ].join(" ")}
             aria-label="Carrossel de projetos"
           >
             {PROJECT_SLIDES.map((slide, index) => {
