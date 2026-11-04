@@ -377,7 +377,7 @@ function ProjectsPage({
                       "projects-carousel__card relative flex h-[min(66vh,38rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl border transition-[transform,opacity,box-shadow,border-color] duration-300 ease-out md:h-[min(70vh,42rem)] md:w-[min(52rem,62vw)]",
                       isActive
                         ? "z-10 scale-100 border-purple-400/45 opacity-100 shadow-[0_22px_56px_-28px_rgba(168,85,247,0.55)]"
-                        : "z-0 scale-[0.94] border-white/10 opacity-55",
+                        : "z-0 origin-center scale-[0.86] border-white/10 opacity-50",
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
