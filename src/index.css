@@ -387,20 +387,19 @@ body,
 }
 
 /*
-  Moldura elegante: cantoneiras com fade nas pontas +
-  linhas finas no miolo da espessura, suavizando a emenda.
+  Moldura: cantoneira dupla (traço grosso + filete interno)
+  na cor já definida; linhas finas no miolo da espessura.
 */
 .projects-carousel__corners {
   --card-radius: 1rem;
-  --corner-size: 1.55rem;
+  --corner-size: 1.6rem;
   --corner-stroke: 4px;
+  --corner-inner-gap: 5px;
+  --corner-inner-stroke: 1px;
   --edge-stroke: 1px;
   --edge-center: calc((var(--corner-stroke) - var(--edge-stroke)) / 2);
-  --edge-gap: calc(var(--corner-size) - 3px);
-  transition:
-    color 550ms ease,
-    opacity 550ms ease,
-    filter 550ms ease;
+  --edge-gap: calc(var(--corner-size) - 2px);
+  transition: color 550ms ease, opacity 550ms ease;
 }
 
 .projects-carousel__corner {
@@ -411,11 +410,18 @@ body,
   border-color: currentColor;
   border-width: 0;
   box-sizing: border-box;
-  /* Suaviza a ponta da quina até a linha fina */
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+}
+
+/* Filete interno paralelo — mesmo tom, mais delicado */
+.projects-carousel__corner::before {
+  content: "";
+  position: absolute;
+  box-sizing: border-box;
+  border-style: solid;
+  border-color: currentColor;
+  border-width: 0;
+  opacity: 0.55;
+  inset: var(--corner-inner-gap);
 }
 
 .projects-carousel__corner--tl {
@@ -424,20 +430,12 @@ body,
   border-top-width: var(--corner-stroke);
   border-left-width: var(--corner-stroke);
   border-top-left-radius: var(--card-radius);
-  -webkit-mask-image: linear-gradient(
-    to bottom right,
-    #000 0%,
-    #000 42%,
-    rgb(0 0 0 / 0.55) 68%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to bottom right,
-    #000 0%,
-    #000 42%,
-    rgb(0 0 0 / 0.55) 68%,
-    transparent 100%
-  );
+}
+
+.projects-carousel__corner--tl::before {
+  border-top-width: var(--corner-inner-stroke);
+  border-left-width: var(--corner-inner-stroke);
+  border-top-left-radius: calc(var(--card-radius) - var(--corner-inner-gap));
 }
 
 .projects-carousel__corner--tr {
@@ -446,20 +444,12 @@ body,
   border-top-width: var(--corner-stroke);
   border-right-width: var(--corner-stroke);
   border-top-right-radius: var(--card-radius);
-  -webkit-mask-image: linear-gradient(
-    to bottom left,
-    #000 0%,
-    #000 42%,
-    rgb(0 0 0 / 0.55) 68%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to bottom left,
-    #000 0%,
-    #000 42%,
-    rgb(0 0 0 / 0.55) 68%,
-    transparent 100%
-  );
+}
+
+.projects-carousel__corner--tr::before {
+  border-top-width: var(--corner-inner-stroke);
+  border-right-width: var(--corner-inner-stroke);
+  border-top-right-radius: calc(var(--card-radius) - var(--corner-inner-gap));
 }
 
 .projects-carousel__corner--bl {
@@ -468,20 +458,12 @@ body,
   border-bottom-width: var(--corner-stroke);
   border-left-width: var(--corner-stroke);
   border-bottom-left-radius: var(--card-radius);
-  -webkit-mask-image: linear-gradient(
-    to top right,
-    #000 0%,
-    #000 42%,
-    rgb(0 0 0 / 0.55) 68%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to top right,
-    #000 0%,
-    #000 42%,
-    rgb(0 0 0 / 0.55) 68%,
-    transparent 100%
-  );
+}
+
+.projects-carousel__corner--bl::before {
+  border-bottom-width: var(--corner-inner-stroke);
+  border-left-width: var(--corner-inner-stroke);
+  border-bottom-left-radius: calc(var(--card-radius) - var(--corner-inner-gap));
 }
 
 .projects-carousel__corner--br {
@@ -490,25 +472,19 @@ body,
   border-bottom-width: var(--corner-stroke);
   border-right-width: var(--corner-stroke);
   border-bottom-right-radius: var(--card-radius);
-  -webkit-mask-image: linear-gradient(
-    to top left,
-    #000 0%,
-    #000 42%,
-    rgb(0 0 0 / 0.55) 68%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to top left,
-    #000 0%,
-    #000 42%,
-    rgb(0 0 0 / 0.55) 68%,
-    transparent 100%
-  );
 }
 
-/* Linhas finas com fade nas pontas (encaixe com a quina) */
+.projects-carousel__corner--br::before {
+  border-bottom-width: var(--corner-inner-stroke);
+  border-right-width: var(--corner-inner-stroke);
+  border-bottom-right-radius: calc(var(--card-radius) - var(--corner-inner-gap));
+}
+
+/* Linhas finas no miolo da espessura das cantoneiras */
 .projects-carousel__edge {
   position: absolute;
+  background: currentColor;
+  opacity: 0.85;
 }
 
 .projects-carousel__edge--top {
@@ -516,13 +492,6 @@ body,
   left: var(--edge-gap);
   right: var(--edge-gap);
   height: var(--edge-stroke);
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    currentColor 14%,
-    currentColor 86%,
-    transparent 100%
-  );
 }
 
 .projects-carousel__edge--bottom {
@@ -530,13 +499,6 @@ body,
   left: var(--edge-gap);
   right: var(--edge-gap);
   height: var(--edge-stroke);
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    currentColor 14%,
-    currentColor 86%,
-    transparent 100%
-  );
 }
 
 .projects-carousel__edge--left {
@@ -544,13 +506,6 @@ body,
   top: var(--edge-gap);
   bottom: var(--edge-gap);
   width: var(--edge-stroke);
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    currentColor 14%,
-    currentColor 86%,
-    transparent 100%
-  );
 }
 
 .projects-carousel__edge--right {
@@ -558,32 +513,24 @@ body,
   top: var(--edge-gap);
   bottom: var(--edge-gap);
   width: var(--edge-stroke);
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    currentColor 14%,
-    currentColor 86%,
-    transparent 100%
-  );
 }
 
 @media (min-width: 768px) {
   .projects-carousel__corners {
     --corner-size: 1.85rem;
     --corner-stroke: 5px;
+    --corner-inner-gap: 6px;
   }
 }
 
 .projects-carousel__corners--active {
-  color: rgb(233 213 255 / 0.95);
+  color: rgb(216 180 254 / 0.92);
   opacity: 1;
-  filter: drop-shadow(0 0 6px rgb(168 85 247 / 0.35));
 }
 
 .projects-carousel__corners--side {
-  color: rgb(255 255 255 / 0.38);
-  opacity: 0.78;
-  filter: none;
+  color: rgb(255 255 255 / 0.34);
+  opacity: 0.8;
 }
 
 /* Dissolve o card nas laterais — sensação de borda infinita */
