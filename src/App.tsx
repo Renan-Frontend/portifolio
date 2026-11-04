@@ -199,6 +199,18 @@ function App() {
     if (id === "certificates" || isCertificateId(id)) {
       setCertificatesOpen(true);
     }
+
+    if (
+      id === "about" ||
+      id === "experience" ||
+      id === "projects" ||
+      id === "certificates" ||
+      id === "curriculum" ||
+      isProjectId(id) ||
+      isCertificateId(id)
+    ) {
+      resetWindowScroll();
+    }
   };
 
   /**
@@ -226,6 +238,11 @@ function App() {
     setPlayHomeEnter(true);
   }
 
+  /** Garante que a nova view comece no topo (evita herdar scroll do footer). */
+  function resetWindowScroll() {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }
+
   /** Volta à home sem repetir a intro cinemática. */
   function goHome() {
     setActive("home");
@@ -236,12 +253,14 @@ function App() {
       "",
       `${window.location.pathname}${window.location.search}`,
     );
+    resetWindowScroll();
   }
 
   /** Vai para a página Experiência. */
   function goExperience() {
     setActive("experience");
     window.history.pushState(null, "", "#experience");
+    resetWindowScroll();
   }
 
   /** Vai para a página Certificados. */
@@ -250,6 +269,7 @@ function App() {
     setIntroDone(true);
     setActive("certificates");
     window.history.pushState(null, "", "#certificates");
+    resetWindowScroll();
   }
 
   /** Vai para a página Currículo. */
@@ -258,6 +278,7 @@ function App() {
     setIntroDone(true);
     setActive("curriculum");
     window.history.pushState(null, "", "#curriculum");
+    resetWindowScroll();
   }
 
   /** Vai para a página Projetos (carrossel). */
@@ -266,6 +287,7 @@ function App() {
     setIntroDone(true);
     setActive("projects");
     window.history.pushState(null, "", "#projects");
+    resetWindowScroll();
   }
 
   /** Abre a página Projetos pelo “Ver todos”. */
