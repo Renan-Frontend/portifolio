@@ -475,8 +475,8 @@ function ProjectsPage({
                     </div>
 
                     {/*
-                      Moldura: borda fina contínua (CSS) + cantoneiras.
-                      Sem segmentos soltos — evita cantos vazando.
+                      Moldura: filete contínuo + quinas SVG no mesmo raio
+                      do card (1rem), centralizadas no filete.
                     */}
                     <div
                       className={[
@@ -488,10 +488,28 @@ function ProjectsPage({
                       aria-hidden="true"
                     >
                       <span className="projects-carousel__frame" />
-                      <span className="projects-carousel__corner projects-carousel__corner--tl" />
-                      <span className="projects-carousel__corner projects-carousel__corner--tr" />
-                      <span className="projects-carousel__corner projects-carousel__corner--bl" />
-                      <span className="projects-carousel__corner projects-carousel__corner--br" />
+                      {(["tl", "tr", "bl", "br"] as const).map((corner) => (
+                        <svg
+                          key={corner}
+                          className={`projects-carousel__corner projects-carousel__corner--${corner}`}
+                          viewBox="0 0 32 32"
+                          width="32"
+                          height="32"
+                          fill="none"
+                        >
+                          {/*
+                            Path no miolo do stroke (y/x = 2):
+                            raio 16 = rounded-2xl; caps retos para emendar no filete.
+                          */}
+                          <path
+                            d="M30 2 H18 A16 16 0 0 0 2 18 V30"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            strokeLinecap="butt"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      ))}
                     </div>
 
                     <div

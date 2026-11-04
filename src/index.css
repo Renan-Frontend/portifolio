@@ -454,14 +454,12 @@ body,
 }
 
 /*
-  Moldura limpa: filete contínuo (mesmo raio do card) +
-  cantoneiras por cima. Sem emendas que vazam nos cantos.
+  Moldura limpa: filete contínuo (raio = rounded-2xl) +
+  quinas SVG no mesmo arco, alinhadas à borda externa.
 */
 .projects-carousel__corners {
-  --corner-radius: 1rem;
-  --corner-size: 1.6rem;
-  --corner-stroke: 4px;
   --frame-stroke: 1px;
+  --corner-size: 32px;
   transition: color 550ms ease, opacity 550ms ease;
 }
 
@@ -470,7 +468,7 @@ body,
   inset: 0;
   border: var(--frame-stroke) solid currentColor;
   border-radius: 1rem;
-  opacity: 0.9;
+  opacity: 0.85;
   box-sizing: border-box;
 }
 
@@ -478,49 +476,30 @@ body,
   position: absolute;
   width: var(--corner-size);
   height: var(--corner-size);
-  border-style: solid;
-  border-color: currentColor;
-  border-width: 0;
-  box-sizing: border-box;
+  overflow: visible;
 }
 
 .projects-carousel__corner--tl {
   top: 0;
   left: 0;
-  border-top-width: var(--corner-stroke);
-  border-left-width: var(--corner-stroke);
-  border-top-left-radius: var(--corner-radius);
 }
 
 .projects-carousel__corner--tr {
   top: 0;
   right: 0;
-  border-top-width: var(--corner-stroke);
-  border-right-width: var(--corner-stroke);
-  border-top-right-radius: var(--corner-radius);
+  transform: scaleX(-1);
 }
 
 .projects-carousel__corner--bl {
   bottom: 0;
   left: 0;
-  border-bottom-width: var(--corner-stroke);
-  border-left-width: var(--corner-stroke);
-  border-bottom-left-radius: var(--corner-radius);
+  transform: scaleY(-1);
 }
 
 .projects-carousel__corner--br {
   bottom: 0;
   right: 0;
-  border-bottom-width: var(--corner-stroke);
-  border-right-width: var(--corner-stroke);
-  border-bottom-right-radius: var(--corner-radius);
-}
-
-@media (min-width: 768px) {
-  .projects-carousel__corners {
-    --corner-size: 1.85rem;
-    --corner-stroke: 5px;
-  }
+  transform: scale(-1);
 }
 
 .projects-carousel__corners--active {
