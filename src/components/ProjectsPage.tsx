@@ -410,7 +410,7 @@ function ProjectsPage({
                       <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5" />
                     </div>
 
-                    {/* Só as cantoneiras (sem linhas entre as quinas) */}
+                    {/* Cantoneiras + bordas finas saindo do meio de cada ponta */}
                     <div
                       className={[
                         "projects-carousel__corners pointer-events-none absolute inset-0 z-20",
@@ -424,6 +424,10 @@ function ProjectsPage({
                       <span className="projects-carousel__corner projects-carousel__corner--tr" />
                       <span className="projects-carousel__corner projects-carousel__corner--bl" />
                       <span className="projects-carousel__corner projects-carousel__corner--br" />
+                      <span className="projects-carousel__edge projects-carousel__edge--top" />
+                      <span className="projects-carousel__edge projects-carousel__edge--right" />
+                      <span className="projects-carousel__edge projects-carousel__edge--bottom" />
+                      <span className="projects-carousel__edge projects-carousel__edge--left" />
                     </div>
 
                     <div className="relative z-10 flex flex-col gap-5 p-6 md:gap-6 md:p-8 lg:p-9">
