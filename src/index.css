@@ -387,19 +387,20 @@ body,
 }
 
 /*
-  Cantoneiras no mesmo raio do card (1rem = rounded-2xl).
-  Linhas finas passam no meio da espessura de cada ponta da quina.
+  Moldura elegante: cantoneiras com fade nas pontas +
+  linhas finas no miolo da espessura, suavizando a emenda.
 */
 .projects-carousel__corners {
   --card-radius: 1rem;
-  --corner-size: 1.45rem;
+  --corner-size: 1.55rem;
   --corner-stroke: 4px;
   --edge-stroke: 1px;
-  /* Centro da espessura da cantoneira */
   --edge-center: calc((var(--corner-stroke) - var(--edge-stroke)) / 2);
-  /* Encontra a ponta da quina (com leve overlap) */
-  --edge-gap: calc(var(--corner-size) - 2px);
-  transition: color 550ms ease, opacity 550ms ease;
+  --edge-gap: calc(var(--corner-size) - 3px);
+  transition:
+    color 550ms ease,
+    opacity 550ms ease,
+    filter 550ms ease;
 }
 
 .projects-carousel__corner {
@@ -410,6 +411,11 @@ body,
   border-color: currentColor;
   border-width: 0;
   box-sizing: border-box;
+  /* Suaviza a ponta da quina até a linha fina */
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
 }
 
 .projects-carousel__corner--tl {
@@ -418,6 +424,20 @@ body,
   border-top-width: var(--corner-stroke);
   border-left-width: var(--corner-stroke);
   border-top-left-radius: var(--card-radius);
+  -webkit-mask-image: linear-gradient(
+    to bottom right,
+    #000 0%,
+    #000 42%,
+    rgb(0 0 0 / 0.55) 68%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom right,
+    #000 0%,
+    #000 42%,
+    rgb(0 0 0 / 0.55) 68%,
+    transparent 100%
+  );
 }
 
 .projects-carousel__corner--tr {
@@ -426,6 +446,20 @@ body,
   border-top-width: var(--corner-stroke);
   border-right-width: var(--corner-stroke);
   border-top-right-radius: var(--card-radius);
+  -webkit-mask-image: linear-gradient(
+    to bottom left,
+    #000 0%,
+    #000 42%,
+    rgb(0 0 0 / 0.55) 68%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom left,
+    #000 0%,
+    #000 42%,
+    rgb(0 0 0 / 0.55) 68%,
+    transparent 100%
+  );
 }
 
 .projects-carousel__corner--bl {
@@ -434,6 +468,20 @@ body,
   border-bottom-width: var(--corner-stroke);
   border-left-width: var(--corner-stroke);
   border-bottom-left-radius: var(--card-radius);
+  -webkit-mask-image: linear-gradient(
+    to top right,
+    #000 0%,
+    #000 42%,
+    rgb(0 0 0 / 0.55) 68%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to top right,
+    #000 0%,
+    #000 42%,
+    rgb(0 0 0 / 0.55) 68%,
+    transparent 100%
+  );
 }
 
 .projects-carousel__corner--br {
@@ -442,13 +490,25 @@ body,
   border-bottom-width: var(--corner-stroke);
   border-right-width: var(--corner-stroke);
   border-bottom-right-radius: var(--card-radius);
+  -webkit-mask-image: linear-gradient(
+    to top left,
+    #000 0%,
+    #000 42%,
+    rgb(0 0 0 / 0.55) 68%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to top left,
+    #000 0%,
+    #000 42%,
+    rgb(0 0 0 / 0.55) 68%,
+    transparent 100%
+  );
 }
 
-/* Linhas finas no miolo da espessura das cantoneiras */
+/* Linhas finas com fade nas pontas (encaixe com a quina) */
 .projects-carousel__edge {
   position: absolute;
-  background: currentColor;
-  opacity: 0.85;
 }
 
 .projects-carousel__edge--top {
@@ -456,6 +516,13 @@ body,
   left: var(--edge-gap);
   right: var(--edge-gap);
   height: var(--edge-stroke);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    currentColor 14%,
+    currentColor 86%,
+    transparent 100%
+  );
 }
 
 .projects-carousel__edge--bottom {
@@ -463,6 +530,13 @@ body,
   left: var(--edge-gap);
   right: var(--edge-gap);
   height: var(--edge-stroke);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    currentColor 14%,
+    currentColor 86%,
+    transparent 100%
+  );
 }
 
 .projects-carousel__edge--left {
@@ -470,6 +544,13 @@ body,
   top: var(--edge-gap);
   bottom: var(--edge-gap);
   width: var(--edge-stroke);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    currentColor 14%,
+    currentColor 86%,
+    transparent 100%
+  );
 }
 
 .projects-carousel__edge--right {
@@ -477,23 +558,32 @@ body,
   top: var(--edge-gap);
   bottom: var(--edge-gap);
   width: var(--edge-stroke);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    currentColor 14%,
+    currentColor 86%,
+    transparent 100%
+  );
 }
 
 @media (min-width: 768px) {
   .projects-carousel__corners {
-    --corner-size: 1.7rem;
+    --corner-size: 1.85rem;
     --corner-stroke: 5px;
   }
 }
 
 .projects-carousel__corners--active {
-  color: rgb(216 180 254 / 0.92);
+  color: rgb(233 213 255 / 0.95);
   opacity: 1;
+  filter: drop-shadow(0 0 6px rgb(168 85 247 / 0.35));
 }
 
 .projects-carousel__corners--side {
-  color: rgb(255 255 255 / 0.34);
-  opacity: 0.8;
+  color: rgb(255 255 255 / 0.38);
+  opacity: 0.78;
+  filter: none;
 }
 
 /* Dissolve o card nas laterais — sensação de borda infinita */
