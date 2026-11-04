@@ -212,10 +212,11 @@ body,
    nome/cargo ← esquerda | foto ← direita | menu ← esquerda | footer ↑ baixo
    ============================================================================= */
 
-.home-enter__identity,
-.home-enter__photo,
-.home-enter__nav,
-.home-enter__footer {
+/* Some só enquanto a intro cobre a home. Depois da cascata, a opacidade volta ao normal. */
+.home-enter--hidden .home-enter__identity,
+.home-enter--hidden .home-enter__photo,
+.home-enter--hidden .home-enter__nav,
+.home-enter--hidden .home-enter__footer {
   opacity: 0;
 }
 
@@ -269,10 +270,10 @@ body,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-enter__identity,
-  .home-enter__photo,
-  .home-enter__nav,
-  .home-enter__footer,
+  .home-enter--hidden .home-enter__identity,
+  .home-enter--hidden .home-enter__photo,
+  .home-enter--hidden .home-enter__nav,
+  .home-enter--hidden .home-enter__footer,
   .home-enter--play .home-enter__identity,
   .home-enter--play .home-enter__photo,
   .home-enter--play .home-enter__nav,

@@ -43,6 +43,15 @@ const visibleCertificates = certificates.slice(0, 4);
 // TIPOS
 // =============================================================================
 
+/** Fases da entrada da home depois da intro. */
+type HomeReveal = "hidden" | "playing" | "shown";
+
+/**
+ * Duração da cascata da home.
+ * O rodapé começa em 2.15s e a animação dura 750ms.
+ */
+const HOME_ENTER_MS = 3100;
+
 /** IDs válidos de navegação (home + seções + projetos + certificados). */
 type NavId =
   | "home"
@@ -139,9 +148,12 @@ function App() {
   const [showIntro, setShowIntro] = useState(() => initialNav() === "home");
 
   /**
-   * Cascata visual da home só uma vez por sessão (não repete ao voltar).
+   * Cascata da home: escondida atrás da intro, anima uma vez e permanece visível.
+   * Tirar a classe de animação sem este terceiro estado voltava tudo para opacidade 0.
    */
-  const [playHomeEnter, setPlayHomeEnter] = useState(false);
+  const [homeReveal, setHomeReveal] = useState<HomeReveal>(() =>
+    initialNav() === "home" ? "hidden" : "shown",
+  );
 
   // ----- efeitos -----
 
@@ -153,9 +165,10 @@ function App() {
       const next = navFromHash(window.location.hash);
       setActive(next);
 
-      // Saiu da home pelo hash: encerra intro para não reaparecer no back.
+      // Saiu da home pelo hash: encerra intro e não deixa a home preta na volta.
       if (next !== "home") {
         setShowIntro(false);
+        setHomeReveal("shown");
       }
 
       if (next === "projects" || isProjectId(next)) {
@@ -173,12 +186,18 @@ function App() {
     return () => window.removeEventListener("hashchange", syncFromUrl);
   }, []);
 
-  /** Desliga a classe da cascata após a animação, para não repetir no remount. */
+  /**
+   * Ao fim da cascata, remove a animação e mantém nome, foto, menu e rodapé visíveis.
+   * O último item começa em 2.15s e dura 750ms.
+   */
   useEffect(() => {
-    if (!playHomeEnter) return;
-    const timer = window.setTimeout(() => setPlayHomeEnter(false), 2600);
+    if (homeReveal !== "playing") return;
+    const timer = window.setTimeout(
+      () => setHomeReveal("shown"),
+      HOME_ENTER_MS,
+    );
     return () => window.clearTimeout(timer);
-  }, [playHomeEnter]);
+  }, [homeReveal]);
 
   // ----- handlers / helpers -----
 
@@ -231,7 +250,7 @@ function App() {
   /** Encerra a intro e libera a animação de entrada da home. */
   function finishIntro() {
     setShowIntro(false);
-    setPlayHomeEnter(true);
+    setHomeReveal("playing");
   }
 
   /** Garante que a nova view comece no topo (evita herdar scroll do footer). */
@@ -369,7 +388,11 @@ function App() {
     <main
       className={[
         "relative isolate flex min-h-svh max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white",
-        playHomeEnter ? "home-enter--play" : "",
+        homeReveal === "hidden"
+          ? "home-enter--hidden"
+          : homeReveal === "playing"
+            ? "home-enter--play"
+            : "",
       ].join(" ")}
     >
       {/* ----- Apresentação cinemática inicial (só 1ª vez na home) ----- */}
