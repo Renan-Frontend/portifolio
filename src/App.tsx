@@ -28,12 +28,15 @@ const projects = [
 /** Projetos exibidos no menu (hoje: os 4 primeiros). */
 const visibleProjects = projects.slice(0, 4);
 
-/** Certificados exibidos no accordion da home (hoje: os 4 primeiros). */
-const visibleCertificates = CERTIFICATE_SLIDES.slice(0, 4).map((slide) => ({
+/** Todos os certificados (rota / deep-link). */
+const certificates = CERTIFICATE_SLIDES.map((slide) => ({
   id: slide.id,
   name: slide.name,
   href: `#${slide.id}`,
 }));
+
+/** Certificados exibidos no accordion da home (hoje: os 4 primeiros). */
+const visibleCertificates = certificates.slice(0, 4);
 
 // =============================================================================
 // TIPOS
@@ -48,7 +51,7 @@ type NavId =
   | "certificates"
   | "curriculum"
   | (typeof projects)[number]["id"]
-  | (typeof visibleCertificates)[number]["id"];
+  | (typeof certificates)[number]["id"];
 
 // =============================================================================
 // FUNÇÕES AUXILIARES (fora do componente)
@@ -80,7 +83,7 @@ function navFromHash(hash: string): NavId {
     return id as NavId;
   }
 
-  if (visibleCertificates.some((certificate) => certificate.id === id)) {
+  if (certificates.some((certificate) => certificate.id === id)) {
     return id as NavId;
   }
 
@@ -95,10 +98,10 @@ function isProjectId(id: NavId): boolean {
 }
 
 /**
- * Diz se o id informado pertence a um certificado da lista.
+ * Diz se o id informado pertence a um certificado (qualquer um da lista).
  */
 function isCertificateId(id: NavId): boolean {
-  return visibleCertificates.some((certificate) => certificate.id === id);
+  return certificates.some((certificate) => certificate.id === id);
 }
 
 /**
