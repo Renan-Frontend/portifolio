@@ -470,9 +470,9 @@ body,
 */
 .projects-carousel__corners {
   --corner-radius: 1rem;
-  --corner-size: 1.65rem;
-  --corner-stroke: 4px;
-  --frame-stroke: 1px;
+  --corner-size: 1.75rem;
+  --corner-stroke: 5.5px;
+  --frame-stroke: 1.75px;
   /* Empurra a quina para fora pela metade da diferença de espessura */
   --corner-outset: calc((var(--corner-stroke) - var(--frame-stroke)) / 2);
   transition: color 420ms ease, opacity 420ms ease;
@@ -532,8 +532,9 @@ body,
 
 @media (min-width: 768px) {
   .projects-carousel__corners {
-    --corner-size: 1.9rem;
-    --corner-stroke: 5px;
+    --corner-size: 2.05rem;
+    --corner-stroke: 6.5px;
+    --frame-stroke: 2px;
   }
 }
 
