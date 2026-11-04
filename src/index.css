@@ -388,13 +388,16 @@ body,
 
 /*
   Cantoneiras no mesmo raio do card (1rem = rounded-2xl).
-  Linhas finas sobrepõem 2px a quina para não ficar fresta.
+  Linhas finas passam no meio da espessura de cada ponta da quina.
 */
 .projects-carousel__corners {
   --card-radius: 1rem;
   --corner-size: var(--card-radius);
   --corner-stroke: 2.5px;
   --edge-stroke: 1px;
+  /* Centro da espessura da cantoneira */
+  --edge-center: calc((var(--corner-stroke) - var(--edge-stroke)) / 2);
+  /* Encontra a ponta da quina (com leve overlap) */
   --edge-gap: calc(var(--corner-size) - 2px);
   transition: color 550ms ease, opacity 550ms ease;
 }
@@ -441,36 +444,36 @@ body,
   border-bottom-right-radius: var(--card-radius);
 }
 
-/* Linhas finas saindo das cantoneiras (com leve overlap) */
+/* Linhas finas no miolo da espessura das cantoneiras */
 .projects-carousel__edge {
   position: absolute;
   background: currentColor;
-  opacity: 0.78;
+  opacity: 0.85;
 }
 
 .projects-carousel__edge--top {
-  top: 0;
+  top: var(--edge-center);
   left: var(--edge-gap);
   right: var(--edge-gap);
   height: var(--edge-stroke);
 }
 
 .projects-carousel__edge--bottom {
-  bottom: 0;
+  bottom: var(--edge-center);
   left: var(--edge-gap);
   right: var(--edge-gap);
   height: var(--edge-stroke);
 }
 
 .projects-carousel__edge--left {
-  left: 0;
+  left: var(--edge-center);
   top: var(--edge-gap);
   bottom: var(--edge-gap);
   width: var(--edge-stroke);
 }
 
 .projects-carousel__edge--right {
-  right: 0;
+  right: var(--edge-center);
   top: var(--edge-gap);
   bottom: var(--edge-gap);
   width: var(--edge-stroke);
