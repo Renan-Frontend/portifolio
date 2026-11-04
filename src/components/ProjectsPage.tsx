@@ -407,6 +407,18 @@ function ProjectsPage({
                     <div className="pointer-events-none absolute inset-0 bg-neutral-950/25" />
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.18),transparent_55%)]" />
                     <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/70 to-neutral-950/10" />
+
+                    {/* Cantoneiras decorativas nas 4 quinas */}
+                    <div
+                      className={[
+                        "projects-carousel__corners pointer-events-none absolute z-20",
+                        isActive
+                          ? "projects-carousel__corners--active"
+                          : "projects-carousel__corners--side",
+                      ].join(" ")}
+                      aria-hidden="true"
+                    />
+
                     <div className="relative z-10 flex flex-col gap-5 p-6 md:gap-6 md:p-8 lg:p-9">
                       <div>
                         <p className="text-xs tracking-[0.2em] text-purple-300/90 uppercase md:text-sm">
