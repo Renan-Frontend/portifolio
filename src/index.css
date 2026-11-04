@@ -392,7 +392,7 @@ body,
 */
 .projects-carousel__corners {
   --card-radius: 1rem;
-  --corner-size: var(--card-radius);
+  --corner-size: 1.45rem;
   --corner-stroke: 4px;
   --edge-stroke: 1px;
   /* Centro da espessura da cantoneira */
@@ -481,6 +481,7 @@ body,
 
 @media (min-width: 768px) {
   .projects-carousel__corners {
+    --corner-size: 1.7rem;
     --corner-stroke: 5px;
   }
 }
