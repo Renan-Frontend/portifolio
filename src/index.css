@@ -360,6 +360,16 @@ body,
   display: none;
 }
 
+/* Escala do ativo: mais lenta e suave ao virar principal */
+.projects-carousel__card {
+  transition:
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 550ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 550ms ease;
+  will-change: transform, opacity;
+}
+
 /* Dissolve o card nas laterais — sensação de borda infinita */
 .projects-carousel-edge {
   background: linear-gradient(
