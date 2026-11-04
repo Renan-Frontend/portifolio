@@ -539,15 +539,15 @@ body,
 
 .projects-carousel__corners--active {
   color: rgb(124 88 196);
-  /* Filete fino mais claro que as quinas */
-  --frame-color: rgb(196 168 255);
+  /* Filete fino um pouco mais claro que as quinas */
+  --frame-color: rgb(158 128 214);
   opacity: 1;
 }
 
 /* Fora do centro: moldura cinza */
 .projects-carousel__corners--side {
   color: rgb(82 82 82);
-  --frame-color: rgb(168 168 168);
+  --frame-color: rgb(120 120 120);
   opacity: 1;
 }
 
