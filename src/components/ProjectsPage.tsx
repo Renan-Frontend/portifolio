@@ -101,7 +101,8 @@ function ProjectsPage({
 
   /**
    * Centraliza o slide ativo no track.
-   * Bloqueia sync do onScroll até o fim da animação para não “voltar” o índice.
+   * Bloqueia sync do onScroll até o scroll programático estabilizar no alvo
+   * (scrollend + poll; sem timeout curto que libera no meio do caminho).
    */
   useEffect(() => {
     const track = trackRef.current;
@@ -115,15 +116,31 @@ function ProjectsPage({
     ignoreScrollSyncRef.current = true;
     if (scrollUnlockTimerRef.current !== null) {
       window.clearTimeout(scrollUnlockTimerRef.current);
+      scrollUnlockTimerRef.current = null;
     }
+
+    let cancelled = false;
+    let rafId = 0;
 
     /** Libera a sincronização manual após o scroll programático. */
     function unlockScrollSync() {
+      if (cancelled) return;
       ignoreScrollSyncRef.current = false;
       if (scrollUnlockTimerRef.current !== null) {
         window.clearTimeout(scrollUnlockTimerRef.current);
         scrollUnlockTimerRef.current = null;
       }
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+    }
+
+    /** Diz se o centro do track já está alinhado ao card alvo. */
+    function isNearTarget() {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const trackCenter = track.scrollLeft + track.clientWidth / 2;
+      return Math.abs(cardCenter - trackCenter) < 12;
     }
 
     card.scrollIntoView({
@@ -133,13 +150,42 @@ function ProjectsPage({
     });
 
     track.addEventListener("scrollend", unlockScrollSync, { once: true });
-    // Fallback: navegadores sem scrollend (ou snap interrompido)
-    scrollUnlockTimerRef.current = window.setTimeout(unlockScrollSync, 500);
+
+    // Fallback sem scrollend: só libera quando para perto do alvo (ou após 2s).
+    let lastLeft = track.scrollLeft;
+    let stableMs = 0;
+    const startedAt = performance.now();
+
+    /** Observa estabilização do scroll até o card alvo. */
+    function pollSettle(now: number) {
+      if (cancelled || !ignoreScrollSyncRef.current) return;
+
+      const left = track.scrollLeft;
+      if (Math.abs(left - lastLeft) < 0.5) {
+        stableMs += 16;
+      } else {
+        stableMs = 0;
+        lastLeft = left;
+      }
+
+      if ((stableMs >= 120 && isNearTarget()) || now - startedAt > 2000) {
+        unlockScrollSync();
+        return;
+      }
+
+      rafId = window.requestAnimationFrame(pollSettle);
+    }
+
+    rafId = window.requestAnimationFrame(pollSettle);
+    scrollUnlockTimerRef.current = window.setTimeout(unlockScrollSync, 2000);
 
     return () => {
+      cancelled = true;
       track.removeEventListener("scrollend", unlockScrollSync);
+      if (rafId) window.cancelAnimationFrame(rafId);
       if (scrollUnlockTimerRef.current !== null) {
         window.clearTimeout(scrollUnlockTimerRef.current);
+        scrollUnlockTimerRef.current = null;
       }
     };
   }, [activeIndex]);
