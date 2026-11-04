@@ -136,16 +136,16 @@ function ProjectsPage({
       }
     }
 
-    /** Diz se o centro do track já está alinhado ao card alvo. */
+    /** Diz se o início do track já está alinhado ao card alvo (snap-start). */
     function isNearTarget() {
-      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-      const trackCenter = track.scrollLeft + track.clientWidth / 2;
-      return Math.abs(cardCenter - trackCenter) < 12;
+      const trackLeft = track.getBoundingClientRect().left;
+      const cardLeft = card.getBoundingClientRect().left;
+      return Math.abs(cardLeft - trackLeft) < 24;
     }
 
     card.scrollIntoView({
       behavior: "smooth",
-      inline: "center",
+      inline: "start",
       block: "nearest",
     });
 
@@ -261,23 +261,12 @@ function ProjectsPage({
       </h1>
 
       <section className="projects-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-center px-0 pb-3 md:min-h-0 md:pb-2">
-        <div className="about-enter__bio mb-3 px-5 min-[390px]:px-6 md:mb-4 md:px-10 lg:px-14 xl:px-20">
-          <p className="text-sm tracking-[0.2em] text-purple-300/90 uppercase">
-            Seleção
-          </p>
-          <p className="experience-copy mt-1 max-w-2xl text-neutral-300">
-            {avoidOrphan(
-              "Explore os projetos em um carrossel amplo — deslize ou use as setas para navegar à direita.",
-            )}
-          </p>
-        </div>
-
-        {/* Carrossel grande */}
+        {/* Carrossel: ~2 cards visíveis no desktop; 1+ no mobile */}
         <div className="about-enter__facts relative w-full">
           <div
             ref={trackRef}
             onScroll={handleTrackScroll}
-            className="projects-carousel flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 min-[390px]:gap-5 min-[390px]:px-6 md:gap-6 md:px-10 lg:px-14 xl:px-20"
+            className="projects-carousel flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 min-[390px]:gap-4 min-[390px]:px-6 md:gap-5 md:px-10 lg:px-14 xl:px-20"
             aria-label="Carrossel de projetos"
           >
             {PROJECT_SLIDES.map((slide, index) => (
@@ -285,12 +274,12 @@ function ProjectsPage({
                 key={slide.id}
                 data-slide-index={index}
                 className={[
-                  "projects-carousel__card relative flex shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl border border-purple-500/25",
-                  "h-[min(58vh,32rem)] w-[min(88vw,52rem)] md:h-[min(62vh,36rem)] md:w-[min(72vw,58rem)]",
+                  "projects-carousel__card relative flex shrink-0 snap-start flex-col justify-end overflow-hidden rounded-2xl border border-purple-500/25",
+                  "h-[min(56vh,30rem)] w-[min(88vw,24rem)] sm:w-[calc((100%-1rem)/2)] md:h-[min(60vh,34rem)] md:w-[calc((100%-1.25rem)/2)]",
                   `bg-linear-to-br ${slide.accent}`,
                   index === activeIndex
                     ? "opacity-100 ring-1 ring-purple-400/40"
-                    : "opacity-80",
+                    : "opacity-75",
                 ].join(" ")}
               >
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.18),transparent_55%)]" />
@@ -307,8 +296,6 @@ function ProjectsPage({
                 </div>
               </article>
             ))}
-            {/* Espaço final para o último card poder centralizar */}
-            <div className="w-[12vw] shrink-0 md:w-[18vw]" aria-hidden="true" />
           </div>
 
           {/* Controles */}
