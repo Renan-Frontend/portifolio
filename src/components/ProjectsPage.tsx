@@ -395,8 +395,8 @@ function ProjectsPage({
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
-                    {/* Capa dentro da moldura */}
-                    <div className="projects-carousel__media pointer-events-none absolute overflow-hidden">
+                    {/* Capa do projeto */}
+                    <div className="projects-carousel__media pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
                       <img
                         src={slide.cover}
                         alt=""
@@ -410,7 +410,10 @@ function ProjectsPage({
                       <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5" />
                     </div>
 
-                    {/* Só as cantoneiras (sem linhas entre as quinas) */}
+                    {/*
+                      Cantos luminosos minimalistas: L simétricos (SVG),
+                      mesma espessura/comprimento; borda fina fica no CSS do card.
+                    */}
                     <div
                       className={[
                         "projects-carousel__corners pointer-events-none absolute inset-0 z-20",
@@ -420,10 +423,25 @@ function ProjectsPage({
                       ].join(" ")}
                       aria-hidden="true"
                     >
-                      <span className="projects-carousel__corner projects-carousel__corner--tl" />
-                      <span className="projects-carousel__corner projects-carousel__corner--tr" />
-                      <span className="projects-carousel__corner projects-carousel__corner--bl" />
-                      <span className="projects-carousel__corner projects-carousel__corner--br" />
+                      {(["tl", "tr", "bl", "br"] as const).map((corner) => (
+                        <svg
+                          key={corner}
+                          className={`projects-carousel__corner projects-carousel__corner--${corner}`}
+                          viewBox="0 0 28 28"
+                          width="28"
+                          height="28"
+                          fill="none"
+                        >
+                          <path
+                            className="projects-carousel__corner-stroke"
+                            d="M25 3.5 H11.5 C7.5 3.5 3.5 7.5 3.5 11.5 V25"
+                            stroke="currentColor"
+                            strokeWidth="2.75"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      ))}
                     </div>
 
                     <div className="relative z-10 flex flex-col gap-5 p-6 md:gap-6 md:p-8 lg:p-9">
