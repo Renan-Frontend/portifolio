@@ -603,12 +603,23 @@ body,
   }
 
   .experience-page .about-enter__bio,
-  .experience-page .about-enter__facts {
+  .experience-page .about-enter__facts,
+  .curriculum-page .about-enter__bio,
+  .curriculum-page .about-enter__facts {
     gap: 0.7rem;
   }
 
   .experience-copy {
     line-height: 1.35;
+  }
+}
+
+/* Currículo: colunas com scroll interno no desktop se a altura apertar */
+@media (min-width: 768px) {
+  .curriculum-page .about-enter__bio,
+  .curriculum-page .about-enter__facts {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(82 82 82) transparent;
   }
 }
 

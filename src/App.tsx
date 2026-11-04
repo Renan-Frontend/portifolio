@@ -1,6 +1,7 @@
 import { useEffect, useState, type MouseEvent } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import AboutPage from "./components/AboutPage";
+import CurriculumPage from "./components/CurriculumPage";
 import ExperiencePage from "./components/ExperiencePage";
 import IntroPresentation from "./components/IntroPresentation";
 import ProjectsPage from "./components/ProjectsPage";
@@ -184,7 +185,7 @@ function App() {
     window.history.pushState(null, "", "#experience");
   }
 
-  /** Vai para Currículo (item do menu na home, por enquanto). */
+  /** Vai para a página Currículo. */
   function goCurriculum() {
     setShowIntro(false);
     setIntroDone(true);
@@ -238,6 +239,11 @@ function App() {
         initialProjectId={isProjectId(active) ? active : undefined}
       />
     );
+  }
+
+  // ----- interface: página Currículo -----
+  if (active === "curriculum") {
+    return <CurriculumPage onBack={goHome} />;
   }
 
   // ----- interface: home -----
