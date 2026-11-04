@@ -391,6 +391,9 @@ function ProjectsPage({
     goBy(1);
   }
 
+  /** Índice lógico do slide selecionado (1-based para a contagem). */
+  const activeNumber = (activeLoopIndex % SLIDE_COUNT) + 1;
+
   // ----- interface -----
   return (
     <main className="projects-page relative isolate flex h-svh max-h-svh w-full flex-col overflow-hidden bg-neutral-950 text-white">
@@ -545,6 +548,16 @@ function ProjectsPage({
               aria-hidden="true"
             />
           </div>
+
+          {/* Contagem do projeto selecionado */}
+          <p
+            className="mt-3 text-center text-sm tracking-[0.18em] text-neutral-400 tabular-nums md:mt-4 md:text-base"
+            aria-live="polite"
+          >
+            {String(activeNumber).padStart(2, "0")}
+            <span className="mx-1.5 text-neutral-600">/</span>
+            {String(SLIDE_COUNT).padStart(2, "0")}
+          </p>
         </div>
       </section>
 
