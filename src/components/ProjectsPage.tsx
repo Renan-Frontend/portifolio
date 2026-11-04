@@ -474,43 +474,16 @@ function ProjectsPage({
                       <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5" />
                     </div>
 
-                    {/*
-                      Moldura: filete contínuo + quinas SVG no mesmo raio
-                      do card (1rem), centralizadas no filete.
-                    */}
+                    {/* Moldura contínua — quinas mais grossas via border-radius */}
                     <div
                       className={[
-                        "projects-carousel__corners pointer-events-none absolute inset-0 z-20",
+                        "projects-carousel__frame pointer-events-none absolute inset-0 z-20",
                         isActive
-                          ? "projects-carousel__corners--active"
-                          : "projects-carousel__corners--side",
+                          ? "projects-carousel__frame--active"
+                          : "projects-carousel__frame--side",
                       ].join(" ")}
                       aria-hidden="true"
-                    >
-                      <span className="projects-carousel__frame" />
-                      {(["tl", "tr", "bl", "br"] as const).map((corner) => (
-                        <svg
-                          key={corner}
-                          className={`projects-carousel__corner projects-carousel__corner--${corner}`}
-                          viewBox="0 0 32 32"
-                          width="32"
-                          height="32"
-                          fill="none"
-                        >
-                          {/*
-                            Path no miolo do stroke (y/x = 2):
-                            raio 16 = rounded-2xl; caps retos para emendar no filete.
-                          */}
-                          <path
-                            d="M30 2 H18 A16 16 0 0 0 2 18 V30"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            strokeLinecap="butt"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      ))}
-                    </div>
+                    />
 
                     <div
                       className={[

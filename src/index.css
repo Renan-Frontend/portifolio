@@ -454,61 +454,25 @@ body,
 }
 
 /*
-  Moldura limpa: filete contínuo (raio = rounded-2xl) +
-  quinas SVG no mesmo arco, alinhadas à borda externa.
+  Moldura contínua (sem cantoneiras):
+  traço mais grosso para as quinas do rounded-2xl ficarem marcadas.
 */
-.projects-carousel__corners {
-  --frame-stroke: 1px;
-  --corner-size: 32px;
-  transition: color 550ms ease, opacity 550ms ease;
-}
-
 .projects-carousel__frame {
   position: absolute;
   inset: 0;
-  border: var(--frame-stroke) solid currentColor;
+  border: 2.5px solid currentColor;
   border-radius: 1rem;
-  opacity: 0.85;
   box-sizing: border-box;
+  transition: color 550ms ease, opacity 550ms ease;
 }
 
-.projects-carousel__corner {
-  position: absolute;
-  width: var(--corner-size);
-  height: var(--corner-size);
-  overflow: visible;
-}
-
-.projects-carousel__corner--tl {
-  top: 0;
-  left: 0;
-}
-
-.projects-carousel__corner--tr {
-  top: 0;
-  right: 0;
-  transform: scaleX(-1);
-}
-
-.projects-carousel__corner--bl {
-  bottom: 0;
-  left: 0;
-  transform: scaleY(-1);
-}
-
-.projects-carousel__corner--br {
-  bottom: 0;
-  right: 0;
-  transform: scale(-1);
-}
-
-.projects-carousel__corners--active {
+.projects-carousel__frame--active {
   color: rgb(147 112 219);
   opacity: 1;
 }
 
 /* Fora do centro: moldura cinza */
-.projects-carousel__corners--side {
+.projects-carousel__frame--side {
   color: rgb(115 115 115);
   opacity: 1;
 }
