@@ -17,7 +17,12 @@ type ProjectSlide = {
   name: string;
   tagline: string;
   description: string;
-  /** Placeholder visual até haver print em /public/projects/. */
+  /**
+   * Capa do projeto no carrossel.
+   * Trocar depois por arquivos em /public/projects/.
+   */
+  cover: string;
+  /** Tom de reforço sob a imagem (fallback se a capa falhar). */
   accent: string;
 };
 
@@ -29,6 +34,7 @@ const PROJECT_SLIDES: ProjectSlide[] = [
     tagline: "Experiência interativa",
     description:
       "Projeto focado em interfaces envolventes, exploração visual e interação com o usuário.",
+    cover: "https://picsum.photos/seed/monsterland-ui/1400/900",
     accent: "from-violet-600/40 via-neutral-900 to-neutral-950",
   },
   {
@@ -37,6 +43,7 @@ const PROJECT_SLIDES: ProjectSlide[] = [
     tagline: "Produto digital",
     description:
       "Aplicação voltada à aprendizagem, com interfaces claras, responsivas e acessíveis.",
+    cover: "https://picsum.photos/seed/educacao-app/1400/900",
     accent: "from-indigo-600/35 via-neutral-900 to-neutral-950",
   },
   {
@@ -45,6 +52,7 @@ const PROJECT_SLIDES: ProjectSlide[] = [
     tagline: "Produtividade",
     description:
       "Ferramenta para organização de hábitos e rotinas, com foco em usabilidade e clareza.",
+    cover: "https://picsum.photos/seed/rotina-desk/1400/900",
     accent: "from-fuchsia-600/30 via-neutral-900 to-neutral-950",
   },
   {
@@ -53,6 +61,7 @@ const PROJECT_SLIDES: ProjectSlide[] = [
     tagline: "Identidade digital",
     description:
       "Este próprio site — apresentação profissional com navegação por seções e animações.",
+    cover: "https://picsum.photos/seed/portfolio-dark/1400/900",
     accent: "from-purple-500/35 via-neutral-900 to-neutral-950",
   },
 ];
@@ -386,8 +395,18 @@ function ProjectsPage({
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.22),transparent_55%)]" />
-                    <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-neutral-950/90 via-neutral-950/25 to-transparent" />
+                    {/* Capa do projeto (placeholder até ter print real) */}
+                    <img
+                      src={slide.cover}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      draggable={false}
+                      className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center select-none"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-neutral-950/25" />
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.18),transparent_55%)]" />
+                    <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/70 to-neutral-950/10" />
                     <div className="relative z-10 flex flex-col gap-5 p-6 md:gap-6 md:p-8 lg:p-9">
                       <div>
                         <p className="text-xs tracking-[0.2em] text-purple-300/90 uppercase md:text-sm">
