@@ -20,7 +20,7 @@ const CV_CONTACT = [
 
 /** Resumo profissional do CV. */
 const CV_SUMMARY =
-  "Desenvolvedor Front-end com experiência prática em interfaces responsivas usando HTML5, CSS3, JavaScript (ES6+), TypeScript, React.js, Next.js e Tailwind CSS. Atuação em produto com IA (Escreva+) e no ERP da Residência em TIC (UFG/BRISA), com componentização, consumo de APIs RESTful, Git/GitHub, UI/UX, acessibilidade (WCAG) e Clean Code. Objetivo: vaga de Estágio ou Desenvolvedor Júnior para entregar aplicações web performáticas e centradas no usuário.";
+  "Desenvolvedor de Software com especialização em Front-end e conhecimento em Back-end. Experiência prática em interfaces responsivas com HTML5, CSS3, JavaScript (ES6+), TypeScript, React.js, Next.js e Tailwind CSS, além de atuação com Python, APIs e bancos de dados. Atuação em produto com IA (Escreva+) e no ERP da Residência em TIC (UFG/BRISA), com componentização, consumo de APIs RESTful, Git/GitHub, UI/UX, acessibilidade (WCAG) e Clean Code. Objetivo: vaga de Estágio ou Desenvolvedor Júnior para entregar aplicações web performáticas e centradas no usuário.";
 
 /** Habilidades listadas no CV. */
 const CV_SKILLS = [
@@ -213,7 +213,10 @@ function CurriculumPage({ onBack }: CurriculumPageProps) {
               Renan Naves
             </p>
             <p className="mt-1 text-[clamp(1.15rem,4vw,1.45rem)] font-semibold text-neutral-100">
-              Desenvolvedor Front-end
+              Desenvolvedor de Software
+            </p>
+            <p className="mt-1 max-w-xl text-sm leading-snug text-neutral-400 md:text-xs">
+              Especializado em Front-end, com conhecimento em Back-end
             </p>
           </div>
 
