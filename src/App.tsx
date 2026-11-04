@@ -1,6 +1,7 @@
 import { useEffect, useState, type MouseEvent } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import AboutPage from "./components/AboutPage";
+import ExperiencePage from "./components/ExperiencePage";
 import IntroPresentation from "./components/IntroPresentation";
 
 // =============================================================================
@@ -140,6 +141,15 @@ function App() {
     if (id === "projects" || isProjectId(id)) {
       setProjectsOpen(true);
     }
+
+    if (
+      id === "about" ||
+      id === "experience" ||
+      id === "projects" ||
+      isProjectId(id)
+    ) {
+      resetWindowScroll();
+    }
   };
 
   /**
@@ -185,6 +195,11 @@ function App() {
     setIntroDone(true);
   }
 
+  /** Garante que a nova view comece no topo (evita herdar scroll do footer). */
+  function resetWindowScroll() {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }
+
   /** Volta à home sem repetir a intro cinemática. */
   function goHome() {
     setActive("home");
@@ -195,17 +210,37 @@ function App() {
       "",
       `${window.location.pathname}${window.location.search}`,
     );
+    resetWindowScroll();
   }
 
-  /** Vai para Experiências (hash; página completa ainda não existe). */
+  /** Vai para a página Experiência. */
   function goExperience() {
     setActive("experience");
-    window.location.hash = "experience";
+    window.history.pushState(null, "", "#experience");
+    resetWindowScroll();
+  }
+
+  /**
+   * Destaca Projetos na home (accordion).
+   * Página/carrossel de Projetos fica no PR separado.
+   */
+  function goProjects() {
+    setShowIntro(false);
+    setIntroDone(true);
+    setProjectsOpen(true);
+    setActive("projects");
+    window.history.pushState(null, "", "#projects");
+    resetWindowScroll();
   }
 
   // ----- interface: página Sobre Mim -----
   if (active === "about") {
     return <AboutPage onBack={goHome} onExperience={goExperience} />;
+  }
+
+  // ----- interface: página Experiência -----
+  if (active === "experience") {
+    return <ExperiencePage onBack={goHome} onProjects={goProjects} />;
   }
 
   // ----- interface: home -----
