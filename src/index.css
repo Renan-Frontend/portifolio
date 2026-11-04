@@ -324,6 +324,15 @@ body,
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  /* Ajuda o card ativo a ficar no centro ao usar as setas / snap */
+  scroll-padding-inline: max(1.25rem, calc((100% - min(34rem, 58vw)) / 2));
+}
+
+@media (min-width: 768px) {
+  .projects-carousel {
+    scroll-padding-inline: max(2.5rem, calc((100% - min(38rem, 52vw)) / 2));
+  }
 }
 
 .projects-carousel::-webkit-scrollbar {

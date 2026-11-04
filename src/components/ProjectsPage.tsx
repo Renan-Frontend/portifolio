@@ -136,16 +136,18 @@ function ProjectsPage({
       }
     }
 
-    /** Diz se o início do track já está alinhado ao card alvo (snap-start). */
+    /** Diz se o centro do track já está alinhado ao card alvo. */
     function isNearTarget() {
-      const trackLeft = track.getBoundingClientRect().left;
-      const cardLeft = card.getBoundingClientRect().left;
-      return Math.abs(cardLeft - trackLeft) < 24;
+      const trackBox = track.getBoundingClientRect();
+      const cardBox = card.getBoundingClientRect();
+      const trackCenter = trackBox.left + trackBox.width / 2;
+      const cardCenter = cardBox.left + cardBox.width / 2;
+      return Math.abs(cardCenter - trackCenter) < 28;
     }
 
     card.scrollIntoView({
       behavior: "smooth",
-      inline: "start",
+      inline: "center",
       block: "nearest",
     });
 
@@ -233,12 +235,15 @@ function ProjectsPage({
     );
     if (cards.length === 0) return;
 
-    const trackLeft = track.getBoundingClientRect().left;
+    const trackBox = track.getBoundingClientRect();
+    const trackCenter = trackBox.left + trackBox.width / 2;
     let closest = 0;
     let closestDist = Number.POSITIVE_INFINITY;
 
     cards.forEach((card, index) => {
-      const dist = Math.abs(card.getBoundingClientRect().left - trackLeft);
+      const box = card.getBoundingClientRect();
+      const cardCenter = box.left + box.width / 2;
+      const dist = Math.abs(cardCenter - trackCenter);
       if (dist < closestDist) {
         closestDist = dist;
         closest = index;
@@ -250,7 +255,7 @@ function ProjectsPage({
 
   // ----- interface -----
   return (
-    <main className="projects-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white md:h-svh">
+    <main className="projects-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white">
       {/* Marca d’água */}
       <h1
         className="about-enter__title font-script pointer-events-none absolute inset-x-0 top-2 z-0 px-4 text-center text-[clamp(2.25rem,9vw,5.75rem)] leading-none whitespace-nowrap text-[#9a92ad] select-none md:top-2"
@@ -259,16 +264,16 @@ function ProjectsPage({
         Projetos
       </h1>
 
-      <section className="projects-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-center px-5 pb-3 min-[390px]:px-6 md:min-h-0 md:px-10 md:pb-2 lg:px-14 xl:px-20">
+      <section className="projects-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-center px-0 pb-3 md:pb-2">
         {/*
-          Padding no wrapper (não no track): 100% = área visível.
-          Assim cabem exatamente 2 cards, sem “recortar” um terceiro na direita.
+          Carrossel centralizado: card ativo no meio, vizinhos visíveis nas laterais.
+          scroll-padding + snap-center mantêm o destaque equilibrado.
         */}
-        <div className="about-enter__facts relative w-full overflow-x-hidden py-4 md:py-6">
+        <div className="about-enter__facts relative w-full py-5 md:py-8">
           <div
             ref={trackRef}
             onScroll={handleTrackScroll}
-            className="projects-carousel flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-visible pb-2 min-[390px]:gap-4 md:gap-5"
+            className="projects-carousel flex snap-x snap-mandatory items-center gap-5 overflow-x-auto px-[max(1.25rem,calc((100%-min(34rem,58vw))/2))] pb-3 md:gap-6 md:px-[max(2.5rem,calc((100%-min(38rem,52vw))/2))]"
             aria-label="Carrossel de projetos"
           >
             {PROJECT_SLIDES.map((slide, index) => {
@@ -278,32 +283,36 @@ function ProjectsPage({
                   key={slide.id}
                   data-slide-index={index}
                   className={[
-                    "projects-carousel__card relative flex shrink-0 snap-start flex-col justify-end overflow-hidden rounded-2xl border transition-[transform,opacity,box-shadow] duration-300 ease-out",
-                    "origin-center",
-                    // Largura: 1 card no mobile; exatamente 2 no sm+
-                    "w-[min(88vw,22rem)] sm:w-[calc((100%-1rem)/2)] md:w-[calc((100%-1.25rem)/2)]",
+                    "projects-carousel__card relative flex shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl border transition-[transform,opacity,height,box-shadow] duration-300 ease-out",
+                    "w-[min(34rem,82vw)] md:w-[min(38rem,52vw)]",
                     isActive
-                      ? "z-10 h-[min(58vh,32rem)] scale-100 border-purple-400/50 opacity-100 shadow-[0_0_0_1px_rgba(192,132,252,0.35)] md:h-[min(64vh,36rem)] md:scale-[1.04]"
-                      : "z-0 h-[min(50vh,26rem)] scale-[0.92] border-purple-500/20 opacity-70 md:h-[min(54vh,30rem)] md:scale-[0.9]",
+                      ? "z-10 h-[min(56vh,32rem)] scale-100 border-purple-400/45 opacity-100 shadow-[0_18px_50px_-28px_rgba(168,85,247,0.55)] md:h-[min(60vh,34rem)]"
+                      : "z-0 h-[min(48vh,27rem)] scale-[0.94] border-white/10 opacity-55 md:h-[min(52vh,29rem)]",
                     `bg-linear-to-br ${slide.accent}`,
                   ].join(" ")}
                 >
-                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.18),transparent_55%)]" />
-                  <div className="relative z-10 p-5 min-[390px]:p-6 md:p-8">
+                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.22),transparent_55%)]" />
+                  <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-neutral-950/90 via-neutral-950/25 to-transparent" />
+                  <div className="relative z-10 p-6 md:p-8 lg:p-9">
                     <p className="text-xs tracking-[0.2em] text-purple-300/90 uppercase md:text-sm">
                       {slide.tagline}
                     </p>
                     <h2
                       className={[
-                        "mt-2 font-semibold tracking-wide text-neutral-50",
+                        "mt-2.5 font-semibold tracking-wide text-neutral-50",
                         isActive
-                          ? "text-[clamp(1.45rem,4.2vw,2.35rem)]"
-                          : "text-[clamp(1.2rem,3.5vw,1.85rem)]",
+                          ? "text-[clamp(1.5rem,3.5vw,2.35rem)]"
+                          : "text-[clamp(1.25rem,3vw,1.85rem)]",
                       ].join(" ")}
                     >
                       {slide.name}
                     </h2>
-                    <p className="experience-copy mt-2 max-w-xl text-neutral-200">
+                    <p
+                      className={[
+                        "experience-copy mt-2.5 max-w-xl text-pretty",
+                        isActive ? "text-neutral-200" : "text-neutral-400",
+                      ].join(" ")}
+                    >
                       {avoidOrphan(slide.description)}
                     </p>
                   </div>
@@ -313,7 +322,7 @@ function ProjectsPage({
           </div>
 
           {/* Controles */}
-          <div className="mt-4 flex items-center justify-between gap-3">
+          <div className="mt-5 flex items-center justify-between gap-3 px-5 min-[390px]:px-6 md:mt-6 md:px-10 lg:px-14 xl:px-20">
             <p className="text-sm tracking-wide text-neutral-400 tabular-nums">
               {String(activeIndex + 1).padStart(2, "0")} /{" "}
               {String(PROJECT_SLIDES.length).padStart(2, "0")}
