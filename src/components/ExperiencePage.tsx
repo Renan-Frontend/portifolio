@@ -25,7 +25,7 @@ const EXPERIENCE_LEFT: ExperienceItem = {
   title: "Residência em TIC — UFG/BRISA",
   paragraphs: [
     "Minha trajetória na Residência em TIC da UFG/BRISA começou com um curso preparatório on-line, seguido de uma prova seletiva na qual fiquei entre os 20 melhores colocados, conquistando a oportunidade de participar do programa.",
-    "Durante a residência, participei de aulas teóricas e atividades práticas, incluindo o desenvolvimento de uma aplicação em equipe, formada por cinco integrantes. Nesse projeto, atuei como principal desenvolvedor de software do grupo, participando diretamente da implementação, das decisões técnicas e da construção da aplicação.",
+    "Durante a residência, participei de aulas teóricas e atividades práticas, incluindo o desenvolvimento de um app de gerenciamento de empresa com IA, em equipe de cinco integrantes. Nesse projeto, atuei como principal desenvolvedor de software do grupo, participando diretamente da implementação, das decisões técnicas e da construção da aplicação.",
     "Ao final do programa, apresentamos o projeto desenvolvido a professores da área de tecnologia e representantes de empresas, proporcionando a oportunidade de demonstrar a solução, explicar as decisões tomadas e compartilhar os resultados do trabalho.",
     "Essa experiência fortaleceu minhas habilidades técnicas, minha capacidade de trabalhar em equipe, resolver problemas e apresentar soluções de software.",
   ],

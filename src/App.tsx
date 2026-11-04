@@ -8,6 +8,7 @@ import IntroPresentation from "./components/IntroPresentation";
 import ProjectsPage, {
   CERTIFICATE_SLIDES,
 } from "./components/ProjectsPage";
+import { publicUrl } from "./utils/publicUrl";
 
 // =============================================================================
 // DADOS
@@ -137,9 +138,6 @@ function App() {
    */
   const [showIntro, setShowIntro] = useState(() => initialNav() === "home");
 
-  /** Já terminou (ou pulou) a intro — libera a cascata da home. */
-  const [introDone, setIntroDone] = useState(() => initialNav() !== "home");
-
   /**
    * Cascata visual da home só uma vez por sessão (não repete ao voltar).
    */
@@ -158,7 +156,6 @@ function App() {
       // Saiu da home pelo hash: encerra intro para não reaparecer no back.
       if (next !== "home") {
         setShowIntro(false);
-        setIntroDone(true);
       }
 
       if (next === "projects" || isProjectId(next)) {
@@ -234,7 +231,6 @@ function App() {
   /** Encerra a intro e libera a animação de entrada da home. */
   function finishIntro() {
     setShowIntro(false);
-    setIntroDone(true);
     setPlayHomeEnter(true);
   }
 
@@ -247,7 +243,6 @@ function App() {
   function goHome() {
     setActive("home");
     setShowIntro(false);
-    setIntroDone(true);
     window.history.pushState(
       null,
       "",
@@ -266,7 +261,6 @@ function App() {
   /** Vai para a página Certificados. */
   function goCertificates() {
     setShowIntro(false);
-    setIntroDone(true);
     setActive("certificates");
     window.history.pushState(null, "", "#certificates");
     resetWindowScroll();
@@ -275,7 +269,6 @@ function App() {
   /** Vai para a página Currículo. */
   function goCurriculum() {
     setShowIntro(false);
-    setIntroDone(true);
     setActive("curriculum");
     window.history.pushState(null, "", "#curriculum");
     resetWindowScroll();
@@ -284,7 +277,6 @@ function App() {
   /** Vai para a página Projetos (carrossel). */
   function goProjects() {
     setShowIntro(false);
-    setIntroDone(true);
     setActive("projects");
     window.history.pushState(null, "", "#projects");
     resetWindowScroll();
@@ -387,7 +379,7 @@ function App() {
       <div className="home-enter__photo pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-neutral-950">
         <div className="absolute inset-0 overflow-hidden md:hidden">
           <img
-            src="/profile/renan-profile.png"
+            src={publicUrl("profile/renan-profile.png")}
             alt=""
             aria-hidden="true"
             className="h-full w-full max-w-none object-cover object-[72%_30%] brightness-[0.96]"
@@ -398,7 +390,7 @@ function App() {
 
         <div className="absolute inset-y-0 right-10 hidden w-[min(70vw,980px)] overflow-hidden md:block lg:right-14">
           <img
-            src="/profile/renan-profile.png"
+            src={publicUrl("profile/renan-profile.png")}
             alt=""
             aria-hidden="true"
             className="h-full w-full object-cover object-[68%_32%] brightness-[0.96]"

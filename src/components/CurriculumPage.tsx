@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, Download, Mail } from "lucide-react";
 import { useState, type MouseEvent } from "react";
+import { publicUrl } from "../utils/publicUrl";
 import { avoidOrphan } from "../utils/text";
 
 // =============================================================================
@@ -12,20 +13,20 @@ const CV_STATUS = "Aberto a novas oportunidades";
 /** Chamada principal da página. */
 const CV_HEADLINE = "Vamos trabalhar juntos?";
 
-/** Apresentação profissional (coluna esquerda). */
+/** Apresentação da página, alinhada ao estágio em software com foco em IA. */
 const CV_INTRO = [
-  "Estou em busca de uma oportunidade para dar o próximo passo na minha carreira em desenvolvimento de software.",
-  "Sou desenvolvedor de software, com experiência prática em projetos colaborativos e independentes. Tenho conhecimentos em desenvolvimento front-end e back-end, e interesse em contribuir com equipes que valorizem tecnologia, criatividade e boas experiências digitais.",
-  "Busco oportunidades de estágio ou posições júnior onde possa aplicar meus conhecimentos, participar de projetos reais e continuar evoluindo profissionalmente.",
+  "Busco um estágio em engenharia de software com foco em inteligência artificial.",
+  "Construo e integro produtos digitais. No Escreva+, entreguei o front-end e a integração com serviços de IA para correção textual. Na Residência em TIC (UFG/BRISA), desenvolvi um app de gerenciamento de empresa com IA, em React, TypeScript e APIs REST.",
+  "Quero entrar em um time em que eu continue construindo software, aprenda com IA na prática e evolua em produtos reais.",
 ];
 
 /** Preview visual do currículo (imagem fornecida — não recriar o conteúdo). */
-const CV_PREVIEW_SRC = "/cv/curriculo-preview.png";
+const CV_PREVIEW_SRC = publicUrl("cv/curriculo-preview.png");
 const CV_PREVIEW_ALT =
   "Prévia do currículo de Renan Naves — Desenvolvedor de Software";
 
 /** PDF completo para download. */
-const CV_PDF_HREF = "/cv/renan-naves.pdf";
+const CV_PDF_HREF = publicUrl("cv/renan-naves.pdf");
 
 /**
  * Mesmos canais do rodapé da home (Email, WhatsApp, LinkedIn, GitHub).
