@@ -176,16 +176,15 @@ function easeInOutCubic(t: number): number {
 
 /**
  * Anima o scroll até centralizar o card (mais suave que scrollIntoView).
- * Retorna uma Promise que resolve ao terminar.
+ * Mantém snap desligado até o fim para não “puxar” no meio do caminho.
  */
 function animateCenterCard(
   track: HTMLDivElement,
   card: HTMLElement,
-  durationMs = 680,
+  durationMs = 720,
 ): Promise<void> {
   const startLeft = track.scrollLeft;
-  const targetLeft = startLeft + centerDelta(track, card);
-  const distance = targetLeft - startLeft;
+  const distance = centerDelta(track, card);
 
   if (Math.abs(distance) < 1) return Promise.resolve();
 
@@ -205,9 +204,9 @@ function animateCenterCard(
         return;
       }
 
+      // Ajuste fino ainda sem snap; só então libera a classe.
+      track.scrollLeft += centerDelta(track, card);
       track.classList.remove("is-arrow-animating");
-      // Corrige drift residual do easing/layout.
-      track.scrollLeft = startLeft + distance;
       resolve();
     }
 
@@ -296,7 +295,14 @@ function ProjectsPage({
    */
   function normalizeLoopIfNeeded() {
     const track = trackRef.current;
-    if (!track || isJumpingRef.current || isDraggingRef.current) return;
+    if (
+      !track ||
+      isJumpingRef.current ||
+      isDraggingRef.current ||
+      isArrowAnimatingRef.current
+    ) {
+      return;
+    }
 
     const closest = closestLoopIndex();
     if (closest >= SLIDE_COUNT && closest < SLIDE_COUNT * 2) {
@@ -342,7 +348,7 @@ function ProjectsPage({
 
     /** Normaliza o loop quando a inércia/snap termina. */
     function onScrollEnd() {
-      if (isDraggingRef.current) return;
+      if (isDraggingRef.current || isArrowAnimatingRef.current) return;
       normalizeLoopRef.current();
     }
 
@@ -364,7 +370,13 @@ function ProjectsPage({
 
   /** Só atualiza o destaque visual durante o scroll (não mexe no scroll). */
   function handleTrackScroll() {
-    if (isJumpingRef.current || isDraggingRef.current) return;
+    if (
+      isJumpingRef.current ||
+      isDraggingRef.current ||
+      isArrowAnimatingRef.current
+    ) {
+      return;
+    }
 
     const closest = closestLoopIndex();
     setActiveLoopIndex((current) => (current === closest ? current : closest));
@@ -372,7 +384,7 @@ function ProjectsPage({
 
   /** Ao terminar o gesto/inércia (React): encaixa o loop no meio se preciso. */
   function handleScrollEnd() {
-    if (isDraggingRef.current) return;
+    if (isDraggingRef.current || isArrowAnimatingRef.current) return;
     normalizeLoopIfNeeded();
   }
 
@@ -430,7 +442,7 @@ function ProjectsPage({
 
   /**
    * Avança ou volta um slide com animação suave (easing próprio).
-   * Depois normaliza o loop infinito, se preciso.
+   * Ignora scroll/snap no meio; normaliza o loop só no fim.
    */
   function goBy(delta: -1 | 1) {
     const track = trackRef.current;
@@ -445,7 +457,11 @@ function ProjectsPage({
 
     const total = LOOP_COPIES * SLIDE_COUNT;
     const from = activeLoopIndexRef.current;
-    const to = from + delta;
+    let to = from + delta;
+
+    // Prefere continuar na cópia do meio sempre que der.
+    if (to < SLIDE_COUNT) to += SLIDE_COUNT;
+    if (to >= SLIDE_COUNT * 2) to -= SLIDE_COUNT;
     if (to < 0 || to >= total) return;
 
     const card = track.querySelector<HTMLElement>(
@@ -457,10 +473,16 @@ function ProjectsPage({
     setActiveLoopIndex(to);
     syncCounter(to);
 
-    void animateCenterCard(track, card, 720).then(() => {
-      isArrowAnimatingRef.current = false;
-      normalizeLoopIfNeeded();
-    });
+    void animateCenterCard(track, card, 720)
+      .then(() => {
+        // Libera flags e só então normaliza (sem scrollend competindo).
+        isArrowAnimatingRef.current = false;
+        normalizeLoopIfNeeded();
+      })
+      .catch(() => {
+        isArrowAnimatingRef.current = false;
+        track.classList.remove("is-arrow-animating");
+      });
   }
 
   /** Slide anterior (seta esquerda). */

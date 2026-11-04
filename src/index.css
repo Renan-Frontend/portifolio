@@ -537,13 +537,13 @@ body,
 }
 
 .projects-carousel__corners--active {
-  color: rgb(147 112 219);
+  color: rgb(124 88 196);
   opacity: 1;
 }
 
 /* Fora do centro: moldura cinza */
 .projects-carousel__corners--side {
-  color: rgb(115 115 115);
+  color: rgb(82 82 82);
   opacity: 1;
 }
 
