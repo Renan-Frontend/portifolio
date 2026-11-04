@@ -344,22 +344,28 @@ function App() {
         </div>
       </section>
 
-      {/* ----- Rodapé: email, WhatsApp e LinkedIn ----- */}
-      <footer className="home-enter__footer relative z-20 mt-auto w-full shrink-0 border-t border-dotted border-neutral-700 bg-neutral-950 px-5 py-5 sm:px-6 md:px-24 md:py-6 lg:px-32">
-        <div className="flex min-w-0 flex-col gap-6 md:flex-row md:items-stretch md:gap-0">
-          <div className="min-w-0 md:pr-16 lg:pr-20">
+      {/* ----- Rodapé: email, WhatsApp, LinkedIn e GitHub ----- */}
+      <footer className="home-enter__footer relative z-20 mt-auto w-full shrink-0 border-t border-dotted border-neutral-700 bg-neutral-950 px-5 py-5 sm:px-6 md:px-10 md:py-6 lg:px-16 xl:px-24">
+        {/*
+          Mobile: 1 col. Tablet: 2 cols (evita overflow com 4 itens).
+          Desktop largo: 4 cols em linha.
+        */}
+        <div className="grid min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4 xl:gap-0">
+          {/* Email */}
+          <div className="min-w-0 xl:pr-8">
             <p className="text-sm tracking-widest text-purple-300 uppercase min-[390px]:text-base">
               Email
             </p>
             <a
               href="mailto:renan.naves.frontend@gmail.com"
-              className="mt-1 block text-base break-all transition hover:text-purple-300 min-[390px]:text-lg md:truncate md:text-base"
+              className="mt-1 block text-base break-all transition hover:text-purple-300 min-[390px]:text-lg xl:truncate xl:text-base"
             >
               renan.naves.frontend@gmail.com
             </a>
           </div>
 
-          <div className="shrink-0 md:border-l md:border-neutral-600 md:px-16 lg:px-20">
+          {/* Celular / WhatsApp */}
+          <div className="min-w-0 xl:border-l xl:border-neutral-600 xl:px-8">
             <p className="text-sm tracking-widest text-purple-300 uppercase min-[390px]:text-base">
               Celular/Whatsapp
             </p>
@@ -367,13 +373,14 @@ function App() {
               href="https://wa.me/5562982941455"
               target="_blank"
               rel="noreferrer"
-              className="mt-1 block text-base transition hover:text-purple-300 min-[390px]:text-lg md:text-base"
+              className="mt-1 block text-base transition hover:text-purple-300 min-[390px]:text-lg xl:text-base"
             >
               +55 (62) 98294-1455
             </a>
           </div>
 
-          <div className="min-w-0 md:border-l md:border-neutral-600 md:pl-16 lg:pl-20">
+          {/* LinkedIn */}
+          <div className="min-w-0 xl:border-l xl:border-neutral-600 xl:px-8">
             <p className="text-sm tracking-widest text-purple-300 uppercase min-[390px]:text-base">
               LinkedIn
             </p>
@@ -381,9 +388,24 @@ function App() {
               href="https://www.linkedin.com/in/renannavesfrontend"
               target="_blank"
               rel="noreferrer"
-              className="mt-1 block text-base break-all transition hover:text-purple-300 min-[390px]:text-lg md:truncate md:text-base"
+              className="mt-1 block text-base break-all transition hover:text-purple-300 min-[390px]:text-lg xl:truncate xl:text-base"
             >
               linkedin.com/in/renannavesfrontend
+            </a>
+          </div>
+
+          {/* GitHub */}
+          <div className="min-w-0 xl:border-l xl:border-neutral-600 xl:pl-8">
+            <p className="text-sm tracking-widest text-purple-300 uppercase min-[390px]:text-base">
+              GitHub
+            </p>
+            <a
+              href="https://github.com/Renan-Frontend"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-1 block text-base break-all transition hover:text-purple-300 min-[390px]:text-lg xl:truncate xl:text-base"
+            >
+              github.com/Renan-Frontend
             </a>
           </div>
         </div>
