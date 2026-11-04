@@ -455,14 +455,14 @@ body,
   Neon do ativo: um pouco maior, ainda perto o bastante
   para não bater no overflow do track.
 */
-/* Neon mais claro; contraste vem das linhas escuras */
+/* Neon um pouco mais fechado; moldura clara por cima */
 .projects-carousel__card--active {
   box-shadow:
     0 18px 36px -14px rgb(0 0 0 / 0.55),
-    0 0 0 1px rgb(220 190 255 / 0.4),
-    0 0 14px 2px rgb(220 190 255 / 0.55),
-    0 0 28px 5px rgb(220 190 255 / 0.32),
-    0 0 48px 8px rgb(220 190 255 / 0.16);
+    0 0 0 1px rgb(168 110 235 / 0.4),
+    0 0 12px 2px rgb(168 110 235 / 0.55),
+    0 0 26px 4px rgb(168 110 235 / 0.32),
+    0 0 42px 6px rgb(168 110 235 / 0.16);
 }
 
 /*
@@ -540,16 +540,16 @@ body,
 }
 
 .projects-carousel__corners--active {
-  /* Linhas mais escuras contra o neon claro */
-  color: rgb(88 52 150);
-  --frame-color: rgb(58 32 110);
+  /* Linhas claras por cima do neon */
+  color: rgb(186 150 255);
+  --frame-color: rgb(158 120 230);
   opacity: 1;
 }
 
 /* Fora do centro: moldura cinza */
 .projects-carousel__corners--side {
-  color: rgb(72 72 72);
-  --frame-color: rgb(48 48 48);
+  color: rgb(140 140 140);
+  --frame-color: rgb(110 110 110);
   opacity: 1;
 }
 
