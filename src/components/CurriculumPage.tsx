@@ -12,7 +12,7 @@ const CV_STATUS = "Aberto a novas oportunidades";
 /** Chamada principal da página. */
 const CV_HEADLINE = "Vamos trabalhar juntos?";
 
-/** Apresentação profissional (acima da imagem do currículo). */
+/** Apresentação profissional (coluna esquerda). */
 const CV_INTRO = [
   "Estou em busca de uma oportunidade para dar o próximo passo na minha carreira em desenvolvimento de software.",
   "Sou desenvolvedor de software, com experiência prática em projetos colaborativos e independentes. Tenho conhecimentos em desenvolvimento front-end e back-end, e interesse em contribuir com equipes que valorizem tecnologia, criatividade e boas experiências digitais.",
@@ -40,12 +40,68 @@ type CurriculumPageProps = {
 };
 
 // =============================================================================
+// SUBCOMPONENTES
+// =============================================================================
+
+/** Botões de download e contato. */
+function CurriculumActions() {
+  return (
+    <div className="flex w-full flex-wrap items-center gap-3 md:gap-3.5">
+      <a
+        href={CV_PDF_HREF}
+        download="Renan-Naves-Curriculo.pdf"
+        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-purple-500 px-5 py-2.5 text-sm font-medium tracking-wide text-white transition-[transform,background-color] duration-200 hover:scale-[1.02] hover:bg-purple-400"
+      >
+        <Download className="h-4 w-4 shrink-0" aria-hidden="true" />
+        Baixar currículo
+      </a>
+
+      <a
+        href={CV_MAILTO}
+        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-purple-300/55 bg-transparent px-5 py-2.5 text-sm font-medium tracking-wide text-neutral-100 transition-[transform,background-color,border-color] duration-200 hover:scale-[1.02] hover:border-purple-200 hover:bg-purple-500/10"
+      >
+        <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
+        Entrar em contato
+      </a>
+    </div>
+  );
+}
+
+/** Bloco com a imagem do currículo (object-contain, borda discreta). */
+function CurriculumPreview() {
+  return (
+    <figure className="mx-auto w-full min-w-0 max-w-full">
+      <div className="mb-3 flex min-w-0 items-end justify-between gap-3 md:mb-4">
+        <h3 className="text-base font-semibold tracking-wide text-white md:text-lg">
+          Meu currículo
+        </h3>
+        <p className="shrink-0 text-xs tracking-wide text-neutral-500 md:text-sm">
+          Documento profissional
+        </p>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-purple-300/25 bg-neutral-900/40 shadow-[0_0_0_1px_rgb(0_0_0_/_0.4),0_18px_40px_-20px_rgb(0_0_0_/_0.85)]">
+        <img
+          src={CV_PREVIEW_SRC}
+          alt={CV_PREVIEW_ALT}
+          width={908}
+          height={332}
+          decoding="async"
+          className="mx-auto block h-auto w-full max-w-full object-contain"
+        />
+      </div>
+      <figcaption className="sr-only">Prévia visual do currículo em PDF</figcaption>
+    </figure>
+  );
+}
+
+// =============================================================================
 // COMPONENTE
 // =============================================================================
 
 /**
- * Página Currículo: apresentação + imagem do CV + download do PDF.
- * Visual alinhado às demais páginas (fundo preto, acentos lilás).
+ * Página Currículo em duas colunas no desktop (texto | imagem).
+ * No mobile empilha: apresentação → imagem → ações.
  */
 function CurriculumPage({ onBack }: CurriculumPageProps) {
   // ----- handlers -----
@@ -58,8 +114,8 @@ function CurriculumPage({ onBack }: CurriculumPageProps) {
 
   // ----- interface -----
   return (
-    <main className="curriculum-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white">
-      {/* 1. Título (marca d’água) */}
+    <main className="curriculum-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white md:h-svh md:max-h-svh md:overflow-hidden">
+      {/* Título (marca d’água) */}
       <h1
         className="about-enter__title font-script pointer-events-none absolute inset-x-0 top-2 z-0 px-4 text-center text-[clamp(2.25rem,9vw,5.75rem)] leading-none whitespace-nowrap text-[#9a92ad] select-none md:top-2"
         aria-hidden="true"
@@ -67,79 +123,86 @@ function CurriculumPage({ onBack }: CurriculumPageProps) {
         Currículo
       </h1>
 
-      <section className="relative z-10 mx-auto flex w-full max-w-[1100px] flex-1 flex-col px-5 pb-8 pt-[clamp(4.5rem,12vw,6.5rem)] min-[390px]:px-6 md:px-10 md:pb-6 lg:px-14">
-        {/* 2. Apresentação + disponibilidade */}
-        <div className="about-enter__bio mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-          <p className="inline-flex items-center gap-2 text-xs tracking-[0.22em] text-purple-300 uppercase min-[390px]:text-sm">
-            <span
-              className="h-1.5 w-1.5 shrink-0 rounded-full bg-purple-300"
-              aria-hidden="true"
-            />
-            {CV_STATUS}
-          </p>
-
-          <h2 className="font-script mt-4 text-[clamp(2rem,7vw,3.25rem)] leading-none text-purple-300 md:mt-5">
-            {CV_HEADLINE}
-          </h2>
-
-          <div className="mt-5 flex flex-col gap-3 md:mt-6 md:gap-3.5">
-            {CV_INTRO.map((paragraph) => (
-              <p
-                key={paragraph.slice(0, 32)}
-                className="text-pretty text-[clamp(0.98rem,3.6vw,1.15rem)] leading-[1.65] text-neutral-200"
-              >
-                {avoidOrphan(paragraph)}
-              </p>
-            ))}
-          </div>
-        </div>
-
-        {/* 3. Imagem do currículo */}
-        <div className="about-enter__facts mt-8 w-full md:mt-10">
-          <div className="mb-3 flex min-w-0 items-end justify-between gap-3 border-t border-neutral-800 pt-5 md:mb-4 md:pt-6">
-            <h3 className="text-base font-semibold tracking-wide text-white md:text-lg">
-              Meu currículo
-            </h3>
-            <p className="shrink-0 text-xs tracking-wide text-neutral-500 md:text-sm">
-              Documento profissional
-            </p>
-          </div>
-
-          <figure className="mx-auto w-full max-w-4xl">
-            <div className="overflow-hidden rounded-xl border border-purple-300/25 bg-neutral-900/40 shadow-[0_0_0_1px_rgb(0_0_0_/_0.4),0_18px_40px_-20px_rgb(0_0_0_/_0.85)]">
-              <img
-                src={CV_PREVIEW_SRC}
-                alt={CV_PREVIEW_ALT}
-                width={908}
-                height={332}
-                decoding="async"
-                className="mx-auto block h-auto w-full max-w-full object-contain"
+      <section className="about-layout relative z-10 mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-6 pt-[clamp(4.25rem,11vw,5.75rem)] min-[390px]:px-6 md:justify-center md:px-10 md:pb-4 lg:px-14 xl:px-20">
+        {/* ----- Desktop: lado a lado ----- */}
+        <div className="about-layout__row hidden w-full grid-cols-[minmax(0,0.95fr)_auto_minmax(0,1.05fr)] items-center md:grid">
+          {/* Esquerda: apresentação + CTAs */}
+          <div className="about-enter__bio flex min-w-0 flex-col justify-center gap-4 pr-3 text-left lg:gap-5 lg:pr-4 xl:pr-5">
+            <p className="inline-flex items-center gap-2 text-xs tracking-[0.22em] text-purple-300 uppercase">
+              <span
+                className="h-1.5 w-1.5 shrink-0 rounded-full bg-purple-300"
+                aria-hidden="true"
               />
+              {CV_STATUS}
+            </p>
+
+            <h2 className="font-script text-[clamp(2.1rem,3.4vw,3.1rem)] leading-none text-purple-300">
+              {CV_HEADLINE}
+            </h2>
+
+            <div className="flex flex-col gap-2.5 lg:gap-3">
+              {CV_INTRO.map((paragraph) => (
+                <p
+                  key={paragraph.slice(0, 32)}
+                  className="text-pretty text-[clamp(0.95rem,1.45vw,1.12rem)] leading-[1.55] text-neutral-200"
+                >
+                  {avoidOrphan(paragraph)}
+                </p>
+              ))}
             </div>
-            <figcaption className="sr-only">
-              Prévia visual do currículo em PDF
-            </figcaption>
-          </figure>
+
+            <CurriculumActions />
+          </div>
+
+          {/* Divisória vertical */}
+          <div
+            className="about-enter__divider about-layout__divider mx-4 min-w-0 self-stretch lg:mx-6 xl:mx-8"
+            aria-hidden="true"
+          />
+
+          {/* Direita: imagem do CV */}
+          <div className="about-enter__facts min-w-0 pl-3 lg:pl-4 xl:pl-5">
+            <CurriculumPreview />
+          </div>
         </div>
 
-        {/* 4. CTAs — download em destaque */}
-        <div className="about-enter__footer mt-7 flex w-full flex-wrap items-center justify-center gap-3 md:mt-8 md:gap-4">
-          <a
-            href={CV_PDF_HREF}
-            download="Renan-Naves-Curriculo.pdf"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-purple-500 px-5 py-2.5 text-sm font-medium tracking-wide text-white transition-[transform,background-color] duration-200 hover:scale-[1.02] hover:bg-purple-400"
-          >
-            <Download className="h-4 w-4 shrink-0" aria-hidden="true" />
-            Baixar currículo
-          </a>
+        {/* ----- Mobile: coluna única ----- */}
+        <div className="flex w-full flex-col gap-7 md:hidden">
+          <div className="about-enter__bio flex flex-col gap-4 text-left">
+            <p className="inline-flex items-center gap-2 text-xs tracking-[0.22em] text-purple-300 uppercase min-[390px]:text-sm">
+              <span
+                className="h-1.5 w-1.5 shrink-0 rounded-full bg-purple-300"
+                aria-hidden="true"
+              />
+              {CV_STATUS}
+            </p>
 
-          <a
-            href={CV_MAILTO}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-purple-300/55 bg-transparent px-5 py-2.5 text-sm font-medium tracking-wide text-neutral-100 transition-[transform,background-color,border-color] duration-200 hover:scale-[1.02] hover:border-purple-200 hover:bg-purple-500/10"
-          >
-            <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
-            Entrar em contato
-          </a>
+            <h2 className="font-script text-[clamp(2rem,8vw,2.75rem)] leading-none text-purple-300">
+              {CV_HEADLINE}
+            </h2>
+
+            <div className="flex flex-col gap-3">
+              {CV_INTRO.map((paragraph) => (
+                <p
+                  key={paragraph.slice(0, 32)}
+                  className="text-pretty text-[clamp(0.98rem,3.8vw,1.12rem)] leading-[1.65] text-neutral-200"
+                >
+                  {avoidOrphan(paragraph)}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          <div
+            className="about-enter__divider about-layout__divider"
+            aria-hidden="true"
+          />
+
+          <div className="about-enter__facts">
+            <CurriculumPreview />
+          </div>
+
+          <CurriculumActions />
         </div>
       </section>
 
