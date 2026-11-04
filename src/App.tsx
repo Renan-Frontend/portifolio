@@ -247,9 +247,12 @@ function App() {
     return (
       <ProjectsPage
         key={projectKey}
+        variant="projects"
         onBack={goHome}
-        onCurriculum={goCurriculum}
-        initialProjectId={isProjectId(active) ? active : undefined}
+        onNext={goCertificates}
+        nextLabel="Certificados"
+        nextHref="#certificates"
+        initialSlideId={isProjectId(active) ? active : undefined}
       />
     );
   }
