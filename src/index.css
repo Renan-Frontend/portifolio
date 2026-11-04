@@ -319,14 +319,22 @@ body,
   line-height: 1.55;
 }
 
-/* Carrossel de projetos: scroll horizontal limpo */
+/* Carrossel de projetos: full-bleed, sem recorte duro nas laterais */
+.projects-page {
+  overflow-x: visible;
+}
+
+.projects-carousel-shell {
+  overflow: visible;
+}
+
 .projects-carousel {
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-  /* Ajuda o card ativo a ficar no centro ao usar as setas / snap */
-  scroll-padding-inline: max(1.25rem, calc((100% - min(34rem, 58vw)) / 2));
+  /* Card ativo no centro; vizinhos vazam pelas bordas da tela */
+  scroll-padding-inline: max(1.25rem, calc((100% - min(34rem, 72vw)) / 2));
 }
 
 /* Durante o arraste com mouse: sem snap/smooth para acompanhar o cursor */
@@ -338,12 +346,31 @@ body,
 
 @media (min-width: 768px) {
   .projects-carousel {
-    scroll-padding-inline: max(2.5rem, calc((100% - min(38rem, 52vw)) / 2));
+    scroll-padding-inline: max(2rem, calc((100% - min(40rem, 48vw)) / 2));
   }
 }
 
 .projects-carousel::-webkit-scrollbar {
   display: none;
+}
+
+/* Dissolve o card nas laterais — sensação de borda infinita */
+.projects-carousel-edge {
+  background: linear-gradient(
+    to right,
+    #0a0a0a 0%,
+    rgb(10 10 10 / 0.75) 35%,
+    rgb(10 10 10 / 0) 100%
+  );
+}
+
+.projects-carousel-edge--right {
+  background: linear-gradient(
+    to left,
+    #0a0a0a 0%,
+    rgb(10 10 10 / 0.75) 35%,
+    rgb(10 10 10 / 0) 100%
+  );
 }
 
 .projects-layout.about-layout {
