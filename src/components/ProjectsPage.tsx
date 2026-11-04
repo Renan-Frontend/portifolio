@@ -372,7 +372,7 @@ function ProjectsPage({
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className={[
-                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-6 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-8",
+                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-8 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-10",
                 isDragging
                   ? "is-dragging cursor-grabbing select-none"
                   : "cursor-grab",
@@ -390,8 +390,8 @@ function ProjectsPage({
                       // Altura fixa: evita “pulo” ao trocar o ativo no meio do gesto
                       "projects-carousel__card relative flex h-[min(66vh,38rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl origin-center md:h-[min(70vh,42rem)] md:w-[min(52rem,62vw)]",
                       isActive
-                        ? "z-10 scale-100 border-purple-400/45 opacity-100 shadow-[0_22px_56px_-28px_rgba(168,85,247,0.55)]"
-                        : "z-0 scale-[0.86] border-white/10 opacity-50",
+                        ? "projects-carousel__card--active z-10 scale-100 border-purple-400/40 opacity-100"
+                        : "projects-carousel__card--side z-0 scale-[0.86] border-white/10 opacity-50",
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
