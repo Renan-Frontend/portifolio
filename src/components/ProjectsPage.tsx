@@ -18,14 +18,14 @@ import { avoidOrphan } from "../utils/text";
 // DADOS
 // =============================================================================
 
-type ProjectSlide = {
+type CarouselSlide = {
   id: string;
   name: string;
   tagline: string;
   description: string;
   /**
-   * Capa do projeto no carrossel.
-   * Trocar depois por arquivos em /public/projects/.
+   * Capa do card no carrossel.
+   * Trocar depois por arquivos locais em /public/.
    */
   cover: string;
   /** Tom de reforço sob a imagem (fallback se a capa falhar). */
@@ -33,7 +33,7 @@ type ProjectSlide = {
 };
 
 /** Slides do carrossel de projetos. */
-const PROJECT_SLIDES: ProjectSlide[] = [
+const PROJECT_SLIDES: CarouselSlide[] = [
   {
     id: "monsterland",
     name: "Monsterland",
@@ -72,8 +72,90 @@ const PROJECT_SLIDES: ProjectSlide[] = [
   },
 ];
 
-/** Quantidade de slides reais. */
-const SLIDE_COUNT = PROJECT_SLIDES.length;
+/** Slides do carrossel de certificados (mesmo layout dos projetos). */
+export const CERTIFICATE_SLIDES: CarouselSlide[] = [
+  {
+    id: "ui-design",
+    name: "UI Design para Iniciantes",
+    tagline: "Design de interfaces",
+    description:
+      "Fundamentos de UI para criar interfaces claras, hierarquia visual e consistência.",
+    cover: "https://picsum.photos/seed/cert-ui-design/1400/900",
+    accent: "from-violet-600/40 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "react-completo",
+    name: "React Completo",
+    tagline: "Front-end",
+    description:
+      "Componentes, estado e composição em React para aplicações modernas.",
+    cover: "https://picsum.photos/seed/cert-react/1400/900",
+    accent: "from-indigo-600/35 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "css-grid",
+    name: "CSS Grid Layout",
+    tagline: "Layout",
+    description:
+      "Grades responsivas e organização de páginas com CSS Grid.",
+    cover: "https://picsum.photos/seed/cert-css-grid/1400/900",
+    accent: "from-fuchsia-600/30 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "css-flexbox",
+    name: "CSS Flexbox",
+    tagline: "Layout",
+    description:
+      "Alinhamento e distribuição de elementos com Flexbox.",
+    cover: "https://picsum.photos/seed/cert-flexbox/1400/900",
+    accent: "from-purple-500/35 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "html-css",
+    name: "HTML e CSS para Iniciantes",
+    tagline: "Fundamentos web",
+    description:
+      "Estrutura semântica e estilização base para páginas web.",
+    cover: "https://picsum.photos/seed/cert-html-css/1400/900",
+    accent: "from-violet-500/35 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "js-es6",
+    name: "JavaScript Completo ES6",
+    tagline: "Linguagem",
+    description:
+      "JavaScript moderno (ES6+) para lógica de interface e integração.",
+    cover: "https://picsum.photos/seed/cert-js-es6/1400/900",
+    accent: "from-indigo-500/35 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "saga-start",
+    name: "Curso Start — SAGA",
+    tagline: "Formação",
+    description:
+      "Introdução prática a ferramentas e fluxo de trabalho criativo.",
+    cover: "https://picsum.photos/seed/cert-saga/1400/900",
+    accent: "from-fuchsia-500/30 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "residencia-nivelamento",
+    name: "Nivelamento — Residência em TIC",
+    tagline: "BRISA / SOFTEX / UFG",
+    description:
+      "Etapa de nivelamento do Programa de Residência em TIC.",
+    cover: "https://picsum.photos/seed/cert-nivelamento/1400/900",
+    accent: "from-purple-600/35 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "residencia-imersao",
+    name: "Imersão em Computação Avançada",
+    tagline: "480 horas · UFG/BRISA",
+    description:
+      "Conclusão da fase de imersão na Residência em TIC, com prática colaborativa.",
+    cover: "https://picsum.photos/seed/cert-imersao/1400/900",
+    accent: "from-violet-600/35 via-neutral-900 to-neutral-950",
+  },
+];
 
 /**
  * Três cópias: [A B C D][A B C D][A B C D].
@@ -81,26 +163,14 @@ const SLIDE_COUNT = PROJECT_SLIDES.length;
  */
 const LOOP_COPIES = 3;
 
-type LoopedSlide = ProjectSlide & {
+type LoopedSlide = CarouselSlide & {
   loopIndex: number;
   logicalIndex: number;
   loopKey: string;
 };
 
-/** Lista renderizada do carrossel infinito. */
-const LOOPED_SLIDES: LoopedSlide[] = Array.from(
-  { length: LOOP_COPIES * SLIDE_COUNT },
-  (_, loopIndex) => {
-    const logicalIndex = loopIndex % SLIDE_COUNT;
-    const slide = PROJECT_SLIDES[logicalIndex];
-    return {
-      ...slide,
-      loopIndex,
-      logicalIndex,
-      loopKey: `${slide.id}-${loopIndex}`,
-    };
-  },
-);
+/** Variante do carrossel (projetos ou certificados). */
+type CarouselVariant = "projects" | "certificates";
 
 // =============================================================================
 // TIPOS
@@ -109,38 +179,62 @@ const LOOPED_SLIDES: LoopedSlide[] = Array.from(
 type ProjectsPageProps = {
   /** Volta para a home (sem repetir a intro). */
   onBack: () => void;
-  /** Vai para Currículo. */
-  onCurriculum: () => void;
-  /** Id do projeto a focar no carrossel (hash individual). */
-  initialProjectId?: string;
+  /** Próximo passo do rodapé (Certificados ou Currículo). */
+  onNext: () => void;
+  /** Rótulo do link à direita no rodapé. */
+  nextLabel: string;
+  /** Hash do próximo passo. */
+  nextHref: string;
+  /** Conteúdo do carrossel. */
+  variant?: CarouselVariant;
+  /** Id do slide a focar no carrossel (deep-link). */
+  initialSlideId?: string;
 };
 
 // =============================================================================
 // FUNÇÕES AUXILIARES
 // =============================================================================
 
+/** Monta as 3 cópias do carrossel infinito. */
+function buildLoopedSlides(slides: CarouselSlide[]): LoopedSlide[] {
+  const count = slides.length;
+  return Array.from({ length: LOOP_COPIES * count }, (_, loopIndex) => {
+    const logicalIndex = loopIndex % count;
+    const slide = slides[logicalIndex];
+    return {
+      ...slide,
+      loopIndex,
+      logicalIndex,
+      loopKey: `${slide.id}-${loopIndex}`,
+    };
+  });
+}
+
 /** Índice lógico do slide a partir do id, ou 0 se não encontrado. */
-function indexFromProjectId(id: string | undefined): number {
+function indexFromSlideId(
+  slides: CarouselSlide[],
+  id: string | undefined,
+): number {
   if (!id) return 0;
-  const index = PROJECT_SLIDES.findIndex((slide) => slide.id === id);
+  const index = slides.findIndex((slide) => slide.id === id);
   return index >= 0 ? index : 0;
 }
 
 /** Índice absoluto na cópia do meio. */
-function middleLoopIndex(logicalIndex: number): number {
-  return SLIDE_COUNT + logicalIndex;
+function middleLoopIndex(slideCount: number, logicalIndex: number): number {
+  return slideCount + logicalIndex;
 }
 
 /** Índice lógico (0..n-1) a partir do índice absoluto do loop. */
-function logicalFromLoop(loopIndex: number): number {
-  return ((loopIndex % SLIDE_COUNT) + SLIDE_COUNT) % SLIDE_COUNT;
+function logicalFromLoop(slideCount: number, loopIndex: number): number {
+  return ((loopIndex % slideCount) + slideCount) % slideCount;
 }
 
 /** Largura de uma cópia completa (todos os slides + gaps). */
-function measureSetWidth(track: HTMLDivElement): number {
+function measureSetWidth(track: HTMLDivElement, slideCount: number): number {
   const first = track.querySelector<HTMLElement>('[data-loop-index="0"]');
   const next = track.querySelector<HTMLElement>(
-    `[data-loop-index="${SLIDE_COUNT}"]`,
+    `[data-loop-index="${slideCount}"]`,
   );
   if (!first || !next) return 0;
   return next.offsetLeft - first.offsetLeft;
@@ -244,24 +338,41 @@ function animateCenterCard(
 // =============================================================================
 
 /**
- * Página Projetos: marca d’água e carrossel horizontal em loop.
+ * Carrossel em loop (Projetos ou Certificados).
  * Scroll nativo + snap; o React só atualiza o destaque e corrige o loop.
  */
 function ProjectsPage({
   onBack,
-  onCurriculum,
-  initialProjectId,
+  onNext,
+  nextLabel,
+  nextHref,
+  variant = "projects",
+  initialSlideId,
 }: ProjectsPageProps) {
+  // ----- dados da variante -----
+  const isCertificates = variant === "certificates";
+  const slides = isCertificates ? CERTIFICATE_SLIDES : PROJECT_SLIDES;
+  const slideCount = slides.length;
+  const loopedSlides = buildLoopedSlides(slides);
+  const pageTitle = isCertificates ? "Certificados" : "Projetos";
+  const carouselLabel = isCertificates
+    ? "Carrossel de certificados"
+    : "Carrossel de projetos";
+  const prevAria = isCertificates ? "Certificado anterior" : "Projeto anterior";
+  const nextAria = isCertificates ? "Próximo certificado" : "Próximo projeto";
+  const ctaLabel = isCertificates ? "Ver certificado" : "Ver projeto";
+
   // ----- estado -----
   const [activeLoopIndex, setActiveLoopIndex] = useState(() =>
-    middleLoopIndex(indexFromProjectId(initialProjectId)),
+    middleLoopIndex(slideCount, indexFromSlideId(slides, initialSlideId)),
   );
   /** Contagem estável (só muda ao encaixar o slide, sem piscar no scroll). */
   const [counterIndex, setCounterIndex] = useState(() =>
-    indexFromProjectId(initialProjectId),
+    indexFromSlideId(slides, initialSlideId),
   );
   const trackRef = useRef<HTMLDivElement>(null);
   const activeLoopIndexRef = useRef(activeLoopIndex);
+  const slideCountRef = useRef(slideCount);
   /** Arraste com mouse. */
   const isDraggingRef = useRef(false);
   const dragStartXRef = useRef(0);
@@ -273,14 +384,19 @@ function ProjectsPage({
   const isArrowAnimatingRef = useRef(false);
   /** Cancela animação das setas no unmount. */
   const cancelArrowAnimationRef = useRef<(() => void) | null>(null);
-  /** Último project id aplicado via prop (deep-link). */
-  const appliedProjectIdRef = useRef(initialProjectId);
+  /** Último slide id aplicado via prop (deep-link). */
+  const appliedSlideIdRef = useRef(initialSlideId);
+  /** Origem do ponteiro para distinguir toque de swipe. */
+  const tapStartRef = useRef<{ x: number; y: number } | null>(null);
+  /** Se o scroll moveu o bastante, ignora o clique no card. */
+  const tapMovedRef = useRef(false);
 
   activeLoopIndexRef.current = activeLoopIndex;
+  slideCountRef.current = slideCount;
 
   /** Atualiza a contagem a partir do índice absoluto do loop. */
   function syncCounter(loopIndex: number) {
-    setCounterIndex(logicalFromLoop(loopIndex));
+    setCounterIndex(logicalFromLoop(slideCountRef.current, loopIndex));
   }
 
   // ----- efeitos -----
@@ -341,8 +457,9 @@ function ProjectsPage({
       return;
     }
 
+    const count = slideCountRef.current;
     const closest = closestLoopIndex();
-    if (closest >= SLIDE_COUNT && closest < SLIDE_COUNT * 2) {
+    if (closest >= count && closest < count * 2) {
       setActiveLoopIndex((current) =>
         current === closest ? current : closest,
       );
@@ -350,12 +467,12 @@ function ProjectsPage({
       return;
     }
 
-    const setWidth = measureSetWidth(track);
+    const setWidth = measureSetWidth(track, count);
     if (setWidth <= 0) return;
 
-    const delta = closest < SLIDE_COUNT ? setWidth : -setWidth;
+    const delta = closest < count ? setWidth : -setWidth;
     const nextIndex =
-      closest < SLIDE_COUNT ? closest + SLIDE_COUNT : closest - SLIDE_COUNT;
+      closest < count ? closest + count : closest - count;
 
     isJumpingRef.current = true;
     track.classList.add("is-jumping");
@@ -413,15 +530,16 @@ function ProjectsPage({
   }, []);
 
   /**
-   * Reage a mudança de deep-link (#monsterland → #portfolio) sem depender
-   * só do remount — reposiciona o carrossel e a contagem.
+   * Reage a mudança de deep-link sem depender só do remount —
+   * reposiciona o carrossel e a contagem.
    */
   useEffect(() => {
-    if (initialProjectId === appliedProjectIdRef.current) return;
+    if (initialSlideId === appliedSlideIdRef.current) return;
 
-    appliedProjectIdRef.current = initialProjectId;
-    const nextLogical = indexFromProjectId(initialProjectId);
-    const nextLoop = middleLoopIndex(nextLogical);
+    appliedSlideIdRef.current = initialSlideId;
+    const count = slideCountRef.current;
+    const nextLogical = indexFromSlideId(slides, initialSlideId);
+    const nextLoop = middleLoopIndex(count, nextLogical);
     const track = trackRef.current;
 
     cancelArrowAnimationRef.current?.();
@@ -440,7 +558,7 @@ function ProjectsPage({
       track.classList.remove("is-jumping");
       isJumpingRef.current = false;
     });
-  }, [initialProjectId]);
+  }, [initialSlideId, slides]);
 
   /** Volta para a home. */
   function handleBack(event: MouseEvent<HTMLAnchorElement>) {
@@ -448,13 +566,13 @@ function ProjectsPage({
     onBack();
   }
 
-  /** Navega para Currículo. */
-  function handleCurriculum(event: MouseEvent<HTMLAnchorElement>) {
+  /** Navega para o próximo passo do rodapé. */
+  function handleNext(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    onCurriculum();
+    onNext();
   }
 
-  /** Atualiza o destaque conforme o card mais próximo do centro. */
+  /** Atualiza destaque e contador conforme o card mais próximo do centro. */
   function handleTrackScroll() {
     if (
       isJumpingRef.current ||
@@ -466,12 +584,7 @@ function ProjectsPage({
 
     const closest = closestLoopIndex();
     setActiveLoopIndex((current) => (current === closest ? current : closest));
-  }
-
-  /** Ao terminar o gesto/inércia (React): encaixa o loop no meio se preciso. */
-  function handleScrollEnd() {
-    if (isDraggingRef.current || isArrowAnimatingRef.current) return;
-    normalizeLoopIfNeeded();
+    syncCounter(closest);
   }
 
   /** Inicia o arraste horizontal com o mouse. */
@@ -501,6 +614,7 @@ function ProjectsPage({
 
     const closest = closestLoopIndex();
     setActiveLoopIndex((current) => (current === closest ? current : closest));
+    syncCounter(closest);
   }
 
   /** Solta o arraste; o snap CSS encaixa e o scrollend normaliza o loop. */
@@ -527,10 +641,10 @@ function ProjectsPage({
   }
 
   /**
-   * Avança ou volta um slide: aplica o ativo na hora e anima a passagem.
-   * No fim só normaliza o loop / contador estável.
+   * Centraliza um slide absoluto do loop, com o efeito ativo na hora.
+   * Usado pelas setas e pelo toque/clique no card (mobile).
    */
-  function goBy(delta: -1 | 1) {
+  function goToLoopIndex(to: number) {
     const track = trackRef.current;
     if (
       !track ||
@@ -541,10 +655,9 @@ function ProjectsPage({
       return;
     }
 
-    const total = LOOP_COPIES * SLIDE_COUNT;
-    const from = activeLoopIndexRef.current;
-    const to = from + delta;
+    const total = LOOP_COPIES * slideCountRef.current;
     if (to < 0 || to >= total) return;
+    if (to === activeLoopIndexRef.current) return;
 
     const card = track.querySelector<HTMLElement>(
       `[data-loop-index="${to}"]`,
@@ -574,6 +687,11 @@ function ProjectsPage({
       });
   }
 
+  /** Avança ou volta um slide pelas setas. */
+  function goBy(delta: -1 | 1) {
+    goToLoopIndex(activeLoopIndexRef.current + delta);
+  }
+
   /** Slide anterior (seta esquerda). */
   function goPrev() {
     goBy(-1);
@@ -582,6 +700,39 @@ function ProjectsPage({
   /** Próximo slide (seta direita). */
   function goNext() {
     goBy(1);
+  }
+
+  /** Marca o início do toque no card (para não confundir com swipe). */
+  function handleCardPointerDown(event: ReactPointerEvent<HTMLElement>) {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    tapStartRef.current = { x: event.clientX, y: event.clientY };
+    tapMovedRef.current = false;
+  }
+
+  /** Se o dedo/mouse andou demais, trata como swipe e não como clique. */
+  function handleCardPointerMove(event: ReactPointerEvent<HTMLElement>) {
+    const start = tapStartRef.current;
+    if (!start) return;
+    const dx = Math.abs(event.clientX - start.x);
+    const dy = Math.abs(event.clientY - start.y);
+    if (dx > 10 || dy > 10) {
+      tapMovedRef.current = true;
+    }
+  }
+
+  /** Toque/clique no card: aplica o ativo e centraliza (efeito no mobile). */
+  function handleCardPointerUp(
+    event: ReactPointerEvent<HTMLElement>,
+    loopIndex: number,
+  ) {
+    const start = tapStartRef.current;
+    tapStartRef.current = null;
+    if (!start || tapMovedRef.current) return;
+    if (isDraggingRef.current) return;
+
+    // Clique curto: ativa o card tocado.
+    event.preventDefault();
+    goToLoopIndex(loopIndex);
   }
 
   /** Número exibido na contagem (1-based). */
@@ -595,7 +746,7 @@ function ProjectsPage({
         className="about-enter__title font-script pointer-events-none absolute inset-x-0 top-2 z-0 px-4 text-center text-[clamp(2.25rem,9vw,5.75rem)] leading-none whitespace-nowrap text-[#9a92ad] select-none md:top-2"
         aria-hidden="true"
       >
-        Projetos
+        {pageTitle}
       </h1>
 
       <section className="projects-layout about-layout relative z-10 mx-auto flex min-h-0 w-full flex-1 flex-col justify-center px-0 pb-1">
@@ -605,7 +756,7 @@ function ProjectsPage({
               type="button"
               onClick={goPrev}
               className="projects-carousel__nav projects-carousel__nav--prev"
-              aria-label="Projeto anterior"
+              aria-label={prevAria}
             >
               <ChevronLeft className="h-7 w-7 md:h-8 md:w-8" aria-hidden="true" />
             </button>
@@ -614,7 +765,7 @@ function ProjectsPage({
               type="button"
               onClick={goNext}
               className="projects-carousel__nav projects-carousel__nav--next"
-              aria-label="Próximo projeto"
+              aria-label={nextAria}
             >
               <ChevronRight className="h-7 w-7 md:h-8 md:w-8" aria-hidden="true" />
             </button>
@@ -622,7 +773,6 @@ function ProjectsPage({
             <div
               ref={trackRef}
               onScroll={handleTrackScroll}
-              onScrollEnd={handleScrollEnd}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
@@ -633,15 +783,24 @@ function ProjectsPage({
                   ? "is-dragging cursor-grabbing select-none"
                   : "cursor-grab",
               ].join(" ")}
-              aria-label="Carrossel de projetos"
+              aria-label={carouselLabel}
             >
-              {LOOPED_SLIDES.map((slide) => {
+              {loopedSlides.map((slide) => {
                 const isActive = slide.loopIndex === activeLoopIndex;
                 return (
                   <article
                     key={slide.loopKey}
                     data-loop-index={slide.loopIndex}
                     data-logical-index={slide.logicalIndex}
+                    onPointerDown={handleCardPointerDown}
+                    onPointerMove={handleCardPointerMove}
+                    onPointerUp={(event) =>
+                      handleCardPointerUp(event, slide.loopIndex)
+                    }
+                    onPointerCancel={() => {
+                      tapStartRef.current = null;
+                      tapMovedRef.current = false;
+                    }}
                     className={[
                       "projects-carousel__card relative flex h-[min(64dvh,34rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-visible rounded-2xl origin-center md:h-[min(68dvh,40rem)] md:w-[min(52rem,62vw)]",
                       isActive
@@ -710,22 +869,27 @@ function ProjectsPage({
                         </p>
                       </div>
 
-                      <a
-                        href={`#${slide.id}`}
-                        onPointerDown={stopCarouselDrag}
-                        onClick={(event) => event.stopPropagation()}
-                        className={[
-                          "inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium tracking-wide transition-[transform,background-color,border-color,opacity,color] duration-300 ease-out",
-                          isActive
-                            ? "pointer-events-auto border-purple-300/55 bg-purple-500/20 text-purple-100 opacity-100 hover:border-purple-200 hover:bg-purple-500/30"
-                            : "pointer-events-none border-white/10 bg-white/5 text-neutral-400 opacity-0",
-                        ].join(" ")}
-                        tabIndex={isActive ? 0 : -1}
-                        aria-hidden={!isActive}
-                      >
-                        <span>Ver projeto</span>
-                        <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
-                      </a>
+                      {!isCertificates ? (
+                        <a
+                          href={`#${slide.id}`}
+                          onPointerDown={stopCarouselDrag}
+                          onClick={(event) => event.stopPropagation()}
+                          className={[
+                            "inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium tracking-wide transition-[transform,background-color,border-color,opacity,color] duration-300 ease-out",
+                            isActive
+                              ? "pointer-events-auto border-purple-300/55 bg-purple-500/20 text-purple-100 opacity-100 hover:border-purple-200 hover:bg-purple-500/30"
+                              : "pointer-events-none border-white/10 bg-white/5 text-neutral-400 opacity-0",
+                          ].join(" ")}
+                          tabIndex={isActive ? 0 : -1}
+                          aria-hidden={!isActive}
+                        >
+                          <span>{ctaLabel}</span>
+                          <ArrowUpRight
+                            className="h-4 w-4 shrink-0"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      ) : null}
                     </div>
                   </article>
                 );
@@ -751,7 +915,7 @@ function ProjectsPage({
               {String(activeNumber).padStart(2, "0")}
             </span>
             <span className="mx-1.5 text-neutral-600">/</span>
-            <span>{String(SLIDE_COUNT).padStart(2, "0")}</span>
+            <span>{String(slideCount).padStart(2, "0")}</span>
           </p>
         </div>
       </section>
@@ -760,7 +924,7 @@ function ProjectsPage({
       <footer className="about-enter__footer relative z-20 mt-auto w-full shrink-0 border-t border-dotted border-neutral-700 px-5 py-3 min-[390px]:px-6 md:px-10 md:py-2.5 lg:px-14 xl:px-20">
         <nav
           className="flex min-w-0 items-center justify-between gap-3 text-xs tracking-wide uppercase min-[390px]:gap-4 min-[390px]:text-sm md:text-base"
-          aria-label="Navegação da página Projetos"
+          aria-label={`Navegação da página ${pageTitle}`}
         >
           <a
             href="#"
@@ -772,11 +936,11 @@ function ProjectsPage({
           </a>
 
           <a
-            href="#curriculum"
-            onClick={handleCurriculum}
+            href={nextHref}
+            onClick={handleNext}
             className="inline-flex min-w-0 shrink translate-x-0 items-center gap-1.5 text-neutral-300 transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-300 min-[390px]:gap-2"
           >
-            <span className="truncate">Currículo</span>
+            <span className="truncate">{nextLabel}</span>
             <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
           </a>
         </nav>

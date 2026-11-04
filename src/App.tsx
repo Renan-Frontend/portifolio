@@ -1,10 +1,13 @@
 import { useEffect, useState, type MouseEvent } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import AboutPage from "./components/AboutPage";
+import CertificatesPage from "./components/CertificatesPage";
 import CurriculumPage from "./components/CurriculumPage";
 import ExperiencePage from "./components/ExperiencePage";
 import IntroPresentation from "./components/IntroPresentation";
-import ProjectsPage from "./components/ProjectsPage";
+import ProjectsPage, {
+  CERTIFICATE_SLIDES,
+} from "./components/ProjectsPage";
 
 // =============================================================================
 // DADOS
@@ -25,18 +28,30 @@ const projects = [
 /** Projetos exibidos no menu (hoje: os 4 primeiros). */
 const visibleProjects = projects.slice(0, 4);
 
+/** Todos os certificados (rota / deep-link). */
+const certificates = CERTIFICATE_SLIDES.map((slide) => ({
+  id: slide.id,
+  name: slide.name,
+  href: `#${slide.id}`,
+}));
+
+/** Certificados exibidos no accordion da home (hoje: os 4 primeiros). */
+const visibleCertificates = certificates.slice(0, 4);
+
 // =============================================================================
 // TIPOS
 // =============================================================================
 
-/** IDs válidos de navegação (home + seções + projetos). */
+/** IDs válidos de navegação (home + seções + projetos + certificados). */
 type NavId =
   | "home"
   | "about"
   | "experience"
   | "projects"
+  | "certificates"
   | "curriculum"
-  | (typeof projects)[number]["id"];
+  | (typeof projects)[number]["id"]
+  | (typeof certificates)[number]["id"];
 
 // =============================================================================
 // FUNÇÕES AUXILIARES (fora do componente)
@@ -57,6 +72,7 @@ function navFromHash(hash: string): NavId {
     id === "about" ||
     id === "experience" ||
     id === "projects" ||
+    id === "certificates" ||
     id === "curriculum" ||
     id === "home"
   ) {
@@ -64,6 +80,10 @@ function navFromHash(hash: string): NavId {
   }
 
   if (projects.some((project) => project.id === id)) {
+    return id as NavId;
+  }
+
+  if (certificates.some((certificate) => certificate.id === id)) {
     return id as NavId;
   }
 
@@ -75,6 +95,13 @@ function navFromHash(hash: string): NavId {
  */
 function isProjectId(id: NavId): boolean {
   return visibleProjects.some((project) => project.id === id);
+}
+
+/**
+ * Diz se o id informado pertence a um certificado (qualquer um da lista).
+ */
+function isCertificateId(id: NavId): boolean {
+  return certificates.some((certificate) => certificate.id === id);
 }
 
 /**
@@ -101,6 +128,9 @@ function App() {
   /** Controla se a lista de projetos está aberta ou fechada (aberta por padrão). */
   const [projectsOpen, setProjectsOpen] = useState(true);
 
+  /** Controla se a lista de certificados está aberta ou fechada. */
+  const [certificatesOpen, setCertificatesOpen] = useState(false);
+
   /**
    * Intro só na primeira visita à home nesta sessão de página.
    * Não repete ao voltar de Sobre Mim.
@@ -109,6 +139,11 @@ function App() {
 
   /** Já terminou (ou pulou) a intro — libera a cascata da home. */
   const [introDone, setIntroDone] = useState(() => initialNav() !== "home");
+
+  /**
+   * Cascata visual da home só uma vez por sessão (não repete ao voltar).
+   */
+  const [playHomeEnter, setPlayHomeEnter] = useState(false);
 
   // ----- efeitos -----
 
@@ -120,8 +155,18 @@ function App() {
       const next = navFromHash(window.location.hash);
       setActive(next);
 
+      // Saiu da home pelo hash: encerra intro para não reaparecer no back.
+      if (next !== "home") {
+        setShowIntro(false);
+        setIntroDone(true);
+      }
+
       if (next === "projects" || isProjectId(next)) {
         setProjectsOpen(true);
+      }
+
+      if (next === "certificates" || isCertificateId(next)) {
+        setCertificatesOpen(true);
       }
     };
 
@@ -130,6 +175,13 @@ function App() {
 
     return () => window.removeEventListener("hashchange", syncFromUrl);
   }, []);
+
+  /** Desliga a classe da cascata após a animação, para não repetir no remount. */
+  useEffect(() => {
+    if (!playHomeEnter) return;
+    const timer = window.setTimeout(() => setPlayHomeEnter(false), 2600);
+    return () => window.clearTimeout(timer);
+  }, [playHomeEnter]);
 
   // ----- handlers / helpers -----
 
@@ -144,11 +196,18 @@ function App() {
       setProjectsOpen(true);
     }
 
+    if (id === "certificates" || isCertificateId(id)) {
+      setCertificatesOpen(true);
+    }
+
     if (
       id === "about" ||
       id === "experience" ||
       id === "projects" ||
-      isProjectId(id)
+      id === "certificates" ||
+      id === "curriculum" ||
+      isProjectId(id) ||
+      isCertificateId(id)
     ) {
       resetWindowScroll();
     }
@@ -159,7 +218,9 @@ function App() {
    */
   const isActive = (id: NavId) =>
     active === id ||
-    (id === "projects" && (active === "projects" || isProjectId(active)));
+    (id === "projects" && (active === "projects" || isProjectId(active))) ||
+    (id === "certificates" &&
+      (active === "certificates" || isCertificateId(active)));
 
   /**
    * Monta as classes CSS de um item do menu (hover lilás + desloca pra frente).
@@ -174,6 +235,7 @@ function App() {
   function finishIntro() {
     setShowIntro(false);
     setIntroDone(true);
+    setPlayHomeEnter(true);
   }
 
   /** Garante que a nova view comece no topo (evita herdar scroll do footer). */
@@ -201,12 +263,22 @@ function App() {
     resetWindowScroll();
   }
 
+  /** Vai para a página Certificados. */
+  function goCertificates() {
+    setShowIntro(false);
+    setIntroDone(true);
+    setActive("certificates");
+    window.history.pushState(null, "", "#certificates");
+    resetWindowScroll();
+  }
+
   /** Vai para a página Currículo. */
   function goCurriculum() {
     setShowIntro(false);
     setIntroDone(true);
     setActive("curriculum");
     window.history.pushState(null, "", "#curriculum");
+    resetWindowScroll();
   }
 
   /** Vai para a página Projetos (carrossel). */
@@ -225,16 +297,31 @@ function App() {
     goProjects();
   }
 
-  /** Só abre/fecha o accordion de Projetos na home (não navega). */
+  /** Só abre/fecha o accordion de Projetos; fecha Certificados ao abrir. */
   function toggleProjects(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    setActive("home");
-    setProjectsOpen((open) => !open);
-    window.history.pushState(
-      null,
-      "",
-      `${window.location.pathname}${window.location.search}`,
-    );
+    setProjectsOpen((open) => {
+      const next = !open;
+      if (next) setCertificatesOpen(false);
+      return next;
+    });
+  }
+
+  /** Abre a página Certificados pelo “Ver todos”. */
+  function openCertificatesPage(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    goCertificates();
+  }
+
+  /** Só abre/fecha o accordion de Certificados; fecha Projetos ao abrir. */
+  function toggleCertificates(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    setCertificatesOpen((open) => {
+      const next = !open;
+      if (next) setProjectsOpen(false);
+      return next;
+    });
   }
 
   // ----- interface: página Sobre Mim -----
@@ -253,16 +340,36 @@ function App() {
     return (
       <ProjectsPage
         key={projectKey}
+        variant="projects"
+        onBack={goHome}
+        onNext={goCertificates}
+        nextLabel="Certificados"
+        nextHref="#certificates"
+        initialSlideId={isProjectId(active) ? active : undefined}
+      />
+    );
+  }
+
+  // ----- interface: página Certificados -----
+  if (active === "certificates" || isCertificateId(active)) {
+    const certificateKey = isCertificateId(active) ? active : "certificates";
+    return (
+      <CertificatesPage
+        key={certificateKey}
         onBack={goHome}
         onCurriculum={goCurriculum}
-        initialProjectId={isProjectId(active) ? active : undefined}
+        initialCertificateId={
+          isCertificateId(active) ? active : undefined
+        }
       />
     );
   }
 
   // ----- interface: página Currículo -----
   if (active === "curriculum") {
-    return <CurriculumPage onBack={goHome} />;
+    return (
+      <CurriculumPage onBack={goHome} onCertificates={goCertificates} />
+    );
   }
 
   // ----- interface: home -----
@@ -270,7 +377,7 @@ function App() {
     <main
       className={[
         "relative isolate flex min-h-svh max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white",
-        introDone ? "home-enter--play" : "",
+        playHomeEnter ? "home-enter--play" : "",
       ].join(" ")}
     >
       {/* ----- Apresentação cinemática inicial (só 1ª vez na home) ----- */}
@@ -332,7 +439,8 @@ function App() {
               Experiência
             </a>
 
-            <div className="flex w-fit flex-col items-start gap-2.5 min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3">
+            {/* Accordion: sem gap no wrapper (evita espaço extra com o painel fechado). */}
+            <div className="flex w-fit flex-col items-start">
               <a
                 href="#projects"
                 onClick={toggleProjects}
@@ -358,7 +466,7 @@ function App() {
                 ].join(" ")}
               >
                 <div className="overflow-hidden">
-                  <div className="flex w-fit flex-col gap-2.5 border-l-2 border-purple-300/90 pt-1 pl-6 text-left min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3 md:pl-8">
+                  <div className="mt-2.5 flex w-fit flex-col gap-2.5 border-l-2 border-purple-300/90 pt-1 pl-6 text-left min-[390px]:mt-3 min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3 md:pl-8">
                     {visibleProjects.map((project) => (
                       <a
                         key={project.id}
@@ -383,6 +491,64 @@ function App() {
                       className="inline-flex translate-x-0 items-center gap-2 text-purple-300 transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-200"
                     >
                       Ver todos os projetos
+                      <ArrowRight className="h-4 w-4 min-[390px]:h-5 min-[390px]:w-5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex w-fit flex-col items-start">
+              <a
+                href="#certificates"
+                onClick={toggleCertificates}
+                aria-expanded={certificatesOpen}
+                className={`${itemClass("certificates")} inline-flex items-center gap-1.5`}
+              >
+                Certificados
+                <ChevronDown
+                  aria-hidden="true"
+                  className={[
+                    "h-4 w-4 shrink-0 transition-transform duration-300 min-[390px]:h-5 min-[390px]:w-5",
+                    certificatesOpen ? "rotate-180" : "rotate-0",
+                  ].join(" ")}
+                />
+              </a>
+
+              <div
+                className={[
+                  "grid w-fit transition-[grid-template-rows,opacity] duration-300 ease-out",
+                  certificatesOpen
+                    ? "grid-rows-[1fr] opacity-100"
+                    : "grid-rows-[0fr] opacity-0",
+                ].join(" ")}
+              >
+                <div className="overflow-hidden">
+                  <div className="mt-2.5 flex w-fit flex-col gap-2.5 border-l-2 border-purple-300/90 pt-1 pl-6 text-left min-[390px]:mt-3 min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3 md:pl-8">
+                    {visibleCertificates.map((certificate) => (
+                      <a
+                        key={certificate.id}
+                        href={certificate.href}
+                        onClick={select(certificate.id)}
+                        tabIndex={certificatesOpen ? 0 : -1}
+                        className={[
+                          "block max-w-[16rem] translate-x-0 text-left normal-case tracking-normal transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-300 min-[390px]:max-w-[18rem]",
+                          active === certificate.id
+                            ? "translate-x-1 text-purple-300"
+                            : "",
+                        ].join(" ")}
+                      >
+                        {certificate.name}
+                      </a>
+                    ))}
+
+                    <a
+                      href="#certificates"
+                      onClick={openCertificatesPage}
+                      tabIndex={certificatesOpen ? 0 : -1}
+                      className="inline-flex translate-x-0 items-center gap-2 text-purple-300 transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-200"
+                    >
+                      Ver todos os certificados
                       <ArrowRight className="h-4 w-4 min-[390px]:h-5 min-[390px]:w-5" />
                     </a>
                   </div>
