@@ -429,13 +429,13 @@ body,
   }
 }
 
-/* Escala do ativo: mais lenta e suave ao virar principal */
+/* Escala/neon do ativo: entram após a passagem encaixar */
 .projects-carousel__card {
   transition:
-    transform 850ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 850ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 650ms ease;
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 420ms ease;
   will-change: transform, opacity;
 }
 
@@ -475,16 +475,17 @@ body,
   --frame-stroke: 1px;
   /* Empurra a quina para fora pela metade da diferença de espessura */
   --corner-outset: calc((var(--corner-stroke) - var(--frame-stroke)) / 2);
-  transition: color 550ms ease, opacity 550ms ease;
+  transition: color 420ms ease, opacity 420ms ease;
 }
 
 .projects-carousel__frame {
   position: absolute;
   inset: 0;
-  border: var(--frame-stroke) solid currentColor;
+  border: var(--frame-stroke) solid var(--frame-color, currentColor);
   border-radius: var(--corner-radius);
   box-sizing: border-box;
-  opacity: 0.9;
+  opacity: 1;
+  transition: border-color 420ms ease;
 }
 
 .projects-carousel__corner {
@@ -538,12 +539,15 @@ body,
 
 .projects-carousel__corners--active {
   color: rgb(124 88 196);
+  /* Filete fino mais claro que as quinas */
+  --frame-color: rgb(196 168 255);
   opacity: 1;
 }
 
 /* Fora do centro: moldura cinza */
 .projects-carousel__corners--side {
   color: rgb(82 82 82);
+  --frame-color: rgb(168 168 168);
   opacity: 1;
 }
 
