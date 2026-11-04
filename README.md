@@ -1,6 +1,15 @@
-# Renan Naves — Portfólio / Currículo
+# Renan Naves — Portifólio / Currículo
 
-Portfólio web pessoal de **Renan Naves**, desenvolvedor de software de Goiânia.
+Portifólio web pessoal de **Renan Naves**, desenvolvedor de software de Goiânia.
+
+## Acompanhar atualizações (Pull Requests)
+
+As mudanças novas entram por **branch + Pull Request** na `main`, para você revisar o que mudou antes de juntar:
+
+1. Cria uma branch (ex.: `feat/pagina-experiencia`)
+2. Faz o commit das alterações
+3. Abre um PR para `main`
+4. Revisa e faz o merge quando estiver ok
 
 Site interativo com apresentação inicial, home e página **Sobre Mim**, pensado para quem quiser conhecer meu perfil de forma rápida e visual.
 
