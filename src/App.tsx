@@ -28,8 +28,8 @@ const projects = [
 /** Projetos exibidos no menu (hoje: os 4 primeiros). */
 const visibleProjects = projects.slice(0, 4);
 
-/** Certificados exibidos no accordion da home. */
-const visibleCertificates = CERTIFICATE_SLIDES.map((slide) => ({
+/** Certificados exibidos no accordion da home (hoje: os 4 primeiros). */
+const visibleCertificates = CERTIFICATE_SLIDES.slice(0, 4).map((slide) => ({
   id: slide.id,
   name: slide.name,
   href: `#${slide.id}`,
