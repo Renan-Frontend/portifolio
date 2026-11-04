@@ -387,54 +387,75 @@ body,
     0 0 88px -20px rgb(168 85 247 / 0.22);
 }
 
-/* Cantoneiras em L nas 4 quinas do card */
+/*
+  Cantoneiras na borda do card (inset 0),
+  com o mesmo raio do rounded-2xl (1rem).
+  A máscara deixa só as quinas, seguindo a curva.
+*/
 .projects-carousel__corners {
-  inset: 0.85rem;
-  background:
-    linear-gradient(currentColor, currentColor) top left / 1.35rem 1.5px
-      no-repeat,
-    linear-gradient(currentColor, currentColor) top left / 1.5px 1.35rem
-      no-repeat,
-    linear-gradient(currentColor, currentColor) top right / 1.35rem 1.5px
-      no-repeat,
-    linear-gradient(currentColor, currentColor) top right / 1.5px 1.35rem
-      no-repeat,
-    linear-gradient(currentColor, currentColor) bottom left / 1.35rem 1.5px
-      no-repeat,
-    linear-gradient(currentColor, currentColor) bottom left / 1.5px 1.35rem
-      no-repeat,
-    linear-gradient(currentColor, currentColor) bottom right / 1.35rem 1.5px
-      no-repeat,
-    linear-gradient(currentColor, currentColor) bottom right / 1.5px 1.35rem
-      no-repeat;
+  inset: 0;
+  border-radius: 1rem;
+  border: 1.5px solid currentColor;
+  -webkit-mask-image:
+    linear-gradient(
+      to right,
+      #000 0%,
+      #000 22%,
+      transparent 22%,
+      transparent 78%,
+      #000 78%,
+      #000 100%
+    ),
+    linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 22%,
+      transparent 22%,
+      transparent 78%,
+      #000 78%,
+      #000 100%
+    );
+  mask-image:
+    linear-gradient(
+      to right,
+      #000 0%,
+      #000 22%,
+      transparent 22%,
+      transparent 78%,
+      #000 78%,
+      #000 100%
+    ),
+    linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 22%,
+      transparent 22%,
+      transparent 78%,
+      #000 78%,
+      #000 100%
+    );
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
   transition:
     color 550ms ease,
-    opacity 550ms ease;
+    opacity 550ms ease,
+    border-color 550ms ease;
 }
 
 @media (min-width: 768px) {
   .projects-carousel__corners {
-    inset: 1.1rem;
-    background-size:
-      1.65rem 1.5px,
-      1.5px 1.65rem,
-      1.65rem 1.5px,
-      1.5px 1.65rem,
-      1.65rem 1.5px,
-      1.5px 1.65rem,
-      1.65rem 1.5px,
-      1.5px 1.65rem;
+    border-width: 1.75px;
   }
 }
 
 .projects-carousel__corners--active {
-  color: rgb(216 180 254 / 0.85);
+  color: rgb(216 180 254 / 0.9);
   opacity: 1;
 }
 
 .projects-carousel__corners--side {
-  color: rgb(255 255 255 / 0.28);
-  opacity: 0.7;
+  color: rgb(255 255 255 / 0.32);
+  opacity: 0.75;
 }
 
 /* Dissolve o card nas laterais — sensação de borda infinita */

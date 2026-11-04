@@ -408,10 +408,10 @@ function ProjectsPage({
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.18),transparent_55%)]" />
                     <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/70 to-neutral-950/10" />
 
-                    {/* Cantoneiras decorativas nas 4 quinas */}
+                    {/* Cantoneiras na borda, com o mesmo raio do card */}
                     <div
                       className={[
-                        "projects-carousel__corners pointer-events-none absolute z-20",
+                        "projects-carousel__corners pointer-events-none absolute z-20 rounded-2xl",
                         isActive
                           ? "projects-carousel__corners--active"
                           : "projects-carousel__corners--side",
