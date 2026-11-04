@@ -540,15 +540,15 @@ body,
 
 .projects-carousel__corners--active {
   color: rgb(124 88 196);
-  /* Filete fino um pouco mais claro que as quinas */
-  --frame-color: rgb(158 128 214);
+  /* Filete mais escuro que o neon da sombra */
+  --frame-color: rgb(92 58 158);
   opacity: 1;
 }
 
 /* Fora do centro: moldura cinza */
 .projects-carousel__corners--side {
   color: rgb(82 82 82);
-  --frame-color: rgb(120 120 120);
+  --frame-color: rgb(58 58 58);
   opacity: 1;
 }
 
