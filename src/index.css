@@ -362,6 +362,7 @@ body,
 
 /* Escala do ativo: mais lenta e suave ao virar principal */
 .projects-carousel__card {
+  --frame-inset: 4px;
   transition:
     transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 550ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -370,21 +371,20 @@ body,
   will-change: transform, opacity;
 }
 
-/*
-  Imagem encaixada dentro da moldura (recuo = espessura da quina).
-  Raio interno acompanha o rounded-2xl do card.
-*/
-.projects-carousel__media {
-  inset: 6px;
-  border-radius: calc(1rem - 4px);
-  z-index: 0;
+@media (min-width: 768px) {
+  .projects-carousel__card {
+    --frame-inset: 5px;
+  }
 }
 
-@media (min-width: 768px) {
-  .projects-carousel__media {
-    inset: 7px;
-    border-radius: calc(1rem - 5px);
-  }
+/*
+  Imagem colada na face interna da moldura
+  (mesmo recuo da espessura do traço — sem faixa vazia).
+*/
+.projects-carousel__media {
+  inset: var(--frame-inset);
+  border-radius: calc(1rem - var(--frame-inset));
+  z-index: 0;
 }
 
 /* Sombra dos laterais: volume leve, sem brilho */
