@@ -200,11 +200,23 @@ function App() {
     window.history.pushState(null, "", "#projects");
   }
 
-  /** Abre a página Projetos pelo menu / Ver todos. */
+  /** Abre a página Projetos pelo “Ver todos”. */
   function openProjectsPage(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     event.stopPropagation();
     goProjects();
+  }
+
+  /** Só abre/fecha o accordion de Projetos na home (não navega). */
+  function toggleProjects(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    setActive("home");
+    setProjectsOpen((open) => !open);
+    window.history.pushState(
+      null,
+      "",
+      `${window.location.pathname}${window.location.search}`,
+    );
   }
 
   // ----- interface: página Sobre Mim -----
@@ -298,13 +310,17 @@ function App() {
             <div className="flex w-fit flex-col items-start gap-2.5 min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3">
               <a
                 href="#projects"
-                onClick={openProjectsPage}
+                onClick={toggleProjects}
+                aria-expanded={projectsOpen}
                 className={`${itemClass("projects")} inline-flex items-center gap-1.5`}
               >
                 Projetos
                 <ChevronDown
                   aria-hidden="true"
-                  className="h-4 w-4 shrink-0 min-[390px]:h-5 min-[390px]:w-5"
+                  className={[
+                    "h-4 w-4 shrink-0 transition-transform duration-300 min-[390px]:h-5 min-[390px]:w-5",
+                    projectsOpen ? "rotate-180" : "rotate-0",
+                  ].join(" ")}
                 />
               </a>
 
