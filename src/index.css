@@ -444,13 +444,15 @@ body,
     0 2px 8px -4px rgb(0 0 0 / 0.45);
 }
 
-/* Sombra do ativo: mesma cor, só mais clara (menos intensa) */
+/* Sombra do ativo: neon na mesma cor lilás */
 .projects-carousel__card--active {
   box-shadow:
-    0 28px 56px -20px rgb(0 0 0 / 0.55),
-    0 12px 28px -16px rgb(0 0 0 / 0.32),
-    0 0 42px -8px rgb(168 85 247 / 0.22),
-    0 0 88px -20px rgb(168 85 247 / 0.12);
+    0 22px 44px -16px rgb(0 0 0 / 0.6),
+    0 0 0 1px rgb(168 85 247 / 0.35),
+    0 0 14px 1px rgb(168 85 247 / 0.7),
+    0 0 28px 3px rgb(168 85 247 / 0.45),
+    0 0 48px 6px rgb(168 85 247 / 0.28),
+    0 0 72px 8px rgb(168 85 247 / 0.16);
 }
 
 /*
