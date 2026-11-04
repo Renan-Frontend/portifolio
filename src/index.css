@@ -398,7 +398,8 @@ body,
   Os 4 usam o mesmo path (espelhado) — simetria garantida.
 */
 .projects-carousel__corners {
-  --corner-inset: 0.7rem;
+  /* Coladas na borda fina (1px) do card — sem recuo interno */
+  --corner-inset: 1px;
   transition: color 550ms ease, opacity 550ms ease;
 }
 
@@ -434,12 +435,6 @@ body,
   bottom: var(--corner-inset);
   right: var(--corner-inset);
   transform: scale(-1);
-}
-
-@media (min-width: 768px) {
-  .projects-carousel__corners {
-    --corner-inset: 0.85rem;
-  }
 }
 
 .projects-carousel__corners--active {

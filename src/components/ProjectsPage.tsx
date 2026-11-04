@@ -434,7 +434,7 @@ function ProjectsPage({
                         >
                           <path
                             className="projects-carousel__corner-stroke"
-                            d="M25 3.5 H11.5 C7.5 3.5 3.5 7.5 3.5 11.5 V25"
+                            d="M25.5 2 H12 C6.8 2 2 6.8 2 12 V25.5"
                             stroke="currentColor"
                             strokeWidth="2.75"
                             strokeLinecap="round"
