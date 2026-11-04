@@ -362,7 +362,6 @@ body,
 
 /* Escala do ativo: mais lenta e suave ao virar principal */
 .projects-carousel__card {
-  --frame-inset: 4px;
   transition:
     transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 550ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -371,19 +370,10 @@ body,
   will-change: transform, opacity;
 }
 
-@media (min-width: 768px) {
-  .projects-carousel__card {
-    --frame-inset: 5px;
-  }
-}
-
-/*
-  Imagem colada na face interna da moldura
-  (mesmo recuo da espessura do traço — sem faixa vazia).
-*/
+/* Capa preenchendo o card; as quinas ficam por cima */
 .projects-carousel__media {
-  inset: var(--frame-inset);
-  border-radius: calc(1rem - var(--frame-inset));
+  inset: 0;
+  border-radius: inherit;
   z-index: 0;
 }
 
@@ -404,18 +394,12 @@ body,
 }
 
 /*
-  Moldura: cantoneira dupla (traço grosso + filete interno)
-  na cor já definida; linhas finas no miolo da espessura.
+  Cantos luminosos minimalistas:
+  L com pontas arredondadas, espessura uniforme, brilho sutil.
+  Sem linhas entre as quinas e sem filete duplicado.
 */
 .projects-carousel__corners {
-  --card-radius: 1rem;
-  --corner-size: 1.6rem;
-  --corner-stroke: 4px;
-  --corner-inner-gap: 5px;
-  --corner-inner-stroke: 1px;
-  --edge-stroke: 1px;
-  --edge-center: calc((var(--corner-stroke) - var(--edge-stroke)) / 2);
-  --edge-gap: calc(var(--corner-size) - 2px);
+  --corner-size: 1.75rem;
   transition: color 550ms ease, opacity 550ms ease;
 }
 
@@ -423,120 +407,59 @@ body,
   position: absolute;
   width: var(--corner-size);
   height: var(--corner-size);
-  border-style: solid;
-  border-color: currentColor;
-  border-width: 0;
-  box-sizing: border-box;
+  overflow: visible;
 }
 
-/* Filete interno paralelo — mesmo tom, mais delicado */
-.projects-carousel__corner::before {
-  content: "";
-  position: absolute;
-  box-sizing: border-box;
-  border-style: solid;
-  border-color: currentColor;
-  border-width: 0;
-  opacity: 0.55;
-  inset: var(--corner-inner-gap);
+.projects-carousel__corner-path {
+  filter: drop-shadow(0 0 4px currentColor);
 }
 
 .projects-carousel__corner--tl {
-  top: 0;
-  left: 0;
-  border-top-width: var(--corner-stroke);
-  border-left-width: var(--corner-stroke);
-  border-top-left-radius: var(--card-radius);
-}
-
-.projects-carousel__corner--tl::before {
-  border-top-width: var(--corner-inner-stroke);
-  border-left-width: var(--corner-inner-stroke);
-  border-top-left-radius: calc(var(--card-radius) - var(--corner-inner-gap));
+  top: 0.55rem;
+  left: 0.55rem;
 }
 
 .projects-carousel__corner--tr {
-  top: 0;
-  right: 0;
-  border-top-width: var(--corner-stroke);
-  border-right-width: var(--corner-stroke);
-  border-top-right-radius: var(--card-radius);
-}
-
-.projects-carousel__corner--tr::before {
-  border-top-width: var(--corner-inner-stroke);
-  border-right-width: var(--corner-inner-stroke);
-  border-top-right-radius: calc(var(--card-radius) - var(--corner-inner-gap));
+  top: 0.55rem;
+  right: 0.55rem;
+  transform: scaleX(-1);
 }
 
 .projects-carousel__corner--bl {
-  bottom: 0;
-  left: 0;
-  border-bottom-width: var(--corner-stroke);
-  border-left-width: var(--corner-stroke);
-  border-bottom-left-radius: var(--card-radius);
-}
-
-.projects-carousel__corner--bl::before {
-  border-bottom-width: var(--corner-inner-stroke);
-  border-left-width: var(--corner-inner-stroke);
-  border-bottom-left-radius: calc(var(--card-radius) - var(--corner-inner-gap));
+  bottom: 0.55rem;
+  left: 0.55rem;
+  transform: scaleY(-1);
 }
 
 .projects-carousel__corner--br {
-  bottom: 0;
-  right: 0;
-  border-bottom-width: var(--corner-stroke);
-  border-right-width: var(--corner-stroke);
-  border-bottom-right-radius: var(--card-radius);
-}
-
-.projects-carousel__corner--br::before {
-  border-bottom-width: var(--corner-inner-stroke);
-  border-right-width: var(--corner-inner-stroke);
-  border-bottom-right-radius: calc(var(--card-radius) - var(--corner-inner-gap));
-}
-
-/* Linhas finas no miolo da espessura das cantoneiras */
-.projects-carousel__edge {
-  position: absolute;
-  background: currentColor;
-  opacity: 0.85;
-}
-
-.projects-carousel__edge--top {
-  top: var(--edge-center);
-  left: var(--edge-gap);
-  right: var(--edge-gap);
-  height: var(--edge-stroke);
-}
-
-.projects-carousel__edge--bottom {
-  bottom: var(--edge-center);
-  left: var(--edge-gap);
-  right: var(--edge-gap);
-  height: var(--edge-stroke);
-}
-
-.projects-carousel__edge--left {
-  left: var(--edge-center);
-  top: var(--edge-gap);
-  bottom: var(--edge-gap);
-  width: var(--edge-stroke);
-}
-
-.projects-carousel__edge--right {
-  right: var(--edge-center);
-  top: var(--edge-gap);
-  bottom: var(--edge-gap);
-  width: var(--edge-stroke);
+  bottom: 0.55rem;
+  right: 0.55rem;
+  transform: scale(-1);
 }
 
 @media (min-width: 768px) {
   .projects-carousel__corners {
-    --corner-size: 1.85rem;
-    --corner-stroke: 5px;
-    --corner-inner-gap: 6px;
+    --corner-size: 2.05rem;
+  }
+
+  .projects-carousel__corner--tl,
+  .projects-carousel__corner--tr {
+    top: 0.7rem;
+  }
+
+  .projects-carousel__corner--bl,
+  .projects-carousel__corner--br {
+    bottom: 0.7rem;
+  }
+
+  .projects-carousel__corner--tl,
+  .projects-carousel__corner--bl {
+    left: 0.7rem;
+  }
+
+  .projects-carousel__corner--tr,
+  .projects-carousel__corner--br {
+    right: 0.7rem;
   }
 }
 

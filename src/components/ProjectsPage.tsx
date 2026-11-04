@@ -413,7 +413,7 @@ function ProjectsPage({
                       <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5" />
                     </div>
 
-                    {/* Cantoneiras + bordas finas (moldura por cima da imagem) */}
+                    {/* Cantoneiras em L (só as quinas, sem linhas entre elas) */}
                     <div
                       className={[
                         "projects-carousel__corners pointer-events-none absolute inset-0 z-20",
@@ -423,14 +423,23 @@ function ProjectsPage({
                       ].join(" ")}
                       aria-hidden="true"
                     >
-                      <span className="projects-carousel__corner projects-carousel__corner--tl" />
-                      <span className="projects-carousel__corner projects-carousel__corner--tr" />
-                      <span className="projects-carousel__corner projects-carousel__corner--bl" />
-                      <span className="projects-carousel__corner projects-carousel__corner--br" />
-                      <span className="projects-carousel__edge projects-carousel__edge--top" />
-                      <span className="projects-carousel__edge projects-carousel__edge--right" />
-                      <span className="projects-carousel__edge projects-carousel__edge--bottom" />
-                      <span className="projects-carousel__edge projects-carousel__edge--left" />
+                      {(["tl", "tr", "bl", "br"] as const).map((corner) => (
+                        <svg
+                          key={corner}
+                          className={`projects-carousel__corner projects-carousel__corner--${corner}`}
+                          viewBox="0 0 48 48"
+                          fill="none"
+                        >
+                          <path
+                            className="projects-carousel__corner-path"
+                            d="M42 7 H18 C11 7 7 11 7 18 V42"
+                            stroke="currentColor"
+                            strokeWidth="5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      ))}
                     </div>
 
                     <div className="relative z-10 flex flex-col gap-5 p-6 md:gap-6 md:p-8 lg:p-9">
