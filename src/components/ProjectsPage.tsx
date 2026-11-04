@@ -474,16 +474,22 @@ function ProjectsPage({
                       <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5" />
                     </div>
 
-                    {/* Moldura contínua — quinas mais grossas via border-radius */}
+                    {/* Filete fino contínuo + quinas grossas (só nos cantos) */}
                     <div
                       className={[
-                        "projects-carousel__frame pointer-events-none absolute inset-0 z-20",
+                        "projects-carousel__corners pointer-events-none absolute inset-0 z-20",
                         isActive
-                          ? "projects-carousel__frame--active"
-                          : "projects-carousel__frame--side",
+                          ? "projects-carousel__corners--active"
+                          : "projects-carousel__corners--side",
                       ].join(" ")}
                       aria-hidden="true"
-                    />
+                    >
+                      <span className="projects-carousel__frame" />
+                      <span className="projects-carousel__corner projects-carousel__corner--tl" />
+                      <span className="projects-carousel__corner projects-carousel__corner--tr" />
+                      <span className="projects-carousel__corner projects-carousel__corner--bl" />
+                      <span className="projects-carousel__corner projects-carousel__corner--br" />
+                    </div>
 
                     <div
                       className={[

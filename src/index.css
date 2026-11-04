@@ -454,31 +454,82 @@ body,
 }
 
 /*
-  Moldura contínua (sem cantoneiras):
-  traço mais grosso para as quinas do rounded-2xl ficarem marcadas.
+  Filete fino nas laterais + quinas grossas só nos cantos,
+  no mesmo raio do card (rounded-2xl = 1rem).
 */
-.projects-carousel__frame {
-  position: absolute;
-  inset: 0;
-  border: 4px solid currentColor;
-  border-radius: 1rem;
-  box-sizing: border-box;
+.projects-carousel__corners {
+  --corner-radius: 1rem;
+  --corner-size: 1.65rem;
+  --corner-stroke: 4px;
+  --frame-stroke: 1px;
   transition: color 550ms ease, opacity 550ms ease;
 }
 
+.projects-carousel__frame {
+  position: absolute;
+  inset: 0;
+  border: var(--frame-stroke) solid currentColor;
+  border-radius: var(--corner-radius);
+  box-sizing: border-box;
+  opacity: 0.9;
+}
+
+.projects-carousel__corner {
+  position: absolute;
+  width: var(--corner-size);
+  height: var(--corner-size);
+  border-style: solid;
+  border-color: currentColor;
+  border-width: 0;
+  box-sizing: border-box;
+}
+
+.projects-carousel__corner--tl {
+  top: 0;
+  left: 0;
+  border-top-width: var(--corner-stroke);
+  border-left-width: var(--corner-stroke);
+  border-top-left-radius: var(--corner-radius);
+}
+
+.projects-carousel__corner--tr {
+  top: 0;
+  right: 0;
+  border-top-width: var(--corner-stroke);
+  border-right-width: var(--corner-stroke);
+  border-top-right-radius: var(--corner-radius);
+}
+
+.projects-carousel__corner--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: var(--corner-stroke);
+  border-left-width: var(--corner-stroke);
+  border-bottom-left-radius: var(--corner-radius);
+}
+
+.projects-carousel__corner--br {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: var(--corner-stroke);
+  border-right-width: var(--corner-stroke);
+  border-bottom-right-radius: var(--corner-radius);
+}
+
 @media (min-width: 768px) {
-  .projects-carousel__frame {
-    border-width: 5px;
+  .projects-carousel__corners {
+    --corner-size: 1.9rem;
+    --corner-stroke: 5px;
   }
 }
 
-.projects-carousel__frame--active {
+.projects-carousel__corners--active {
   color: rgb(147 112 219);
   opacity: 1;
 }
 
 /* Fora do centro: moldura cinza */
-.projects-carousel__frame--side {
+.projects-carousel__corners--side {
   color: rgb(115 115 115);
   opacity: 1;
 }
