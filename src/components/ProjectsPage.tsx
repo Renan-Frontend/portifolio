@@ -386,6 +386,10 @@ function ProjectsPage({
   const cancelArrowAnimationRef = useRef<(() => void) | null>(null);
   /** Último slide id aplicado via prop (deep-link). */
   const appliedSlideIdRef = useRef(initialSlideId);
+  /** Origem do ponteiro para distinguir toque de swipe. */
+  const tapStartRef = useRef<{ x: number; y: number } | null>(null);
+  /** Se o scroll moveu o bastante, ignora o clique no card. */
+  const tapMovedRef = useRef(false);
 
   activeLoopIndexRef.current = activeLoopIndex;
   slideCountRef.current = slideCount;
@@ -641,10 +645,10 @@ function ProjectsPage({
   }
 
   /**
-   * Avança ou volta um slide: aplica o ativo na hora e anima a passagem.
-   * No fim só normaliza o loop / contador estável.
+   * Centraliza um slide absoluto do loop, com o efeito ativo na hora.
+   * Usado pelas setas e pelo toque/clique no card (mobile).
    */
-  function goBy(delta: -1 | 1) {
+  function goToLoopIndex(to: number) {
     const track = trackRef.current;
     if (
       !track ||
@@ -656,9 +660,8 @@ function ProjectsPage({
     }
 
     const total = LOOP_COPIES * slideCountRef.current;
-    const from = activeLoopIndexRef.current;
-    const to = from + delta;
     if (to < 0 || to >= total) return;
+    if (to === activeLoopIndexRef.current) return;
 
     const card = track.querySelector<HTMLElement>(
       `[data-loop-index="${to}"]`,
@@ -688,6 +691,11 @@ function ProjectsPage({
       });
   }
 
+  /** Avança ou volta um slide pelas setas. */
+  function goBy(delta: -1 | 1) {
+    goToLoopIndex(activeLoopIndexRef.current + delta);
+  }
+
   /** Slide anterior (seta esquerda). */
   function goPrev() {
     goBy(-1);
@@ -696,6 +704,39 @@ function ProjectsPage({
   /** Próximo slide (seta direita). */
   function goNext() {
     goBy(1);
+  }
+
+  /** Marca o início do toque no card (para não confundir com swipe). */
+  function handleCardPointerDown(event: ReactPointerEvent<HTMLElement>) {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    tapStartRef.current = { x: event.clientX, y: event.clientY };
+    tapMovedRef.current = false;
+  }
+
+  /** Se o dedo/mouse andou demais, trata como swipe e não como clique. */
+  function handleCardPointerMove(event: ReactPointerEvent<HTMLElement>) {
+    const start = tapStartRef.current;
+    if (!start) return;
+    const dx = Math.abs(event.clientX - start.x);
+    const dy = Math.abs(event.clientY - start.y);
+    if (dx > 10 || dy > 10) {
+      tapMovedRef.current = true;
+    }
+  }
+
+  /** Toque/clique no card: aplica o ativo e centraliza (efeito no mobile). */
+  function handleCardPointerUp(
+    event: ReactPointerEvent<HTMLElement>,
+    loopIndex: number,
+  ) {
+    const start = tapStartRef.current;
+    tapStartRef.current = null;
+    if (!start || tapMovedRef.current) return;
+    if (isDraggingRef.current) return;
+
+    // Clique curto: ativa o card tocado.
+    event.preventDefault();
+    goToLoopIndex(loopIndex);
   }
 
   /** Número exibido na contagem (1-based). */
@@ -756,6 +797,15 @@ function ProjectsPage({
                     key={slide.loopKey}
                     data-loop-index={slide.loopIndex}
                     data-logical-index={slide.logicalIndex}
+                    onPointerDown={handleCardPointerDown}
+                    onPointerMove={handleCardPointerMove}
+                    onPointerUp={(event) =>
+                      handleCardPointerUp(event, slide.loopIndex)
+                    }
+                    onPointerCancel={() => {
+                      tapStartRef.current = null;
+                      tapMovedRef.current = false;
+                    }}
                     className={[
                       "projects-carousel__card relative flex h-[min(64dvh,34rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-visible rounded-2xl origin-center md:h-[min(68dvh,40rem)] md:w-[min(52rem,62vw)]",
                       isActive
