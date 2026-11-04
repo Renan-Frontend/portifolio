@@ -445,16 +445,16 @@ body,
 }
 
 /*
-  Neon do ativo: brilho forte e curto (perto da borda).
-  Spread longo era cortado pelo overflow do track.
+  Neon do ativo: um pouco maior, ainda perto o bastante
+  para não bater no overflow do track.
 */
 .projects-carousel__card--active {
   box-shadow:
-    0 16px 32px -14px rgb(0 0 0 / 0.55),
+    0 18px 36px -14px rgb(0 0 0 / 0.55),
     0 0 0 1px rgb(168 85 247 / 0.4),
-    0 0 8px 0 rgb(168 85 247 / 0.85),
-    0 0 16px 1px rgb(168 85 247 / 0.55),
-    0 0 28px 2px rgb(168 85 247 / 0.3);
+    0 0 12px 1px rgb(168 85 247 / 0.8),
+    0 0 24px 2px rgb(168 85 247 / 0.5),
+    0 0 40px 4px rgb(168 85 247 / 0.28);
 }
 
 /*
