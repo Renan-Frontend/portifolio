@@ -333,6 +333,7 @@ body,
   -ms-overflow-style: none;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
+  scroll-snap-stop: normal;
   /* Card ativo no centro; vizinhos vazam pelas bordas da tela */
   scroll-padding-inline: max(1rem, calc((100% - min(42rem, 88vw)) / 2));
 }
@@ -360,13 +361,74 @@ body,
   display: none;
 }
 
+/* Setas laterais bem claras */
+.projects-carousel__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 30;
+  display: inline-flex;
+  height: 3rem;
+  width: 3rem;
+  translate: 0 -50%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1.5px solid rgb(216 180 254 / 0.7);
+  background: rgb(24 24 27 / 0.82);
+  color: rgb(233 213 255);
+  box-shadow:
+    0 8px 24px -10px rgb(0 0 0 / 0.7),
+    0 0 0 1px rgb(168 85 247 / 0.15),
+    0 0 20px -6px rgb(168 85 247 / 0.35);
+  backdrop-filter: blur(8px);
+  transition:
+    transform 200ms ease,
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.projects-carousel__nav:hover {
+  border-color: rgb(233 213 255 / 0.95);
+  background: rgb(88 28 135 / 0.55);
+  color: white;
+  transform: scale(1.06);
+}
+
+.projects-carousel__nav:active {
+  transform: scale(0.96);
+}
+
+.projects-carousel__nav--prev {
+  left: 0.65rem;
+}
+
+.projects-carousel__nav--next {
+  right: 0.65rem;
+}
+
+@media (min-width: 768px) {
+  .projects-carousel__nav {
+    height: 3.5rem;
+    width: 3.5rem;
+  }
+
+  .projects-carousel__nav--prev {
+    left: 1.1rem;
+  }
+
+  .projects-carousel__nav--next {
+    right: 1.1rem;
+  }
+}
+
 /* Escala do ativo: mais lenta e suave ao virar principal */
 .projects-carousel__card {
   transition:
-    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 550ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 550ms ease;
+    transform 850ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 850ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 650ms ease;
   will-change: transform, opacity;
 }
 

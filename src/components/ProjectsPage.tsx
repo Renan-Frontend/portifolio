@@ -1,4 +1,10 @@
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import {
   useEffect,
   useRef,
@@ -349,6 +355,42 @@ function ProjectsPage({
     event.stopPropagation();
   }
 
+  /**
+   * Avança ou volta um slide com scroll suave.
+   * O loop é corrigido no scrollend (normalizeLoopIfNeeded).
+   */
+  function goBy(delta: -1 | 1) {
+    const track = trackRef.current;
+    if (!track || isDraggingRef.current || isJumpingRef.current) return;
+
+    const total = LOOP_COPIES * SLIDE_COUNT;
+    const from = activeLoopIndexRef.current;
+    const to = from + delta;
+    if (to < 0 || to >= total) return;
+
+    const card = track.querySelector<HTMLElement>(
+      `[data-loop-index="${to}"]`,
+    );
+    if (!card) return;
+
+    setActiveLoopIndex(to);
+    card.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }
+
+  /** Slide anterior (seta esquerda). */
+  function goPrev() {
+    goBy(-1);
+  }
+
+  /** Próximo slide (seta direita). */
+  function goNext() {
+    goBy(1);
+  }
+
   // ----- interface -----
   return (
     <main className="projects-page relative isolate flex h-svh max-h-svh w-full flex-col overflow-hidden bg-neutral-950 text-white">
@@ -363,6 +405,24 @@ function ProjectsPage({
       <section className="projects-layout about-layout relative z-10 mx-auto flex min-h-0 w-full flex-1 flex-col justify-center px-0 pb-2">
         <div className="about-enter__facts relative w-full py-3 md:py-4">
           <div className="projects-carousel-shell relative w-full">
+            <button
+              type="button"
+              onClick={goPrev}
+              className="projects-carousel__nav projects-carousel__nav--prev"
+              aria-label="Projeto anterior"
+            >
+              <ChevronLeft className="h-7 w-7 md:h-8 md:w-8" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
+              onClick={goNext}
+              className="projects-carousel__nav projects-carousel__nav--next"
+              aria-label="Próximo projeto"
+            >
+              <ChevronRight className="h-7 w-7 md:h-8 md:w-8" aria-hidden="true" />
+            </button>
+
             <div
               ref={trackRef}
               onScroll={handleTrackScroll}
