@@ -456,16 +456,16 @@ body,
   para não bater no overflow do track.
 */
 /*
-  Neon tom sobre tom: brilho no mesmo roxo da moldura,
-  mais aberto e transparente — o filete escuro continua legível.
+  Neon mais presente; filete/quinas um pouco mais fechados
+  para o brilho aparecer sem apagar a linha.
 */
 .projects-carousel__card--active {
   box-shadow:
     0 18px 36px -14px rgb(0 0 0 / 0.55),
-    0 0 0 1px rgb(124 88 196 / 0.35),
-    0 0 10px 1px rgb(124 88 196 / 0.45),
-    0 0 22px 3px rgb(124 88 196 / 0.28),
-    0 0 38px 5px rgb(124 88 196 / 0.16);
+    0 0 0 1px rgb(168 120 230 / 0.5),
+    0 0 14px 2px rgb(168 120 230 / 0.7),
+    0 0 28px 4px rgb(168 120 230 / 0.42),
+    0 0 46px 6px rgb(168 120 230 / 0.22);
 }
 
 /*
@@ -543,9 +543,9 @@ body,
 }
 
 .projects-carousel__corners--active {
-  /* Quinas no meio do tom; filete um degrau mais fechado */
-  color: rgb(124 88 196);
-  --frame-color: rgb(78 48 138);
+  /* Linhas mais fechadas para o neon mais forte continuar legível */
+  color: rgb(108 72 178);
+  --frame-color: rgb(62 36 112);
   opacity: 1;
 }
 
