@@ -395,20 +395,25 @@ function ProjectsPage({
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
-                    {/* Capa do projeto (placeholder até ter print real) */}
-                    <img
-                      src={slide.cover}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                      draggable={false}
-                      className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center select-none"
-                    />
-                    <div className="pointer-events-none absolute inset-0 bg-neutral-950/25" />
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.18),transparent_55%)]" />
-                    <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/70 to-neutral-950/10" />
+                    {/*
+                      Capa dentro da moldura: inset + raio interno
+                      para a imagem ficar certinha no quadrado.
+                    */}
+                    <div className="projects-carousel__media pointer-events-none absolute overflow-hidden">
+                      <img
+                        src={slide.cover}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        draggable={false}
+                        className="absolute inset-0 h-full w-full object-cover object-center select-none"
+                      />
+                      <div className="absolute inset-0 bg-neutral-950/20" />
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.16),transparent_55%)]" />
+                      <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5" />
+                    </div>
 
-                    {/* Cantoneiras + bordas finas saindo delas (sem cobrir as quinas) */}
+                    {/* Cantoneiras + bordas finas (moldura por cima da imagem) */}
                     <div
                       className={[
                         "projects-carousel__corners pointer-events-none absolute inset-0 z-20",

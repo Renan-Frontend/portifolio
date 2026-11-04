@@ -370,6 +370,23 @@ body,
   will-change: transform, opacity;
 }
 
+/*
+  Imagem encaixada dentro da moldura (recuo = espessura da quina).
+  Raio interno acompanha o rounded-2xl do card.
+*/
+.projects-carousel__media {
+  inset: 6px;
+  border-radius: calc(1rem - 4px);
+  z-index: 0;
+}
+
+@media (min-width: 768px) {
+  .projects-carousel__media {
+    inset: 7px;
+    border-radius: calc(1rem - 5px);
+  }
+}
+
 /* Sombra dos laterais: volume leve, sem brilho */
 .projects-carousel__card--side {
   box-shadow:
