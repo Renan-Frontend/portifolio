@@ -405,7 +405,8 @@ body,
   de cada ponta da quina (sem borda contínua no card).
 */
 .projects-carousel__corners {
-  --card-radius: 1rem;
+  /* Raio menor que o rounded-2xl do card (1rem) — quinas menos redondas */
+  --corner-radius: 0.45rem;
   --corner-size: 1.6rem;
   --corner-stroke: 4px;
   --edge-stroke: 1px;
@@ -429,7 +430,7 @@ body,
   left: 0;
   border-top-width: var(--corner-stroke);
   border-left-width: var(--corner-stroke);
-  border-top-left-radius: var(--card-radius);
+  border-top-left-radius: var(--corner-radius);
 }
 
 .projects-carousel__corner--tr {
@@ -437,7 +438,7 @@ body,
   right: 0;
   border-top-width: var(--corner-stroke);
   border-right-width: var(--corner-stroke);
-  border-top-right-radius: var(--card-radius);
+  border-top-right-radius: var(--corner-radius);
 }
 
 .projects-carousel__corner--bl {
@@ -445,7 +446,7 @@ body,
   left: 0;
   border-bottom-width: var(--corner-stroke);
   border-left-width: var(--corner-stroke);
-  border-bottom-left-radius: var(--card-radius);
+  border-bottom-left-radius: var(--corner-radius);
 }
 
 .projects-carousel__corner--br {
@@ -453,7 +454,7 @@ body,
   right: 0;
   border-bottom-width: var(--corner-stroke);
   border-right-width: var(--corner-stroke);
-  border-bottom-right-radius: var(--card-radius);
+  border-bottom-right-radius: var(--corner-radius);
 }
 
 .projects-carousel__edge {
