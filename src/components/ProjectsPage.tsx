@@ -109,8 +109,8 @@ const LOOPED_SLIDES: LoopedSlide[] = Array.from(
 type ProjectsPageProps = {
   /** Volta para a home (sem repetir a intro). */
   onBack: () => void;
-  /** Vai para a página Experiência. */
-  onExperience: () => void;
+  /** Vai para Currículo. */
+  onCurriculum: () => void;
   /** Id do projeto a focar no carrossel (hash individual). */
   initialProjectId?: string;
 };
@@ -224,7 +224,7 @@ function animateCenterCard(
  */
 function ProjectsPage({
   onBack,
-  onExperience,
+  onCurriculum,
   initialProjectId,
 }: ProjectsPageProps) {
   // ----- estado -----
@@ -362,10 +362,10 @@ function ProjectsPage({
     onBack();
   }
 
-  /** Navega para Experiência. */
-  function handleExperience(event: MouseEvent<HTMLAnchorElement>) {
+  /** Navega para Currículo. */
+  function handleCurriculum(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    onExperience();
+    onCurriculum();
   }
 
   /** Atualiza o destaque conforme o card mais próximo do centro. */
@@ -678,11 +678,11 @@ function ProjectsPage({
           </a>
 
           <a
-            href="#experience"
-            onClick={handleExperience}
+            href="#curriculum"
+            onClick={handleCurriculum}
             className="inline-flex min-w-0 shrink translate-x-0 items-center gap-1.5 text-neutral-300 transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-300 min-[390px]:gap-2"
           >
-            <span className="truncate">Experiência</span>
+            <span className="truncate">Currículo</span>
             <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
           </a>
         </nav>

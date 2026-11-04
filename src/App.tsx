@@ -184,6 +184,14 @@ function App() {
     window.history.pushState(null, "", "#experience");
   }
 
+  /** Vai para Currículo (item do menu na home, por enquanto). */
+  function goCurriculum() {
+    setShowIntro(false);
+    setIntroDone(true);
+    setActive("curriculum");
+    window.history.pushState(null, "", "#curriculum");
+  }
+
   /** Vai para a página Projetos (carrossel). */
   function goProjects() {
     setShowIntro(false);
@@ -214,7 +222,7 @@ function App() {
     return (
       <ProjectsPage
         onBack={goHome}
-        onExperience={goExperience}
+        onCurriculum={goCurriculum}
         initialProjectId={isProjectId(active) ? active : undefined}
       />
     );
