@@ -93,10 +93,16 @@ function ProjectsPage({
     indexFromProjectId(initialProjectId),
   );
   const trackRef = useRef<HTMLDivElement>(null);
+  /** Ignora onScroll enquanto o scroll programático (setas / hash) ainda anima. */
+  const ignoreScrollSyncRef = useRef(true);
+  const scrollUnlockTimerRef = useRef<number | null>(null);
 
   // ----- efeitos -----
 
-  /** Centraliza o slide ativo no track quando o índice muda. */
+  /**
+   * Centraliza o slide ativo no track.
+   * Bloqueia sync do onScroll até o fim da animação para não “voltar” o índice.
+   */
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -106,11 +112,36 @@ function ProjectsPage({
     );
     if (!card) return;
 
+    ignoreScrollSyncRef.current = true;
+    if (scrollUnlockTimerRef.current !== null) {
+      window.clearTimeout(scrollUnlockTimerRef.current);
+    }
+
+    /** Libera a sincronização manual após o scroll programático. */
+    function unlockScrollSync() {
+      ignoreScrollSyncRef.current = false;
+      if (scrollUnlockTimerRef.current !== null) {
+        window.clearTimeout(scrollUnlockTimerRef.current);
+        scrollUnlockTimerRef.current = null;
+      }
+    }
+
     card.scrollIntoView({
       behavior: "smooth",
       inline: "center",
       block: "nearest",
     });
+
+    track.addEventListener("scrollend", unlockScrollSync, { once: true });
+    // Fallback: navegadores sem scrollend (ou snap interrompido)
+    scrollUnlockTimerRef.current = window.setTimeout(unlockScrollSync, 500);
+
+    return () => {
+      track.removeEventListener("scrollend", unlockScrollSync);
+      if (scrollUnlockTimerRef.current !== null) {
+        window.clearTimeout(scrollUnlockTimerRef.current);
+      }
+    };
   }, [activeIndex]);
 
   // ----- handlers -----
@@ -141,8 +172,13 @@ function ProjectsPage({
     );
   }
 
-  /** Atualiza o índice ativo conforme o scroll manual do carrossel. */
+  /**
+   * Atualiza o índice só no scroll manual (arrastar / swipe).
+   * Ignorado durante scrollIntoView das setas ou do hash inicial.
+   */
   function handleTrackScroll() {
+    if (ignoreScrollSyncRef.current) return;
+
     const track = trackRef.current;
     if (!track) return;
 
@@ -164,7 +200,7 @@ function ProjectsPage({
       }
     });
 
-    setActiveIndex(closest);
+    setActiveIndex((current) => (current === closest ? current : closest));
   }
 
   // ----- interface -----
