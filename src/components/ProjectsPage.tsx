@@ -447,17 +447,17 @@ function ProjectsPage({
                     data-loop-index={slide.loopIndex}
                     data-logical-index={slide.logicalIndex}
                     className={[
-                      "projects-carousel__card relative flex h-[min(64dvh,34rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl origin-center md:h-[min(68dvh,40rem)] md:w-[min(52rem,62vw)]",
+                      "projects-carousel__card relative flex h-[min(64dvh,34rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-visible rounded-2xl origin-center md:h-[min(68dvh,40rem)] md:w-[min(52rem,62vw)]",
                       isActive
                         ? "projects-carousel__card--active z-10 scale-100"
                         : "projects-carousel__card--side z-0 scale-[0.86]",
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
-                    {/* Capa (opacidade só aqui — quinas ficam nítidas) */}
+                    {/* Capa com clip (card overflow visible para as quinas no miolo da borda) */}
                     <div
                       className={[
-                        "projects-carousel__media pointer-events-none absolute inset-0 overflow-hidden transition-opacity duration-300",
+                        "projects-carousel__media pointer-events-none absolute inset-0 overflow-hidden rounded-2xl transition-opacity duration-300",
                         isActive ? "opacity-100" : "opacity-50",
                       ].join(" ")}
                     >
