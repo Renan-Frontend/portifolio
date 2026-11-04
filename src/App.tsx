@@ -140,6 +140,11 @@ function App() {
   /** Já terminou (ou pulou) a intro — libera a cascata da home. */
   const [introDone, setIntroDone] = useState(() => initialNav() !== "home");
 
+  /**
+   * Cascata visual da home só uma vez por sessão (não repete ao voltar).
+   */
+  const [playHomeEnter, setPlayHomeEnter] = useState(false);
+
   // ----- efeitos -----
 
   /**
@@ -149,6 +154,12 @@ function App() {
     const syncFromUrl = () => {
       const next = navFromHash(window.location.hash);
       setActive(next);
+
+      // Saiu da home pelo hash: encerra intro para não reaparecer no back.
+      if (next !== "home") {
+        setShowIntro(false);
+        setIntroDone(true);
+      }
 
       if (next === "projects" || isProjectId(next)) {
         setProjectsOpen(true);
@@ -164,6 +175,13 @@ function App() {
 
     return () => window.removeEventListener("hashchange", syncFromUrl);
   }, []);
+
+  /** Desliga a classe da cascata após a animação, para não repetir no remount. */
+  useEffect(() => {
+    if (!playHomeEnter) return;
+    const timer = window.setTimeout(() => setPlayHomeEnter(false), 2600);
+    return () => window.clearTimeout(timer);
+  }, [playHomeEnter]);
 
   // ----- handlers / helpers -----
 
@@ -205,6 +223,7 @@ function App() {
   function finishIntro() {
     setShowIntro(false);
     setIntroDone(true);
+    setPlayHomeEnter(true);
   }
 
   /** Volta à home sem repetir a intro cinemática. */
@@ -259,17 +278,11 @@ function App() {
   /** Só abre/fecha o accordion de Projetos; fecha Certificados ao abrir. */
   function toggleProjects(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    setActive("home");
     setProjectsOpen((open) => {
       const next = !open;
       if (next) setCertificatesOpen(false);
       return next;
     });
-    window.history.pushState(
-      null,
-      "",
-      `${window.location.pathname}${window.location.search}`,
-    );
   }
 
   /** Abre a página Certificados pelo “Ver todos”. */
@@ -282,17 +295,11 @@ function App() {
   /** Só abre/fecha o accordion de Certificados; fecha Projetos ao abrir. */
   function toggleCertificates(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    setActive("home");
     setCertificatesOpen((open) => {
       const next = !open;
       if (next) setProjectsOpen(false);
       return next;
     });
-    window.history.pushState(
-      null,
-      "",
-      `${window.location.pathname}${window.location.search}`,
-    );
   }
 
   // ----- interface: página Sobre Mim -----
@@ -348,7 +355,7 @@ function App() {
     <main
       className={[
         "relative isolate flex min-h-svh max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white",
-        introDone ? "home-enter--play" : "",
+        playHomeEnter ? "home-enter--play" : "",
       ].join(" ")}
     >
       {/* ----- Apresentação cinemática inicial (só 1ª vez na home) ----- */}

@@ -572,7 +572,7 @@ function ProjectsPage({
     onNext();
   }
 
-  /** Atualiza o destaque conforme o card mais próximo do centro. */
+  /** Atualiza destaque e contador conforme o card mais próximo do centro. */
   function handleTrackScroll() {
     if (
       isJumpingRef.current ||
@@ -584,12 +584,7 @@ function ProjectsPage({
 
     const closest = closestLoopIndex();
     setActiveLoopIndex((current) => (current === closest ? current : closest));
-  }
-
-  /** Ao terminar o gesto/inércia (React): encaixa o loop no meio se preciso. */
-  function handleScrollEnd() {
-    if (isDraggingRef.current || isArrowAnimatingRef.current) return;
-    normalizeLoopIfNeeded();
+    syncCounter(closest);
   }
 
   /** Inicia o arraste horizontal com o mouse. */
@@ -619,6 +614,7 @@ function ProjectsPage({
 
     const closest = closestLoopIndex();
     setActiveLoopIndex((current) => (current === closest ? current : closest));
+    syncCounter(closest);
   }
 
   /** Solta o arraste; o snap CSS encaixa e o scrollend normaliza o loop. */
@@ -777,7 +773,6 @@ function ProjectsPage({
             <div
               ref={trackRef}
               onScroll={handleTrackScroll}
-              onScrollEnd={handleScrollEnd}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}

@@ -217,12 +217,7 @@ function CurriculumPage({ onBack, onCertificates }: CurriculumPageProps) {
 
   // ----- interface -----
   return (
-    <main
-      className={[
-        "curriculum-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white md:h-svh md:max-h-svh",
-        contactOpen ? "md:overflow-y-auto" : "md:overflow-hidden",
-      ].join(" ")}
-    >
+    <main className="curriculum-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white md:h-svh md:max-h-svh md:overflow-y-auto">
       {/* Título (marca d’água) */}
       <h1
         className="about-enter__title font-script pointer-events-none absolute inset-x-0 top-2 z-0 px-4 text-center text-[clamp(2.25rem,9vw,5.75rem)] leading-none whitespace-nowrap text-[#9a92ad] select-none md:top-2"
