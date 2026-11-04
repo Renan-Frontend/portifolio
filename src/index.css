@@ -1,0 +1,445 @@
+@import "tailwindcss";
+
+/* Trava scroll lateral em telas pequenas (nome/foto não empurram a página). */
+html,
+body,
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.font-script {
+  font-family: "Yellowtail", cursive;
+  margin-inline-start: -0.08em;
+  overflow: visible;
+}
+
+/* Degradê na cor exata do fundo — evita emenda tonal na borda da foto */
+.photo-edge-fade-desktop {
+  /* Esquerda + direita: remove a linha/aresta gerada pelo afastamento */
+  background: linear-gradient(
+    to right,
+    #0a0a0a 0%,
+    #0a0a0a 18%,
+    rgb(10 10 10 / 0.9) 30%,
+    rgb(10 10 10 / 0.35) 42%,
+    transparent 54%,
+    transparent 78%,
+    rgb(10 10 10 / 0.45) 90%,
+    #0a0a0a 100%
+  );
+}
+
+.photo-edge-fade-mobile {
+  background: linear-gradient(
+    to right,
+    #0a0a0a 0%,
+    #0a0a0a 34%,
+    rgb(10 10 10 / 0.92) 48%,
+    rgb(10 10 10 / 0.4) 62%,
+    transparent 78%
+  );
+}
+
+/* =============================================================================
+   INTRO — texto à esquerda, retrato/mosaico menor à direita
+   ============================================================================= */
+
+.intro-overlay {
+  transition: opacity 700ms ease, visibility 700ms ease;
+}
+
+.intro-overlay--exit {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Retrato maior — ocupa bem a coluna direita */
+.intro-portrait {
+  position: relative;
+  width: 100%;
+  height: min(58svh, 520px);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+@media (min-width: 768px) {
+  .intro-portrait {
+    height: min(78svh, 720px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .intro-portrait {
+    height: min(82svh, 820px);
+  }
+}
+
+.intro-portrait__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 68% 22%;
+  transform-origin: 68% 28%;
+  animation: intro-ken-burns 8s ease-out forwards;
+}
+
+.intro-portrait__fade {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgb(10 10 10 / 0.55) 0%,
+    transparent 40%,
+    rgb(10 10 10 / 0.2) 100%
+  );
+}
+
+.intro-line--in {
+  animation: intro-line-in 350ms ease forwards;
+}
+
+.intro-line--out {
+  animation: intro-line-out 350ms ease forwards;
+}
+
+@keyframes intro-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes intro-line-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+    filter: blur(3px);
+  }
+}
+
+@keyframes intro-ken-burns {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+/* Placeholders dos projetos (coluna direita no último beat) */
+.intro-work-card {
+  position: relative;
+  display: flex;
+  min-height: clamp(6.5rem, 18svh, 10rem);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid rgb(196 181 253 / 0.35);
+  background: linear-gradient(
+    145deg,
+    rgb(23 23 23 / 0.95) 0%,
+    rgb(10 10 10 / 0.9) 100%
+  );
+  padding: 1rem 1.1rem;
+  opacity: 0;
+  animation: intro-card-in 420ms ease forwards;
+}
+
+.intro-work-card__mono {
+  font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgb(196 181 253 / 0.85);
+  line-height: 1;
+}
+
+.intro-work-card__name {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  font-size: clamp(0.7rem, 1.4vw, 0.85rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(229 229 229 / 0.92);
+}
+
+@keyframes intro-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-line--in,
+  .intro-line--out,
+  .intro-overlay,
+  .intro-portrait__img,
+  .intro-work-card {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .intro-work-card {
+    opacity: 1;
+  }
+}
+
+/* =============================================================================
+   HOME — entrada em cascata (só depois da intro cinemática)
+   Ordem / direção:
+   nome/cargo ← esquerda | foto ← direita | menu ← esquerda | footer ↑ baixo
+   ============================================================================= */
+
+.home-enter__identity,
+.home-enter__photo,
+.home-enter__nav,
+.home-enter__footer {
+  opacity: 0;
+}
+
+.home-enter--play .home-enter__identity {
+  animation: home-from-left 800ms ease 0.12s both;
+}
+
+.home-enter--play .home-enter__photo {
+  animation: home-from-right 900ms ease 0.85s both;
+}
+
+.home-enter--play .home-enter__nav {
+  animation: home-from-left 750ms ease 1.55s both;
+}
+
+.home-enter--play .home-enter__footer {
+  animation: home-from-bottom 750ms ease 2.15s both;
+}
+
+@keyframes home-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes home-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(56px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes home-from-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-enter__identity,
+  .home-enter__photo,
+  .home-enter__nav,
+  .home-enter__footer,
+  .home-enter--play .home-enter__identity,
+  .home-enter--play .home-enter__photo,
+  .home-enter--play .home-enter__nav,
+  .home-enter--play .home-enter__footer {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* =============================================================================
+   SOBRE MIM — layout amplo + entrada em cascata
+   ============================================================================= */
+
+/*
+  Espaço título → conteúdo.
+  Mobile: mais respiro (conteúdo rola se precisar).
+  Desktop: compacto para caber na viewport.
+*/
+.about-layout {
+  padding-top: calc(
+    clamp(3.25rem, 12vw, 4.75rem) + clamp(2.25rem, 3vw, 2.75rem)
+  );
+}
+
+@media (min-width: 768px) {
+  .about-layout {
+    padding-top: calc(
+      clamp(3.5rem, 7vw, 5.5rem) + clamp(2.5rem, 2vw, 3rem)
+    );
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-layout {
+    padding-top: calc(
+      clamp(4.5rem, 7vw, 7rem) + clamp(3.25rem, 1.2vw, 4rem)
+    );
+  }
+}
+
+/* Divisória: horizontal no mobile, vertical no desktop */
+.about-layout__divider {
+  width: 100%;
+  border-top: 1px dotted rgb(64 64 64);
+}
+
+@media (min-width: 768px) {
+  .about-layout__divider {
+    width: 1px;
+    align-self: stretch;
+    border-top: none;
+    border-left: 1px dotted rgb(64 64 64);
+  }
+}
+
+/*
+  Fatos: 1 coluna em todo mobile (até 767px), inclusive 440px.
+  2 colunas a partir de tablet/desktop (768px+).
+*/
+.about-layout__facts {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+  .about-layout__facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.about-layout__fact {
+  min-width: 0;
+  overflow-wrap: break-word;
+  text-align: left;
+}
+
+.about-enter__title,
+.about-enter__bio,
+.about-enter__divider,
+.about-enter__facts,
+.about-enter__footer {
+  opacity: 0;
+}
+
+.about-enter__title {
+  /* anula o puxão à esquerda do .font-script para não cortar “Sobre” */
+  margin-inline-start: 0;
+  animation: about-from-top 800ms ease 0.1s both;
+}
+
+.about-enter__bio {
+  animation: about-from-left 750ms ease 0.45s both;
+}
+
+.about-enter__divider {
+  animation: about-fade 600ms ease 0.65s both;
+}
+
+.about-enter__facts {
+  animation: about-from-right 750ms ease 0.85s both;
+}
+
+.about-enter__footer {
+  animation: about-from-bottom 700ms ease 1.25s both;
+}
+
+@keyframes about-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes about-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes about-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes about-from-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes about-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-enter__title,
+  .about-enter__bio,
+  .about-enter__divider,
+  .about-enter__facts,
+  .about-enter__footer {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
