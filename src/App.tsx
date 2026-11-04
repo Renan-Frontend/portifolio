@@ -253,11 +253,15 @@ function App() {
     goProjects();
   }
 
-  /** Só abre/fecha o accordion de Projetos na home (não navega). */
+  /** Só abre/fecha o accordion de Projetos; fecha Certificados ao abrir. */
   function toggleProjects(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     setActive("home");
-    setProjectsOpen((open) => !open);
+    setProjectsOpen((open) => {
+      const next = !open;
+      if (next) setCertificatesOpen(false);
+      return next;
+    });
     window.history.pushState(
       null,
       "",
@@ -272,11 +276,15 @@ function App() {
     goCertificates();
   }
 
-  /** Só abre/fecha o accordion de Certificados na home (não navega). */
+  /** Só abre/fecha o accordion de Certificados; fecha Projetos ao abrir. */
   function toggleCertificates(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     setActive("home");
-    setCertificatesOpen((open) => !open);
+    setCertificatesOpen((open) => {
+      const next = !open;
+      if (next) setProjectsOpen(false);
+      return next;
+    });
     window.history.pushState(
       null,
       "",
