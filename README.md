@@ -2,14 +2,25 @@
 
 Portifólio web pessoal de **Renan Naves**, desenvolvedor de software de Goiânia.
 
+## Branches
+
+| Branch | Uso |
+| --- | --- |
+| `main` | Versão estável (pronta) |
+| `stage` | Ambiente de teste — valida mudanças antes de ir para `main` |
+| `feat/...`, `fix/...`, `chore/...` | Trabalho em andamento (temporárias) |
+
 ## Acompanhar atualizações (Pull Requests)
 
-As mudanças novas entram por **branch + Pull Request** na `main`, para você revisar o que mudou antes de juntar:
+Fluxo organizado:
 
-1. Cria uma branch (ex.: `feat/pagina-experiencia`)
+1. Cria uma branch a partir da `main` (ex.: `feat/pagina-experiencia`)
 2. Faz o commit das alterações
-3. Abre um PR para `main`
-4. Revisa e faz o merge quando estiver ok
+3. Abre um **PR para `stage`** → testa e revisa
+4. Quando estiver ok, abre um **PR de `stage` → `main`** (ou mergeia a feature já validada na `main`)
+5. Depois do merge, apaga a branch da feature
+
+Assim você acompanha cada atualização pelo histórico de PRs.
 
 Site interativo com apresentação inicial, home e página **Sobre Mim**, pensado para quem quiser conhecer meu perfil de forma rápida e visual.
 
