@@ -368,6 +368,20 @@ function ProjectsPage({
     onExperience();
   }
 
+  /** Atualiza o destaque conforme o card mais próximo do centro. */
+  function handleTrackScroll() {
+    if (
+      isJumpingRef.current ||
+      isDraggingRef.current ||
+      isArrowAnimatingRef.current
+    ) {
+      return;
+    }
+
+    const closest = closestLoopIndex();
+    setActiveLoopIndex((current) => (current === closest ? current : closest));
+  }
+
   /** Ao terminar o gesto/inércia (React): encaixa o loop no meio se preciso. */
   function handleScrollEnd() {
     if (isDraggingRef.current || isArrowAnimatingRef.current) return;
@@ -389,7 +403,7 @@ function ProjectsPage({
     event.preventDefault();
   }
 
-  /** Move o carrossel acompanhando o mouse (efeito ativo só no soltar). */
+  /** Move o carrossel e já troca o ativo para o card mais próximo. */
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
     if (!isDraggingRef.current) return;
 
@@ -398,6 +412,9 @@ function ProjectsPage({
 
     const dx = event.clientX - dragStartXRef.current;
     track.scrollLeft = dragScrollLeftRef.current - dx;
+
+    const closest = closestLoopIndex();
+    setActiveLoopIndex((current) => (current === closest ? current : closest));
   }
 
   /** Solta o arraste; o snap CSS encaixa e o scrollend normaliza o loop. */
@@ -424,8 +441,8 @@ function ProjectsPage({
   }
 
   /**
-   * Avança ou volta um slide: primeiro anima a passagem;
-   * o efeito ativo (neon/escala) e o contador só no encaixe final.
+   * Avança ou volta um slide: aplica o ativo na hora e anima a passagem.
+   * No fim só normaliza o loop / contador estável.
    */
   function goBy(delta: -1 | 1) {
     const track = trackRef.current;
@@ -449,11 +466,12 @@ function ProjectsPage({
     if (!card) return;
 
     isArrowAnimatingRef.current = true;
+    setActiveLoopIndex(to);
+    syncCounter(to);
 
-    void animateCenterCard(track, card, 720)
+    void animateCenterCard(track, card, 560)
       .then(() => {
         isArrowAnimatingRef.current = false;
-        // Agora sim: ativo + contador + cópia do meio.
         normalizeLoopIfNeeded();
       })
       .catch(() => {
@@ -509,6 +527,7 @@ function ProjectsPage({
 
             <div
               ref={trackRef}
+              onScroll={handleTrackScroll}
               onScrollEnd={handleScrollEnd}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}

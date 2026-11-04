@@ -429,13 +429,13 @@ body,
   }
 }
 
-/* Escala/neon do ativo: entram após a passagem encaixar */
+/* Escala/neon do ativo: resposta rápida ao trocar de slide */
 .projects-carousel__card {
   transition:
-    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 520ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 420ms ease;
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms ease;
   will-change: transform, opacity;
 }
 
@@ -476,7 +476,7 @@ body,
   --frame-stroke: 1.75px;
   /* Empurra a quina para fora pela metade da diferença de espessura */
   --corner-outset: calc((var(--corner-stroke) - var(--frame-stroke)) / 2);
-  transition: color 420ms ease, opacity 420ms ease;
+  transition: color 220ms ease, opacity 220ms ease;
 }
 
 .projects-carousel__frame {
@@ -486,7 +486,7 @@ body,
   border-radius: var(--corner-radius);
   box-sizing: border-box;
   opacity: 1;
-  transition: border-color 420ms ease;
+  transition: border-color 220ms ease;
 }
 
 .projects-carousel__corner {
