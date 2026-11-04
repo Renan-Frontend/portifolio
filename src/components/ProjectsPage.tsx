@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import {
   useEffect,
   useRef,
@@ -335,6 +335,11 @@ function ProjectsPage({
     });
   }
 
+  /** Impede que o clique no CTA inicie o arraste do carrossel. */
+  function stopCarouselDrag(event: ReactPointerEvent<HTMLAnchorElement>) {
+    event.stopPropagation();
+  }
+
   // ----- interface -----
   return (
     <main className="projects-page relative isolate flex min-h-svh w-full flex-col bg-neutral-950 text-white">
@@ -383,21 +388,40 @@ function ProjectsPage({
                   >
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.22),transparent_55%)]" />
                     <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-neutral-950/90 via-neutral-950/25 to-transparent" />
-                    <div className="relative z-10 p-6 md:p-8 lg:p-9">
-                      <p className="text-xs tracking-[0.2em] text-purple-300/90 uppercase md:text-sm">
-                        {slide.tagline}
-                      </p>
-                      <h2 className="mt-2.5 text-[clamp(1.4rem,3.2vw,2.2rem)] font-semibold tracking-wide text-neutral-50">
-                        {slide.name}
-                      </h2>
-                      <p
+                    <div className="relative z-10 flex flex-col gap-5 p-6 md:gap-6 md:p-8 lg:p-9">
+                      <div>
+                        <p className="text-xs tracking-[0.2em] text-purple-300/90 uppercase md:text-sm">
+                          {slide.tagline}
+                        </p>
+                        <h2 className="mt-2.5 text-[clamp(1.4rem,3.2vw,2.2rem)] font-semibold tracking-wide text-neutral-50">
+                          {slide.name}
+                        </h2>
+                        <p
+                          className={[
+                            "experience-copy mt-2.5 max-w-xl text-pretty",
+                            isActive ? "text-neutral-200" : "text-neutral-400",
+                          ].join(" ")}
+                        >
+                          {avoidOrphan(slide.description)}
+                        </p>
+                      </div>
+
+                      <a
+                        href={`#${slide.id}`}
+                        onPointerDown={stopCarouselDrag}
+                        onClick={(event) => event.stopPropagation()}
                         className={[
-                          "experience-copy mt-2.5 max-w-xl text-pretty",
-                          isActive ? "text-neutral-200" : "text-neutral-400",
+                          "inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium tracking-wide transition-[transform,background-color,border-color,opacity,color] duration-300 ease-out",
+                          isActive
+                            ? "pointer-events-auto border-purple-300/55 bg-purple-500/20 text-purple-100 opacity-100 hover:border-purple-200 hover:bg-purple-500/30"
+                            : "pointer-events-none border-white/10 bg-white/5 text-neutral-400 opacity-0",
                         ].join(" ")}
+                        tabIndex={isActive ? 0 : -1}
+                        aria-hidden={!isActive}
                       >
-                        {avoidOrphan(slide.description)}
-                      </p>
+                        <span>Ver projeto</span>
+                        <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                      </a>
                     </div>
                   </article>
                 );
