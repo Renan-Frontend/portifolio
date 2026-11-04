@@ -387,13 +387,15 @@ body,
 }
 
 /*
-  Cantoneiras grossas + linhas finas saindo delas
-  (as linhas começam depois da peça da quina).
+  Cantoneiras no mesmo raio do card (1rem = rounded-2xl).
+  Linhas finas sobrepõem 2px a quina para não ficar fresta.
 */
 .projects-carousel__corners {
-  --corner-size: 1.15rem;
-  --corner-stroke: 3.5px;
+  --card-radius: 1rem;
+  --corner-size: var(--card-radius);
+  --corner-stroke: 2.5px;
   --edge-stroke: 1px;
+  --edge-gap: calc(var(--corner-size) - 2px);
   transition: color 550ms ease, opacity 550ms ease;
 }
 
@@ -412,7 +414,7 @@ body,
   left: 0;
   border-top-width: var(--corner-stroke);
   border-left-width: var(--corner-stroke);
-  border-top-left-radius: 1rem;
+  border-top-left-radius: var(--card-radius);
 }
 
 .projects-carousel__corner--tr {
@@ -420,7 +422,7 @@ body,
   right: 0;
   border-top-width: var(--corner-stroke);
   border-right-width: var(--corner-stroke);
-  border-top-right-radius: 1rem;
+  border-top-right-radius: var(--card-radius);
 }
 
 .projects-carousel__corner--bl {
@@ -428,7 +430,7 @@ body,
   left: 0;
   border-bottom-width: var(--corner-stroke);
   border-left-width: var(--corner-stroke);
-  border-bottom-left-radius: 1rem;
+  border-bottom-left-radius: var(--card-radius);
 }
 
 .projects-carousel__corner--br {
@@ -436,48 +438,47 @@ body,
   right: 0;
   border-bottom-width: var(--corner-stroke);
   border-right-width: var(--corner-stroke);
-  border-bottom-right-radius: 1rem;
+  border-bottom-right-radius: var(--card-radius);
 }
 
-/* Linhas finas entre as cantoneiras */
+/* Linhas finas saindo das cantoneiras (com leve overlap) */
 .projects-carousel__edge {
   position: absolute;
   background: currentColor;
-  opacity: 0.72;
+  opacity: 0.78;
 }
 
 .projects-carousel__edge--top {
   top: 0;
-  left: var(--corner-size);
-  right: var(--corner-size);
+  left: var(--edge-gap);
+  right: var(--edge-gap);
   height: var(--edge-stroke);
 }
 
 .projects-carousel__edge--bottom {
   bottom: 0;
-  left: var(--corner-size);
-  right: var(--corner-size);
+  left: var(--edge-gap);
+  right: var(--edge-gap);
   height: var(--edge-stroke);
 }
 
 .projects-carousel__edge--left {
   left: 0;
-  top: var(--corner-size);
-  bottom: var(--corner-size);
+  top: var(--edge-gap);
+  bottom: var(--edge-gap);
   width: var(--edge-stroke);
 }
 
 .projects-carousel__edge--right {
   right: 0;
-  top: var(--corner-size);
-  bottom: var(--corner-size);
+  top: var(--edge-gap);
+  bottom: var(--edge-gap);
   width: var(--edge-stroke);
 }
 
 @media (min-width: 768px) {
   .projects-carousel__corners {
-    --corner-size: 1.35rem;
-    --corner-stroke: 4px;
+    --corner-stroke: 3px;
   }
 }
 
