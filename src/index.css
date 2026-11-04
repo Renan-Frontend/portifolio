@@ -362,6 +362,7 @@ body,
 
 /* Escala do ativo: mais lenta e suave ao virar principal */
 .projects-carousel__card {
+  --frame-inset: 4px;
   transition:
     transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 550ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -370,21 +371,28 @@ body,
   will-change: transform, opacity;
 }
 
+@media (min-width: 768px) {
+  .projects-carousel__card {
+    --frame-inset: 5px;
+  }
+}
+
+/* Capa colada na face interna da moldura */
 .projects-carousel__media {
+  inset: var(--frame-inset);
+  border-radius: calc(1rem - var(--frame-inset));
   z-index: 0;
 }
 
-/* Laterais: borda fina contínua + volume leve */
+/* Sombra dos laterais: volume leve, sem brilho */
 .projects-carousel__card--side {
-  border: 1px solid rgb(255 255 255 / 0.14);
   box-shadow:
     0 10px 28px -12px rgb(0 0 0 / 0.75),
     0 2px 8px -4px rgb(0 0 0 / 0.45);
 }
 
-/* Ativo: borda fina lilás + destaque existente */
+/* Sombra do ativo: profundidade + halo lilás suave */
 .projects-carousel__card--active {
-  border: 1px solid rgb(196 181 253 / 0.42);
   box-shadow:
     0 28px 56px -20px rgb(0 0 0 / 0.85),
     0 12px 28px -16px rgb(0 0 0 / 0.55),
@@ -392,49 +400,61 @@ body,
     0 0 88px -20px rgb(168 85 247 / 0.22);
 }
 
-/*
-  Cantos luminosos minimalistas (SVG):
-  L geométrico 28×28, stroke 2.75, caps redondos, brilho sutil.
-  Os 4 usam o mesmo path (espelhado) — simetria garantida.
-*/
+/* Só as cantoneiras grossas nas quinas (sem linhas entre elas) */
 .projects-carousel__corners {
-  /* Coladas na borda fina (1px) do card — sem recuo interno */
-  --corner-inset: 1px;
+  --card-radius: 1rem;
+  --corner-size: 1.6rem;
+  --corner-stroke: 4px;
   transition: color 550ms ease, opacity 550ms ease;
 }
 
 .projects-carousel__corner {
   position: absolute;
-  width: 28px;
-  height: 28px;
-  overflow: visible;
-}
-
-.projects-carousel__corner-stroke {
-  filter: drop-shadow(0 0 3px rgb(168 85 247 / 0.28));
+  width: var(--corner-size);
+  height: var(--corner-size);
+  border-style: solid;
+  border-color: currentColor;
+  border-width: 0;
+  box-sizing: border-box;
 }
 
 .projects-carousel__corner--tl {
-  top: var(--corner-inset);
-  left: var(--corner-inset);
+  top: 0;
+  left: 0;
+  border-top-width: var(--corner-stroke);
+  border-left-width: var(--corner-stroke);
+  border-top-left-radius: var(--card-radius);
 }
 
 .projects-carousel__corner--tr {
-  top: var(--corner-inset);
-  right: var(--corner-inset);
-  transform: scaleX(-1);
+  top: 0;
+  right: 0;
+  border-top-width: var(--corner-stroke);
+  border-right-width: var(--corner-stroke);
+  border-top-right-radius: var(--card-radius);
 }
 
 .projects-carousel__corner--bl {
-  bottom: var(--corner-inset);
-  left: var(--corner-inset);
-  transform: scaleY(-1);
+  bottom: 0;
+  left: 0;
+  border-bottom-width: var(--corner-stroke);
+  border-left-width: var(--corner-stroke);
+  border-bottom-left-radius: var(--card-radius);
 }
 
 .projects-carousel__corner--br {
-  bottom: var(--corner-inset);
-  right: var(--corner-inset);
-  transform: scale(-1);
+  bottom: 0;
+  right: 0;
+  border-bottom-width: var(--corner-stroke);
+  border-right-width: var(--corner-stroke);
+  border-bottom-right-radius: var(--card-radius);
+}
+
+@media (min-width: 768px) {
+  .projects-carousel__corners {
+    --corner-size: 1.85rem;
+    --corner-stroke: 5px;
+  }
 }
 
 .projects-carousel__corners--active {
@@ -444,11 +464,7 @@ body,
 
 .projects-carousel__corners--side {
   color: rgb(255 255 255 / 0.34);
-  opacity: 0.75;
-}
-
-.projects-carousel__corners--side .projects-carousel__corner-stroke {
-  filter: drop-shadow(0 0 2px rgb(255 255 255 / 0.12));
+  opacity: 0.8;
 }
 
 /* Dissolve o card nas laterais — sensação de borda infinita */
