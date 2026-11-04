@@ -145,27 +145,6 @@ function App() {
   };
 
   /**
-   * Abre ou fecha a lista de projetos ao clicar em "Projetos".
-   * Só esse clique fecha a lista.
-   */
-  const toggleProjects = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-
-    setProjectsOpen((open) => {
-      const next = !open;
-
-      if (next) {
-        setActive("projects");
-        window.history.replaceState(null, "", "#projects");
-      } else if (active === "projects" || isProjectId(active)) {
-        setActive("projects");
-      }
-
-      return next;
-    });
-  };
-
-  /**
    * Verifica se um item do menu deve aparecer como ativo (cor lilás).
    */
   const isActive = (id: NavId) =>
