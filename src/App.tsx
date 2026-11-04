@@ -1,8 +1,10 @@
 import { useEffect, useState, type MouseEvent } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import AboutPage from "./components/AboutPage";
+import CurriculumPage from "./components/CurriculumPage";
 import ExperiencePage from "./components/ExperiencePage";
 import IntroPresentation from "./components/IntroPresentation";
+import ProjectsPage from "./components/ProjectsPage";
 
 // =============================================================================
 // DADOS
@@ -153,27 +155,6 @@ function App() {
   };
 
   /**
-   * Abre ou fecha a lista de projetos ao clicar em "Projetos".
-   * Só esse clique fecha a lista.
-   */
-  const toggleProjects = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-
-    setProjectsOpen((open) => {
-      const next = !open;
-
-      if (next) {
-        setActive("projects");
-        window.history.replaceState(null, "", "#projects");
-      } else if (active === "projects" || isProjectId(active)) {
-        setActive("projects");
-      }
-
-      return next;
-    });
-  };
-
-  /**
    * Verifica se um item do menu deve aparecer como ativo (cor lilás).
    */
   const isActive = (id: NavId) =>
@@ -220,17 +201,40 @@ function App() {
     resetWindowScroll();
   }
 
-  /**
-   * Destaca Projetos na home (accordion).
-   * Página/carrossel de Projetos fica no PR separado.
-   */
+  /** Vai para a página Currículo. */
+  function goCurriculum() {
+    setShowIntro(false);
+    setIntroDone(true);
+    setActive("curriculum");
+    window.history.pushState(null, "", "#curriculum");
+  }
+
+  /** Vai para a página Projetos (carrossel). */
   function goProjects() {
     setShowIntro(false);
     setIntroDone(true);
-    setProjectsOpen(true);
     setActive("projects");
     window.history.pushState(null, "", "#projects");
     resetWindowScroll();
+  }
+
+  /** Abre a página Projetos pelo “Ver todos”. */
+  function openProjectsPage(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    goProjects();
+  }
+
+  /** Só abre/fecha o accordion de Projetos na home (não navega). */
+  function toggleProjects(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    setActive("home");
+    setProjectsOpen((open) => !open);
+    window.history.pushState(
+      null,
+      "",
+      `${window.location.pathname}${window.location.search}`,
+    );
   }
 
   // ----- interface: página Sobre Mim -----
@@ -241,6 +245,24 @@ function App() {
   // ----- interface: página Experiência -----
   if (active === "experience") {
     return <ExperiencePage onBack={goHome} onProjects={goProjects} />;
+  }
+
+  // ----- interface: página Projetos -----
+  if (active === "projects" || isProjectId(active)) {
+    const projectKey = isProjectId(active) ? active : "projects";
+    return (
+      <ProjectsPage
+        key={projectKey}
+        onBack={goHome}
+        onCurriculum={goCurriculum}
+        initialProjectId={isProjectId(active) ? active : undefined}
+      />
+    );
+  }
+
+  // ----- interface: página Currículo -----
+  if (active === "curriculum") {
+    return <CurriculumPage onBack={goHome} />;
   }
 
   // ----- interface: home -----
@@ -321,8 +343,8 @@ function App() {
                 <ChevronDown
                   aria-hidden="true"
                   className={[
-                    "h-4 w-4 shrink-0 transition-transform duration-300 ease-out min-[390px]:h-5 min-[390px]:w-5",
-                    projectsOpen ? "rotate-0" : "rotate-180",
+                    "h-4 w-4 shrink-0 transition-transform duration-300 min-[390px]:h-5 min-[390px]:w-5",
+                    projectsOpen ? "rotate-180" : "rotate-0",
                   ].join(" ")}
                 />
               </a>
@@ -356,7 +378,7 @@ function App() {
 
                     <a
                       href="#projects"
-                      onClick={select("projects")}
+                      onClick={openProjectsPage}
                       tabIndex={projectsOpen ? 0 : -1}
                       className="inline-flex translate-x-0 items-center gap-2 text-purple-300 transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-200"
                     >
