@@ -410,7 +410,8 @@ function App() {
               Experiência
             </a>
 
-            <div className="flex w-fit flex-col items-start gap-2.5 min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3">
+            {/* Accordion: sem gap no wrapper (evita espaço extra com o painel fechado). */}
+            <div className="flex w-fit flex-col items-start">
               <a
                 href="#projects"
                 onClick={toggleProjects}
@@ -436,7 +437,7 @@ function App() {
                 ].join(" ")}
               >
                 <div className="overflow-hidden">
-                  <div className="flex w-fit flex-col gap-2.5 border-l-2 border-purple-300/90 pt-1 pl-6 text-left min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3 md:pl-8">
+                  <div className="mt-2.5 flex w-fit flex-col gap-2.5 border-l-2 border-purple-300/90 pt-1 pl-6 text-left min-[390px]:mt-3 min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3 md:pl-8">
                     {visibleProjects.map((project) => (
                       <a
                         key={project.id}
@@ -468,7 +469,7 @@ function App() {
               </div>
             </div>
 
-            <div className="flex w-fit flex-col items-start gap-2.5 min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3">
+            <div className="flex w-fit flex-col items-start">
               <a
                 href="#certificates"
                 onClick={toggleCertificates}
@@ -494,7 +495,7 @@ function App() {
                 ].join(" ")}
               >
                 <div className="overflow-hidden">
-                  <div className="flex w-fit flex-col gap-2.5 border-l-2 border-purple-300/90 pt-1 pl-6 text-left min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3 md:pl-8">
+                  <div className="mt-2.5 flex w-fit flex-col gap-2.5 border-l-2 border-purple-300/90 pt-1 pl-6 text-left min-[390px]:mt-3 min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3 md:pl-8">
                     {visibleCertificates.map((certificate) => (
                       <a
                         key={certificate.id}
