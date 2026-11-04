@@ -408,7 +408,7 @@ function ProjectsPage({
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.18),transparent_55%)]" />
                     <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/70 to-neutral-950/10" />
 
-                    {/* Cantoneiras na borda — 4 peças no mesmo raio do card */}
+                    {/* Cantoneiras + bordas finas saindo delas (sem cobrir as quinas) */}
                     <div
                       className={[
                         "projects-carousel__corners pointer-events-none absolute inset-0 z-20",
@@ -422,6 +422,10 @@ function ProjectsPage({
                       <span className="projects-carousel__corner projects-carousel__corner--tr" />
                       <span className="projects-carousel__corner projects-carousel__corner--bl" />
                       <span className="projects-carousel__corner projects-carousel__corner--br" />
+                      <span className="projects-carousel__edge projects-carousel__edge--top" />
+                      <span className="projects-carousel__edge projects-carousel__edge--right" />
+                      <span className="projects-carousel__edge projects-carousel__edge--bottom" />
+                      <span className="projects-carousel__edge projects-carousel__edge--left" />
                     </div>
 
                     <div className="relative z-10 flex flex-col gap-5 p-6 md:gap-6 md:p-8 lg:p-9">

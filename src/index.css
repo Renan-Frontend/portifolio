@@ -372,7 +372,6 @@ body,
 
 /* Sombra dos laterais: volume leve, sem brilho */
 .projects-carousel__card--side {
-  border: 1px solid rgb(255 255 255 / 0.14);
   box-shadow:
     0 10px 28px -12px rgb(0 0 0 / 0.75),
     0 2px 8px -4px rgb(0 0 0 / 0.45);
@@ -380,7 +379,6 @@ body,
 
 /* Sombra do ativo: profundidade + halo lilás suave */
 .projects-carousel__card--active {
-  border: 1px solid rgb(196 181 253 / 0.45);
   box-shadow:
     0 28px 56px -20px rgb(0 0 0 / 0.85),
     0 12px 28px -16px rgb(0 0 0 / 0.55),
@@ -389,17 +387,20 @@ body,
 }
 
 /*
-  Cantoneiras: 4 peças pequenas/grossas, coladas na borda,
-  com o mesmo raio do card (rounded-2xl = 1rem).
+  Cantoneiras grossas + linhas finas saindo delas
+  (as linhas começam depois da peça da quina).
 */
 .projects-carousel__corners {
+  --corner-size: 1.15rem;
+  --corner-stroke: 3.5px;
+  --edge-stroke: 1px;
   transition: color 550ms ease, opacity 550ms ease;
 }
 
 .projects-carousel__corner {
   position: absolute;
-  width: 1.15rem;
-  height: 1.15rem;
+  width: var(--corner-size);
+  height: var(--corner-size);
   border-style: solid;
   border-color: currentColor;
   border-width: 0;
@@ -409,69 +410,74 @@ body,
 .projects-carousel__corner--tl {
   top: 0;
   left: 0;
-  border-top-width: 3.5px;
-  border-left-width: 3.5px;
+  border-top-width: var(--corner-stroke);
+  border-left-width: var(--corner-stroke);
   border-top-left-radius: 1rem;
 }
 
 .projects-carousel__corner--tr {
   top: 0;
   right: 0;
-  border-top-width: 3.5px;
-  border-right-width: 3.5px;
+  border-top-width: var(--corner-stroke);
+  border-right-width: var(--corner-stroke);
   border-top-right-radius: 1rem;
 }
 
 .projects-carousel__corner--bl {
   bottom: 0;
   left: 0;
-  border-bottom-width: 3.5px;
-  border-left-width: 3.5px;
+  border-bottom-width: var(--corner-stroke);
+  border-left-width: var(--corner-stroke);
   border-bottom-left-radius: 1rem;
 }
 
 .projects-carousel__corner--br {
   bottom: 0;
   right: 0;
-  border-bottom-width: 3.5px;
-  border-right-width: 3.5px;
+  border-bottom-width: var(--corner-stroke);
+  border-right-width: var(--corner-stroke);
   border-bottom-right-radius: 1rem;
 }
 
+/* Linhas finas entre as cantoneiras */
+.projects-carousel__edge {
+  position: absolute;
+  background: currentColor;
+  opacity: 0.72;
+}
+
+.projects-carousel__edge--top {
+  top: 0;
+  left: var(--corner-size);
+  right: var(--corner-size);
+  height: var(--edge-stroke);
+}
+
+.projects-carousel__edge--bottom {
+  bottom: 0;
+  left: var(--corner-size);
+  right: var(--corner-size);
+  height: var(--edge-stroke);
+}
+
+.projects-carousel__edge--left {
+  left: 0;
+  top: var(--corner-size);
+  bottom: var(--corner-size);
+  width: var(--edge-stroke);
+}
+
+.projects-carousel__edge--right {
+  right: 0;
+  top: var(--corner-size);
+  bottom: var(--corner-size);
+  width: var(--edge-stroke);
+}
+
 @media (min-width: 768px) {
-  .projects-carousel__corner {
-    width: 1.35rem;
-    height: 1.35rem;
-  }
-
-  .projects-carousel__corner--tl,
-  .projects-carousel__corner--tr,
-  .projects-carousel__corner--bl,
-  .projects-carousel__corner--br {
-    border-top-width: 0;
-    border-right-width: 0;
-    border-bottom-width: 0;
-    border-left-width: 0;
-  }
-
-  .projects-carousel__corner--tl {
-    border-top-width: 4px;
-    border-left-width: 4px;
-  }
-
-  .projects-carousel__corner--tr {
-    border-top-width: 4px;
-    border-right-width: 4px;
-  }
-
-  .projects-carousel__corner--bl {
-    border-bottom-width: 4px;
-    border-left-width: 4px;
-  }
-
-  .projects-carousel__corner--br {
-    border-bottom-width: 4px;
-    border-right-width: 4px;
+  .projects-carousel__corners {
+    --corner-size: 1.35rem;
+    --corner-stroke: 4px;
   }
 }
 
