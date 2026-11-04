@@ -1,6 +1,7 @@
 import { useEffect, useState, type MouseEvent } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import AboutPage from "./components/AboutPage";
+import CertificatesPage from "./components/CertificatesPage";
 import CurriculumPage from "./components/CurriculumPage";
 import ExperiencePage from "./components/ExperiencePage";
 import IntroPresentation from "./components/IntroPresentation";
@@ -35,6 +36,7 @@ type NavId =
   | "about"
   | "experience"
   | "projects"
+  | "certificates"
   | "curriculum"
   | (typeof projects)[number]["id"];
 
@@ -57,6 +59,7 @@ function navFromHash(hash: string): NavId {
     id === "about" ||
     id === "experience" ||
     id === "projects" ||
+    id === "certificates" ||
     id === "curriculum" ||
     id === "home"
   ) {
@@ -185,6 +188,14 @@ function App() {
     window.history.pushState(null, "", "#experience");
   }
 
+  /** Vai para a página Certificados. */
+  function goCertificates() {
+    setShowIntro(false);
+    setIntroDone(true);
+    setActive("certificates");
+    window.history.pushState(null, "", "#certificates");
+  }
+
   /** Vai para a página Currículo. */
   function goCurriculum() {
     setShowIntro(false);
@@ -243,9 +254,18 @@ function App() {
     );
   }
 
+  // ----- interface: página Certificados -----
+  if (active === "certificates") {
+    return (
+      <CertificatesPage onBack={goHome} onCurriculum={goCurriculum} />
+    );
+  }
+
   // ----- interface: página Currículo -----
   if (active === "curriculum") {
-    return <CurriculumPage onBack={goHome} />;
+    return (
+      <CurriculumPage onBack={goHome} onCertificates={goCertificates} />
+    );
   }
 
   // ----- interface: home -----
@@ -372,6 +392,14 @@ function App() {
                 </div>
               </div>
             </div>
+
+            <a
+              href="#certificates"
+              onClick={select("certificates")}
+              className={itemClass("certificates")}
+            >
+              Certificados
+            </a>
 
             <a
               href="#curriculum"

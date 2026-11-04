@@ -1,4 +1,4 @@
-import { ArrowLeft, Download, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, Download, Mail } from "lucide-react";
 import { useState, type MouseEvent } from "react";
 import { avoidOrphan } from "../utils/text";
 
@@ -68,6 +68,8 @@ const CV_CONTACTS = [
 type CurriculumPageProps = {
   /** Volta para a home (sem repetir a intro). */
   onBack: () => void;
+  /** Vai para a página Certificados. */
+  onCertificates: () => void;
 };
 
 type CurriculumActionsProps = {
@@ -190,7 +192,7 @@ function CurriculumPreview() {
  * Página Currículo em duas colunas no desktop (texto | imagem).
  * “Entrar em contato” revela Email, WhatsApp, LinkedIn e GitHub.
  */
-function CurriculumPage({ onBack }: CurriculumPageProps) {
+function CurriculumPage({ onBack, onCertificates }: CurriculumPageProps) {
   // ----- estado -----
   const [contactOpen, setContactOpen] = useState(false);
 
@@ -200,6 +202,12 @@ function CurriculumPage({ onBack }: CurriculumPageProps) {
   function handleBack(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     onBack();
+  }
+
+  /** Navega para Certificados. */
+  function handleCertificates(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    onCertificates();
   }
 
   /** Abre/fecha o painel de redes sociais. */
@@ -334,12 +342,12 @@ function CurriculumPage({ onBack }: CurriculumPageProps) {
           </a>
 
           <a
-            href={CV_PDF_HREF}
-            download="Renan-Naves-Curriculo.pdf"
-            className="inline-flex min-w-0 shrink items-center gap-1.5 text-neutral-300 transition-colors hover:text-purple-300"
+            href="#certificates"
+            onClick={handleCertificates}
+            className="inline-flex min-w-0 shrink translate-x-0 items-center gap-1.5 text-neutral-300 transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-300 min-[390px]:gap-2"
           >
-            <Download className="h-4 w-4 shrink-0" aria-hidden="true" />
-            <span className="truncate">Baixar PDF</span>
+            <span className="truncate">Certificados</span>
+            <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
           </a>
         </nav>
       </footer>
