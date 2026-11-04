@@ -57,6 +57,36 @@ const PROJECT_SLIDES: ProjectSlide[] = [
   },
 ];
 
+/** Quantidade de slides reais. */
+const SLIDE_COUNT = PROJECT_SLIDES.length;
+
+/**
+ * Três cópias em sequência: [A B C D][A B C D][A B C D].
+ * O usuário fica na cópia do meio; nas bordas saltamos sem animação.
+ */
+const LOOP_COPIES = 3;
+
+type LoopedSlide = ProjectSlide & {
+  loopIndex: number;
+  logicalIndex: number;
+  loopKey: string;
+};
+
+/** Lista renderizada do carrossel infinito. */
+const LOOPED_SLIDES: LoopedSlide[] = Array.from(
+  { length: LOOP_COPIES * SLIDE_COUNT },
+  (_, loopIndex) => {
+    const logicalIndex = loopIndex % SLIDE_COUNT;
+    const slide = PROJECT_SLIDES[logicalIndex];
+    return {
+      ...slide,
+      loopIndex,
+      logicalIndex,
+      loopKey: `${slide.id}-${loopIndex}`,
+    };
+  },
+);
+
 // =============================================================================
 // TIPOS
 // =============================================================================
@@ -74,11 +104,26 @@ type ProjectsPageProps = {
 // FUNÇÕES AUXILIARES
 // =============================================================================
 
-/** Índice do slide a partir do id, ou 0 se não encontrado. */
+/** Índice lógico do slide a partir do id, ou 0 se não encontrado. */
 function indexFromProjectId(id: string | undefined): number {
   if (!id) return 0;
   const index = PROJECT_SLIDES.findIndex((slide) => slide.id === id);
   return index >= 0 ? index : 0;
+}
+
+/** Índice absoluto na cópia do meio (onde o carrossel “mora”). */
+function middleLoopIndex(logicalIndex: number): number {
+  return SLIDE_COUNT + logicalIndex;
+}
+
+/**
+ * Se o índice absoluto caiu na 1ª ou 3ª cópia, devolve o equivalente no meio.
+ * Assim o scroll nunca termina no “vazio” das extremidades.
+ */
+function normalizeLoopIndex(loopIndex: number): number {
+  if (loopIndex < SLIDE_COUNT) return loopIndex + SLIDE_COUNT;
+  if (loopIndex >= SLIDE_COUNT * 2) return loopIndex - SLIDE_COUNT;
+  return loopIndex;
 }
 
 // =============================================================================
@@ -87,7 +132,7 @@ function indexFromProjectId(id: string | undefined): number {
 
 /**
  * Página Projetos: marca d’água no topo e carrossel grande horizontal.
- * Navegação por arraste/swipe (setas e contador removidos por enquanto).
+ * Loop infinito (arraste/swipe sem fim vazio nas laterais).
  */
 function ProjectsPage({
   onBack,
@@ -95,13 +140,15 @@ function ProjectsPage({
   initialProjectId,
 }: ProjectsPageProps) {
   // ----- estado -----
-  const [activeIndex, setActiveIndex] = useState(() =>
-    indexFromProjectId(initialProjectId),
+  const [activeLoopIndex, setActiveLoopIndex] = useState(() =>
+    middleLoopIndex(indexFromProjectId(initialProjectId)),
   );
   const trackRef = useRef<HTMLDivElement>(null);
-  /** Ignora onScroll enquanto o scroll programático (setas / hash) ainda anima. */
+  /** Ignora onScroll enquanto o scroll programático ainda anima. */
   const ignoreScrollSyncRef = useRef(true);
   const scrollUnlockTimerRef = useRef<number | null>(null);
+  /** Evita animação no primeiro posicionamento e nos saltos de loop. */
+  const instantScrollRef = useRef(true);
   /** Arraste com mouse (pressionar e jogar para o lado). */
   const isDraggingRef = useRef(false);
   const dragStartXRef = useRef(0);
@@ -112,15 +159,14 @@ function ProjectsPage({
 
   /**
    * Centraliza o slide ativo no track.
-   * Bloqueia sync do onScroll até o scroll programático estabilizar no alvo
-   * (scrollend + poll; sem timeout curto que libera no meio do caminho).
+   * Bloqueia sync do onScroll até o scroll programático estabilizar.
    */
   useEffect(() => {
     const track = trackRef.current;
     if (!track || isDraggingRef.current) return;
 
     const card = track.querySelector<HTMLElement>(
-      `[data-slide-index="${activeIndex}"]`,
+      `[data-loop-index="${activeLoopIndex}"]`,
     );
     if (!card) return;
 
@@ -132,6 +178,8 @@ function ProjectsPage({
 
     let cancelled = false;
     let rafId = 0;
+    const useInstant = instantScrollRef.current;
+    instantScrollRef.current = false;
 
     /** Libera a sincronização manual após o scroll programático. */
     function unlockScrollSync() {
@@ -157,14 +205,20 @@ function ProjectsPage({
     }
 
     card.scrollIntoView({
-      behavior: "smooth",
+      behavior: useInstant ? "auto" : "smooth",
       inline: "center",
       block: "nearest",
     });
 
+    if (useInstant) {
+      unlockScrollSync();
+      return () => {
+        cancelled = true;
+      };
+    }
+
     track.addEventListener("scrollend", unlockScrollSync, { once: true });
 
-    // Fallback sem scrollend: só libera quando para perto do alvo (ou após 2s).
     let lastLeft = track.scrollLeft;
     let stableMs = 0;
     const startedAt = performance.now();
@@ -201,7 +255,7 @@ function ProjectsPage({
         scrollUnlockTimerRef.current = null;
       }
     };
-  }, [activeIndex]);
+  }, [activeLoopIndex]);
 
   // ----- handlers -----
 
@@ -217,28 +271,31 @@ function ProjectsPage({
     onExperience();
   }
 
-  /** Índice do card cujo centro está mais perto do meio do track. */
-  function closestSlideIndex(): number {
+  /** Índice absoluto do card mais próximo do centro do track. */
+  function closestLoopIndex(): number {
     const track = trackRef.current;
-    if (!track) return activeIndex;
+    if (!track) return activeLoopIndex;
 
     const cards = Array.from(
-      track.querySelectorAll<HTMLElement>("[data-slide-index]"),
+      track.querySelectorAll<HTMLElement>("[data-loop-index]"),
     );
-    if (cards.length === 0) return activeIndex;
+    if (cards.length === 0) return activeLoopIndex;
 
     const trackBox = track.getBoundingClientRect();
     const trackCenter = trackBox.left + trackBox.width / 2;
-    let closest = 0;
+    let closest = activeLoopIndex;
     let closestDist = Number.POSITIVE_INFINITY;
 
-    cards.forEach((card, index) => {
+    cards.forEach((card) => {
+      const loopIndex = Number(card.dataset.loopIndex);
+      if (Number.isNaN(loopIndex)) return;
+
       const box = card.getBoundingClientRect();
       const cardCenter = box.left + box.width / 2;
       const dist = Math.abs(cardCenter - trackCenter);
       if (dist < closestDist) {
         closestDist = dist;
-        closest = index;
+        closest = loopIndex;
       }
     });
 
@@ -246,13 +303,56 @@ function ProjectsPage({
   }
 
   /**
-   * Atualiza o índice só no scroll manual (arrastar / swipe).
-   * Ignorado durante scrollIntoView das setas, hash inicial ou drag com mouse.
+   * Após parar numa cópia das pontas, salta para o equivalente no meio
+   * sem animação — o usuário não percebe o “teleporte”.
+   */
+  function settleOnLoopIndex(rawIndex: number) {
+    const normalized = normalizeLoopIndex(rawIndex);
+
+    if (normalized !== rawIndex) {
+      instantScrollRef.current = true;
+      setActiveLoopIndex(normalized);
+      return;
+    }
+
+    if (normalized === activeLoopIndex) {
+      ignoreScrollSyncRef.current = true;
+      const card = trackRef.current?.querySelector<HTMLElement>(
+        `[data-loop-index="${normalized}"]`,
+      );
+      card?.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+      window.setTimeout(() => {
+        ignoreScrollSyncRef.current = false;
+      }, 320);
+      return;
+    }
+
+    setActiveLoopIndex(normalized);
+  }
+
+  /**
+   * Atualiza o índice no scroll manual.
+   * Se cair na 1ª/3ª cópia, normaliza para o meio.
    */
   function handleTrackScroll() {
     if (ignoreScrollSyncRef.current || isDraggingRef.current) return;
-    const closest = closestSlideIndex();
-    setActiveIndex((current) => (current === closest ? current : closest));
+
+    const closest = closestLoopIndex();
+    const normalized = normalizeLoopIndex(closest);
+
+    if (normalized !== closest) {
+      instantScrollRef.current = true;
+      setActiveLoopIndex(normalized);
+      return;
+    }
+
+    setActiveLoopIndex((current) =>
+      current === normalized ? current : normalized,
+    );
   }
 
   /** Inicia o arraste horizontal com o mouse (touch continua nativo). */
@@ -283,7 +383,7 @@ function ProjectsPage({
     track.scrollLeft = dragScrollLeftRef.current - dx;
   }
 
-  /** Encerra o arraste e encaixa o card mais próximo no centro. */
+  /** Encerra o arraste e encaixa o card mais próximo (com loop). */
   function handlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
     if (!isDraggingRef.current) return;
 
@@ -295,27 +395,7 @@ function ProjectsPage({
       track.releasePointerCapture(event.pointerId);
     }
 
-    const closest = closestSlideIndex();
-
-    if (closest === activeIndex) {
-      // Mesmo índice: o efeito não reexecuta; força o snap no centro.
-      ignoreScrollSyncRef.current = true;
-      const card = track?.querySelector<HTMLElement>(
-        `[data-slide-index="${closest}"]`,
-      );
-      card?.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
-      window.setTimeout(() => {
-        ignoreScrollSyncRef.current = false;
-      }, 320);
-      return;
-    }
-
-    ignoreScrollSyncRef.current = false;
-    setActiveIndex(closest);
+    settleOnLoopIndex(closestLoopIndex());
   }
 
   // ----- interface -----
@@ -331,8 +411,8 @@ function ProjectsPage({
 
       <section className="projects-layout about-layout relative z-10 mx-auto flex w-full flex-1 flex-col justify-center px-0 pb-3 md:pb-2">
         {/*
-          Full-bleed: vizinhos atravessam as laterais da tela.
-          Fade suave nas bordas evita o “recorte” duro do overflow.
+          Full-bleed + loop infinito: sempre há vizinhos nas laterais.
+          Fade suave evita o “recorte” duro do overflow.
         */}
         <div className="about-enter__facts relative w-full py-5 md:py-8">
           <div className="projects-carousel-shell relative w-full">
@@ -351,12 +431,13 @@ function ProjectsPage({
               ].join(" ")}
               aria-label="Carrossel de projetos"
             >
-              {PROJECT_SLIDES.map((slide, index) => {
-                const isActive = index === activeIndex;
+              {LOOPED_SLIDES.map((slide) => {
+                const isActive = slide.loopIndex === activeLoopIndex;
                 return (
                   <article
-                    key={slide.id}
-                    data-slide-index={index}
+                    key={slide.loopKey}
+                    data-loop-index={slide.loopIndex}
+                    data-logical-index={slide.logicalIndex}
                     className={[
                       "projects-carousel__card relative flex shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl border transition-[transform,opacity,height,box-shadow] duration-300 ease-out",
                       "w-[min(42rem,88vw)] md:w-[min(52rem,62vw)]",
