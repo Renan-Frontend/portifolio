@@ -61,8 +61,8 @@ const PROJECT_SLIDES: ProjectSlide[] = [
 const SLIDE_COUNT = PROJECT_SLIDES.length;
 
 /**
- * Três cópias em sequência: [A B C D][A B C D][A B C D].
- * O usuário fica na cópia do meio; nas bordas saltamos sem animação.
+ * Três cópias: [A B C D][A B C D][A B C D].
+ * O usuário permanece na cópia do meio; nas pontas saltamos o scrollLeft.
  */
 const LOOP_COPIES = 3;
 
@@ -111,19 +111,33 @@ function indexFromProjectId(id: string | undefined): number {
   return index >= 0 ? index : 0;
 }
 
-/** Índice absoluto na cópia do meio (onde o carrossel “mora”). */
+/** Índice absoluto na cópia do meio. */
 function middleLoopIndex(logicalIndex: number): number {
   return SLIDE_COUNT + logicalIndex;
 }
 
-/**
- * Se o índice absoluto caiu na 1ª ou 3ª cópia, devolve o equivalente no meio.
- * Assim o scroll nunca termina no “vazio” das extremidades.
- */
-function normalizeLoopIndex(loopIndex: number): number {
-  if (loopIndex < SLIDE_COUNT) return loopIndex + SLIDE_COUNT;
-  if (loopIndex >= SLIDE_COUNT * 2) return loopIndex - SLIDE_COUNT;
-  return loopIndex;
+/** Largura de uma cópia completa (todos os slides + gaps). */
+function measureSetWidth(track: HTMLDivElement): number {
+  const first = track.querySelector<HTMLElement>('[data-loop-index="0"]');
+  const next = track.querySelector<HTMLElement>(
+    `[data-loop-index="${SLIDE_COUNT}"]`,
+  );
+  if (!first || !next) return 0;
+  return next.offsetLeft - first.offsetLeft;
+}
+
+/** Centraliza um card no track sem animação (salto / mount). */
+function jumpCenterCard(track: HTMLDivElement, loopIndex: number) {
+  const card = track.querySelector<HTMLElement>(
+    `[data-loop-index="${loopIndex}"]`,
+  );
+  if (!card) return;
+
+  const trackBox = track.getBoundingClientRect();
+  const cardBox = card.getBoundingClientRect();
+  const delta =
+    cardBox.left + cardBox.width / 2 - (trackBox.left + trackBox.width / 2);
+  track.scrollLeft += delta;
 }
 
 // =============================================================================
@@ -131,8 +145,8 @@ function normalizeLoopIndex(loopIndex: number): number {
 // =============================================================================
 
 /**
- * Página Projetos: marca d’água no topo e carrossel grande horizontal.
- * Loop infinito (arraste/swipe sem fim vazio nas laterais).
+ * Página Projetos: marca d’água e carrossel horizontal em loop.
+ * Scroll nativo + snap; o React só atualiza o destaque e corrige o loop.
  */
 function ProjectsPage({
   onBack,
@@ -144,120 +158,109 @@ function ProjectsPage({
     middleLoopIndex(indexFromProjectId(initialProjectId)),
   );
   const trackRef = useRef<HTMLDivElement>(null);
-  /** Ignora onScroll enquanto o scroll programático ainda anima. */
-  const ignoreScrollSyncRef = useRef(true);
-  const scrollUnlockTimerRef = useRef<number | null>(null);
-  /** Evita animação no primeiro posicionamento e nos saltos de loop. */
-  const instantScrollRef = useRef(true);
-  /** Arraste com mouse (pressionar e jogar para o lado). */
+  const activeLoopIndexRef = useRef(activeLoopIndex);
+  /** Arraste com mouse. */
   const isDraggingRef = useRef(false);
   const dragStartXRef = useRef(0);
   const dragScrollLeftRef = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
+  /** Impede normalizar/atualizar no meio de um salto de loop. */
+  const isJumpingRef = useRef(false);
+
+  activeLoopIndexRef.current = activeLoopIndex;
 
   // ----- efeitos -----
 
+  // ----- handlers (refs estáveis para listeners de mount) -----
+
+  /** Índice absoluto do card mais próximo do centro. */
+  function closestLoopIndex(): number {
+    const track = trackRef.current;
+    if (!track) return activeLoopIndexRef.current;
+
+    const cards = Array.from(
+      track.querySelectorAll<HTMLElement>("[data-loop-index]"),
+    );
+    if (cards.length === 0) return activeLoopIndexRef.current;
+
+    const trackBox = track.getBoundingClientRect();
+    const trackCenter = trackBox.left + trackBox.width / 2;
+    let closest = activeLoopIndexRef.current;
+    let closestDist = Number.POSITIVE_INFINITY;
+
+    for (const card of cards) {
+      const loopIndex = Number(card.dataset.loopIndex);
+      if (Number.isNaN(loopIndex)) continue;
+
+      const box = card.getBoundingClientRect();
+      const cardCenter = box.left + box.width / 2;
+      const dist = Math.abs(cardCenter - trackCenter);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closest = loopIndex;
+      }
+    }
+
+    return closest;
+  }
+
   /**
-   * Centraliza o slide ativo no track.
-   * Bloqueia sync do onScroll até o scroll programático estabilizar.
+   * Se o scroll caiu na 1ª ou 3ª cópia, desloca scrollLeft em 1 set
+   * e atualiza o índice — sem animação, sem scrollIntoView.
    */
+  function normalizeLoopIfNeeded() {
+    const track = trackRef.current;
+    if (!track || isJumpingRef.current || isDraggingRef.current) return;
+
+    const closest = closestLoopIndex();
+    if (closest >= SLIDE_COUNT && closest < SLIDE_COUNT * 2) {
+      setActiveLoopIndex((current) =>
+        current === closest ? current : closest,
+      );
+      return;
+    }
+
+    const setWidth = measureSetWidth(track);
+    if (setWidth <= 0) return;
+
+    const delta = closest < SLIDE_COUNT ? setWidth : -setWidth;
+    const nextIndex =
+      closest < SLIDE_COUNT ? closest + SLIDE_COUNT : closest - SLIDE_COUNT;
+
+    isJumpingRef.current = true;
+    track.classList.add("is-jumping");
+    track.scrollLeft += delta;
+    setActiveLoopIndex(nextIndex);
+
+    requestAnimationFrame(() => {
+      track.classList.remove("is-jumping");
+      isJumpingRef.current = false;
+    });
+  }
+
+  const normalizeLoopRef = useRef(normalizeLoopIfNeeded);
+  normalizeLoopRef.current = normalizeLoopIfNeeded;
+
+  /** Posiciona na cópia do meio e escuta scrollend nativo. */
   useEffect(() => {
     const track = trackRef.current;
-    if (!track || isDraggingRef.current) return;
+    if (!track) return;
 
-    const card = track.querySelector<HTMLElement>(
-      `[data-loop-index="${activeLoopIndex}"]`,
-    );
-    if (!card) return;
-
-    ignoreScrollSyncRef.current = true;
-    if (scrollUnlockTimerRef.current !== null) {
-      window.clearTimeout(scrollUnlockTimerRef.current);
-      scrollUnlockTimerRef.current = null;
-    }
-
-    let cancelled = false;
-    let rafId = 0;
-    const useInstant = instantScrollRef.current;
-    instantScrollRef.current = false;
-
-    /** Libera a sincronização manual após o scroll programático. */
-    function unlockScrollSync() {
-      if (cancelled) return;
-      ignoreScrollSyncRef.current = false;
-      if (scrollUnlockTimerRef.current !== null) {
-        window.clearTimeout(scrollUnlockTimerRef.current);
-        scrollUnlockTimerRef.current = null;
-      }
-      if (rafId) {
-        window.cancelAnimationFrame(rafId);
-        rafId = 0;
-      }
-    }
-
-    /** Diz se o centro do track já está alinhado ao card alvo. */
-    function isNearTarget() {
-      const trackBox = track.getBoundingClientRect();
-      const cardBox = card.getBoundingClientRect();
-      const trackCenter = trackBox.left + trackBox.width / 2;
-      const cardCenter = cardBox.left + cardBox.width / 2;
-      return Math.abs(cardCenter - trackCenter) < 28;
-    }
-
-    card.scrollIntoView({
-      behavior: useInstant ? "auto" : "smooth",
-      inline: "center",
-      block: "nearest",
+    isJumpingRef.current = true;
+    jumpCenterCard(track, activeLoopIndexRef.current);
+    requestAnimationFrame(() => {
+      isJumpingRef.current = false;
     });
 
-    if (useInstant) {
-      unlockScrollSync();
-      return () => {
-        cancelled = true;
-      };
+    /** Normaliza o loop quando a inércia/snap termina. */
+    function onScrollEnd() {
+      if (isDraggingRef.current) return;
+      normalizeLoopRef.current();
     }
 
-    track.addEventListener("scrollend", unlockScrollSync, { once: true });
-
-    let lastLeft = track.scrollLeft;
-    let stableMs = 0;
-    const startedAt = performance.now();
-
-    /** Observa estabilização do scroll até o card alvo. */
-    function pollSettle(now: number) {
-      if (cancelled || !ignoreScrollSyncRef.current) return;
-
-      const left = track.scrollLeft;
-      if (Math.abs(left - lastLeft) < 0.5) {
-        stableMs += 16;
-      } else {
-        stableMs = 0;
-        lastLeft = left;
-      }
-
-      if ((stableMs >= 120 && isNearTarget()) || now - startedAt > 2000) {
-        unlockScrollSync();
-        return;
-      }
-
-      rafId = window.requestAnimationFrame(pollSettle);
-    }
-
-    rafId = window.requestAnimationFrame(pollSettle);
-    scrollUnlockTimerRef.current = window.setTimeout(unlockScrollSync, 2000);
-
-    return () => {
-      cancelled = true;
-      track.removeEventListener("scrollend", unlockScrollSync);
-      if (rafId) window.cancelAnimationFrame(rafId);
-      if (scrollUnlockTimerRef.current !== null) {
-        window.clearTimeout(scrollUnlockTimerRef.current);
-        scrollUnlockTimerRef.current = null;
-      }
-    };
-  }, [activeLoopIndex]);
-
-  // ----- handlers -----
+    track.addEventListener("scrollend", onScrollEnd);
+    return () => track.removeEventListener("scrollend", onScrollEnd);
+  }, []);
 
   /** Volta para a home. */
   function handleBack(event: MouseEvent<HTMLAnchorElement>) {
@@ -271,91 +274,21 @@ function ProjectsPage({
     onExperience();
   }
 
-  /** Índice absoluto do card mais próximo do centro do track. */
-  function closestLoopIndex(): number {
-    const track = trackRef.current;
-    if (!track) return activeLoopIndex;
-
-    const cards = Array.from(
-      track.querySelectorAll<HTMLElement>("[data-loop-index]"),
-    );
-    if (cards.length === 0) return activeLoopIndex;
-
-    const trackBox = track.getBoundingClientRect();
-    const trackCenter = trackBox.left + trackBox.width / 2;
-    let closest = activeLoopIndex;
-    let closestDist = Number.POSITIVE_INFINITY;
-
-    cards.forEach((card) => {
-      const loopIndex = Number(card.dataset.loopIndex);
-      if (Number.isNaN(loopIndex)) return;
-
-      const box = card.getBoundingClientRect();
-      const cardCenter = box.left + box.width / 2;
-      const dist = Math.abs(cardCenter - trackCenter);
-      if (dist < closestDist) {
-        closestDist = dist;
-        closest = loopIndex;
-      }
-    });
-
-    return closest;
-  }
-
-  /**
-   * Após parar numa cópia das pontas, salta para o equivalente no meio
-   * sem animação — o usuário não percebe o “teleporte”.
-   */
-  function settleOnLoopIndex(rawIndex: number) {
-    const normalized = normalizeLoopIndex(rawIndex);
-
-    if (normalized !== rawIndex) {
-      instantScrollRef.current = true;
-      setActiveLoopIndex(normalized);
-      return;
-    }
-
-    if (normalized === activeLoopIndex) {
-      ignoreScrollSyncRef.current = true;
-      const card = trackRef.current?.querySelector<HTMLElement>(
-        `[data-loop-index="${normalized}"]`,
-      );
-      card?.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
-      window.setTimeout(() => {
-        ignoreScrollSyncRef.current = false;
-      }, 320);
-      return;
-    }
-
-    setActiveLoopIndex(normalized);
-  }
-
-  /**
-   * Atualiza o índice no scroll manual.
-   * Se cair na 1ª/3ª cópia, normaliza para o meio.
-   */
+  /** Só atualiza o destaque visual durante o scroll (não mexe no scroll). */
   function handleTrackScroll() {
-    if (ignoreScrollSyncRef.current || isDraggingRef.current) return;
+    if (isJumpingRef.current || isDraggingRef.current) return;
 
     const closest = closestLoopIndex();
-    const normalized = normalizeLoopIndex(closest);
-
-    if (normalized !== closest) {
-      instantScrollRef.current = true;
-      setActiveLoopIndex(normalized);
-      return;
-    }
-
-    setActiveLoopIndex((current) =>
-      current === normalized ? current : normalized,
-    );
+    setActiveLoopIndex((current) => (current === closest ? current : closest));
   }
 
-  /** Inicia o arraste horizontal com o mouse (touch continua nativo). */
+  /** Ao terminar o gesto/inércia (React): encaixa o loop no meio se preciso. */
+  function handleScrollEnd() {
+    if (isDraggingRef.current) return;
+    normalizeLoopIfNeeded();
+  }
+
+  /** Inicia o arraste horizontal com o mouse. */
   function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.pointerType !== "mouse" || event.button !== 0) return;
 
@@ -365,9 +298,7 @@ function ProjectsPage({
     isDraggingRef.current = true;
     dragStartXRef.current = event.clientX;
     dragScrollLeftRef.current = track.scrollLeft;
-    ignoreScrollSyncRef.current = true;
     setIsDragging(true);
-
     track.setPointerCapture(event.pointerId);
     event.preventDefault();
   }
@@ -381,9 +312,12 @@ function ProjectsPage({
 
     const dx = event.clientX - dragStartXRef.current;
     track.scrollLeft = dragScrollLeftRef.current - dx;
+
+    const closest = closestLoopIndex();
+    setActiveLoopIndex((current) => (current === closest ? current : closest));
   }
 
-  /** Encerra o arraste e encaixa o card mais próximo (com loop). */
+  /** Solta o arraste; o snap CSS encaixa e o scrollend normaliza o loop. */
   function handlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
     if (!isDraggingRef.current) return;
 
@@ -395,7 +329,10 @@ function ProjectsPage({
       track.releasePointerCapture(event.pointerId);
     }
 
-    settleOnLoopIndex(closestLoopIndex());
+    // Pequeno atraso para o snap voltar a atuar após remover is-dragging.
+    requestAnimationFrame(() => {
+      normalizeLoopIfNeeded();
+    });
   }
 
   // ----- interface -----
@@ -410,21 +347,18 @@ function ProjectsPage({
       </h1>
 
       <section className="projects-layout about-layout relative z-10 mx-auto flex w-full flex-1 flex-col justify-center px-0 pb-3 md:pb-2">
-        {/*
-          Full-bleed + loop infinito: sempre há vizinhos nas laterais.
-          Fade suave evita o “recorte” duro do overflow.
-        */}
         <div className="about-enter__facts relative w-full py-5 md:py-8">
           <div className="projects-carousel-shell relative w-full">
             <div
               ref={trackRef}
               onScroll={handleTrackScroll}
+              onScrollEnd={handleScrollEnd}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className={[
-                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto overflow-y-visible px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-5 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-7",
+                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-6 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-8",
                 isDragging
                   ? "is-dragging cursor-grabbing select-none"
                   : "cursor-grab",
@@ -439,11 +373,11 @@ function ProjectsPage({
                     data-loop-index={slide.loopIndex}
                     data-logical-index={slide.logicalIndex}
                     className={[
-                      "projects-carousel__card relative flex shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl border transition-[transform,opacity,height,box-shadow] duration-300 ease-out",
-                      "w-[min(42rem,88vw)] md:w-[min(52rem,62vw)]",
+                      // Altura fixa: evita “pulo” ao trocar o ativo no meio do gesto
+                      "projects-carousel__card relative flex h-[min(66vh,38rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl border transition-[transform,opacity,box-shadow,border-color] duration-300 ease-out md:h-[min(70vh,42rem)] md:w-[min(52rem,62vw)]",
                       isActive
-                        ? "z-10 h-[min(66vh,38rem)] scale-100 border-purple-400/45 opacity-100 shadow-[0_22px_56px_-28px_rgba(168,85,247,0.55)] md:h-[min(70vh,42rem)]"
-                        : "z-0 h-[min(56vh,32rem)] scale-[0.94] border-white/10 opacity-55 md:h-[min(60vh,36rem)]",
+                        ? "z-10 scale-100 border-purple-400/45 opacity-100 shadow-[0_22px_56px_-28px_rgba(168,85,247,0.55)]"
+                        : "z-0 scale-[0.94] border-white/10 opacity-55",
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
@@ -453,14 +387,7 @@ function ProjectsPage({
                       <p className="text-xs tracking-[0.2em] text-purple-300/90 uppercase md:text-sm">
                         {slide.tagline}
                       </p>
-                      <h2
-                        className={[
-                          "mt-2.5 font-semibold tracking-wide text-neutral-50",
-                          isActive
-                            ? "text-[clamp(1.5rem,3.5vw,2.35rem)]"
-                            : "text-[clamp(1.25rem,3vw,1.85rem)]",
-                        ].join(" ")}
-                      >
+                      <h2 className="mt-2.5 text-[clamp(1.4rem,3.2vw,2.2rem)] font-semibold tracking-wide text-neutral-50">
                         {slide.name}
                       </h2>
                       <p
@@ -477,7 +404,6 @@ function ProjectsPage({
               })}
             </div>
 
-            {/* Bordas infinitas: dissolve o conteúdo nas laterais */}
             <div
               className="projects-carousel-edge projects-carousel-edge--left pointer-events-none absolute inset-y-0 left-0 z-20 w-10 md:w-16 lg:w-24"
               aria-hidden="true"

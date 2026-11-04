@@ -344,6 +344,12 @@ body,
   cursor: grabbing;
 }
 
+/* Salto silencioso do loop infinito (1ª ↔ 3ª cópia) */
+.projects-carousel.is-jumping {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
 @media (min-width: 768px) {
   .projects-carousel {
     scroll-padding-inline: max(1.5rem, calc((100% - min(52rem, 62vw)) / 2));
