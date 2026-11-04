@@ -92,7 +92,7 @@ function AboutPage({ onBack, onExperience }: AboutPageProps) {
 
   // ----- interface -----
   return (
-    <main className="about-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white md:h-svh">
+    <main className="about-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white">
       {/* Marca d’água — mesmo ritmo da página Experiência */}
       <h1
         className="about-enter__title font-script pointer-events-none absolute inset-x-0 top-2 z-0 px-4 text-center text-[clamp(2.25rem,9vw,5.75rem)] leading-none whitespace-nowrap text-[#9a92ad] select-none md:top-2"
@@ -102,10 +102,10 @@ function AboutPage({ onBack, onExperience }: AboutPageProps) {
       </h1>
 
       {/*
-        Mobile: coluna única + scroll natural se precisar.
-        Desktop: duas colunas, mesmo compactamento da Experiência.
+        Mobile/desktop: a página cresce com o conteúdo (sem h-svh/overflow hidden).
+        Em telas altas, justify-center centraliza o bloco.
       */}
-      <section className="about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-3 min-[390px]:px-6 md:min-h-0 md:justify-center md:px-10 md:pb-2 lg:px-14 xl:px-20">
+      <section className="about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-3 min-[390px]:px-6 md:justify-center md:px-10 md:pb-2 lg:px-14 xl:px-20">
         <div className="about-layout__row grid w-full grid-cols-1 items-stretch gap-8 md:grid-cols-[minmax(0,48fr)_auto_minmax(0,52fr)] md:items-center md:gap-0">
           {/* ----- Bio ----- */}
           <div className="about-enter__bio flex min-w-0 flex-col justify-center gap-2.5 md:gap-1 md:pr-2 lg:pr-2.5 xl:pr-3">
