@@ -141,6 +141,15 @@ function App() {
     if (id === "projects" || isProjectId(id)) {
       setProjectsOpen(true);
     }
+
+    if (
+      id === "about" ||
+      id === "experience" ||
+      id === "projects" ||
+      isProjectId(id)
+    ) {
+      resetWindowScroll();
+    }
   };
 
   /**
@@ -186,6 +195,11 @@ function App() {
     setIntroDone(true);
   }
 
+  /** Garante que a nova view comece no topo (evita herdar scroll do footer). */
+  function resetWindowScroll() {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }
+
   /** Volta à home sem repetir a intro cinemática. */
   function goHome() {
     setActive("home");
@@ -196,12 +210,14 @@ function App() {
       "",
       `${window.location.pathname}${window.location.search}`,
     );
+    resetWindowScroll();
   }
 
   /** Vai para a página Experiência. */
   function goExperience() {
     setActive("experience");
     window.history.pushState(null, "", "#experience");
+    resetWindowScroll();
   }
 
   /**
@@ -214,6 +230,7 @@ function App() {
     setProjectsOpen(true);
     setActive("projects");
     window.history.pushState(null, "", "#projects");
+    resetWindowScroll();
   }
 
   // ----- interface: página Sobre Mim -----

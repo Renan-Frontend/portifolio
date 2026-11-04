@@ -142,7 +142,7 @@ function ExperiencePage({ onBack, onProjects }: ExperiencePageProps) {
 
   // ----- interface -----
   return (
-    <main className="experience-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white md:h-svh">
+    <main className="experience-page relative isolate flex min-h-svh w-full max-w-[100vw] flex-col overflow-x-clip bg-neutral-950 text-white">
       {/* Marca d’água — posição alinhada à de Sobre Mim */}
       <h1
         className="about-enter__title font-script pointer-events-none absolute inset-x-0 top-2 z-0 px-4 text-center text-[clamp(2.25rem,9vw,5.75rem)] leading-none whitespace-nowrap text-[#9a92ad] select-none md:top-2"
@@ -151,7 +151,8 @@ function ExperiencePage({ onBack, onProjects }: ExperiencePageProps) {
         Experiência
       </h1>
 
-      <section className="experience-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-3 min-[390px]:px-6 md:min-h-0 md:justify-center md:px-10 md:pb-2 lg:px-14 xl:px-20">
+      {/* Sem h-svh fixo: a página cresce com o conteúdo e permite scroll natural. */}
+      <section className="experience-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-3 min-[390px]:px-6 md:justify-center md:px-10 md:pb-2 lg:px-14 xl:px-20">
         {/* ----- Desktop: duas colunas equilibradas ----- */}
         <div className="about-layout__row hidden w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch md:grid">
           {/* Esquerda — topo alinhado com a coluna direita (Escreva+) */}
