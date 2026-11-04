@@ -319,6 +319,274 @@ body,
   line-height: 1.55;
 }
 
+/* Carrossel de projetos: full-bleed, sem recorte duro nas laterais */
+.projects-page {
+  overflow: hidden;
+}
+
+.projects-carousel-shell {
+  overflow: visible;
+}
+
+.projects-carousel {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scroll-snap-stop: normal;
+  /* Card ativo no centro; vizinhos vazam pelas bordas da tela */
+  scroll-padding-inline: max(1rem, calc((100% - min(42rem, 88vw)) / 2));
+}
+
+/* Durante o arraste com mouse: sem snap/smooth para acompanhar o cursor */
+.projects-carousel.is-dragging {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+  cursor: grabbing;
+}
+
+/* Salto silencioso do loop infinito (1ª ↔ 3ª cópia) */
+.projects-carousel.is-jumping {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
+/* Animação das setas: sem snap/smooth nativo brigando com o easing */
+.projects-carousel.is-arrow-animating {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .projects-carousel {
+    scroll-padding-inline: max(1.5rem, calc((100% - min(52rem, 62vw)) / 2));
+  }
+}
+
+.projects-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Setas laterais discretas */
+.projects-carousel__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 30;
+  display: inline-flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  translate: 0 -50%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  background: rgb(10 10 10 / 0.35);
+  color: rgb(212 212 216 / 0.55);
+  box-shadow: none;
+  backdrop-filter: blur(4px);
+  opacity: 0.55;
+  transition:
+    transform 200ms ease,
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    opacity 200ms ease;
+}
+
+.projects-carousel__nav:hover {
+  border-color: rgb(216 180 254 / 0.45);
+  background: rgb(24 24 27 / 0.55);
+  color: rgb(216 180 254 / 0.9);
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+.projects-carousel__nav:active {
+  transform: scale(0.96);
+}
+
+.projects-carousel__nav--prev {
+  left: 0.65rem;
+}
+
+.projects-carousel__nav--next {
+  right: 0.65rem;
+}
+
+@media (min-width: 768px) {
+  .projects-carousel__nav {
+    height: 3.5rem;
+    width: 3.5rem;
+  }
+
+  .projects-carousel__nav--prev {
+    left: 1.1rem;
+  }
+
+  .projects-carousel__nav--next {
+    right: 1.1rem;
+  }
+}
+
+/* Escala/neon do ativo: resposta rápida ao trocar de slide */
+.projects-carousel__card {
+  transition:
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms ease;
+  will-change: transform, opacity;
+}
+
+/* Capa preenchendo o card — sem faixa preta dentro da moldura */
+.projects-carousel__media {
+  z-index: 0;
+}
+
+/* Sombra dos laterais: volume leve */
+.projects-carousel__card--side {
+  box-shadow:
+    0 10px 28px -12px rgb(0 0 0 / 0.75),
+    0 2px 8px -4px rgb(0 0 0 / 0.45);
+}
+
+/*
+  Neon do ativo: um pouco maior, ainda perto o bastante
+  para não bater no overflow do track.
+*/
+/* Neon um pouco mais fechado; moldura clara por cima */
+.projects-carousel__card--active {
+  box-shadow:
+    0 18px 36px -14px rgb(0 0 0 / 0.55),
+    0 0 0 1px rgb(168 110 235 / 0.4),
+    0 0 12px 2px rgb(168 110 235 / 0.55),
+    0 0 26px 4px rgb(168 110 235 / 0.32),
+    0 0 42px 6px rgb(168 110 235 / 0.16);
+}
+
+/*
+  Filete fino + quinas grossas centradas no miolo do filete
+  (não só para dentro). Mesmo raio do rounded-2xl.
+*/
+.projects-carousel__corners {
+  --corner-radius: 1rem;
+  --corner-size: 1.75rem;
+  --corner-stroke: 5.5px;
+  --frame-stroke: 1.75px;
+  /* Empurra a quina para fora pela metade da diferença de espessura */
+  --corner-outset: calc((var(--corner-stroke) - var(--frame-stroke)) / 2);
+  transition: color 220ms ease, opacity 220ms ease;
+}
+
+.projects-carousel__frame {
+  position: absolute;
+  inset: 0;
+  border: var(--frame-stroke) solid var(--frame-color, currentColor);
+  border-radius: var(--corner-radius);
+  box-sizing: border-box;
+  opacity: 1;
+  transition: border-color 220ms ease;
+}
+
+.projects-carousel__corner {
+  position: absolute;
+  width: var(--corner-size);
+  height: var(--corner-size);
+  border-style: solid;
+  border-color: currentColor;
+  border-width: 0;
+  box-sizing: border-box;
+}
+
+.projects-carousel__corner--tl {
+  top: calc(-1 * var(--corner-outset));
+  left: calc(-1 * var(--corner-outset));
+  border-top-width: var(--corner-stroke);
+  border-left-width: var(--corner-stroke);
+  border-top-left-radius: calc(var(--corner-radius) + var(--corner-outset));
+}
+
+.projects-carousel__corner--tr {
+  top: calc(-1 * var(--corner-outset));
+  right: calc(-1 * var(--corner-outset));
+  border-top-width: var(--corner-stroke);
+  border-right-width: var(--corner-stroke);
+  border-top-right-radius: calc(var(--corner-radius) + var(--corner-outset));
+}
+
+.projects-carousel__corner--bl {
+  bottom: calc(-1 * var(--corner-outset));
+  left: calc(-1 * var(--corner-outset));
+  border-bottom-width: var(--corner-stroke);
+  border-left-width: var(--corner-stroke);
+  border-bottom-left-radius: calc(var(--corner-radius) + var(--corner-outset));
+}
+
+.projects-carousel__corner--br {
+  bottom: calc(-1 * var(--corner-outset));
+  right: calc(-1 * var(--corner-outset));
+  border-bottom-width: var(--corner-stroke);
+  border-right-width: var(--corner-stroke);
+  border-bottom-right-radius: calc(var(--corner-radius) + var(--corner-outset));
+}
+
+@media (min-width: 768px) {
+  .projects-carousel__corners {
+    --corner-size: 2.05rem;
+    --corner-stroke: 6.5px;
+    --frame-stroke: 2px;
+  }
+}
+
+.projects-carousel__corners--active {
+  /* Linhas claras por cima do neon */
+  color: rgb(186 150 255);
+  --frame-color: rgb(158 120 230);
+  opacity: 1;
+}
+
+/* Fora do centro: moldura cinza */
+.projects-carousel__corners--side {
+  color: rgb(140 140 140);
+  --frame-color: rgb(110 110 110);
+  opacity: 1;
+}
+
+/* Dissolve o card nas laterais — sensação de borda infinita */
+.projects-carousel-edge {
+  background: linear-gradient(
+    to right,
+    #0a0a0a 0%,
+    rgb(10 10 10 / 0.75) 35%,
+    rgb(10 10 10 / 0) 100%
+  );
+}
+
+.projects-carousel-edge--right {
+  background: linear-gradient(
+    to left,
+    #0a0a0a 0%,
+    rgb(10 10 10 / 0.75) 35%,
+    rgb(10 10 10 / 0) 100%
+  );
+}
+
+.projects-layout.about-layout {
+  padding-top: calc(
+    clamp(1.75rem, 6.5vw, 2.75rem) + clamp(0.4rem, 1vw, 0.75rem)
+  );
+}
+
+@media (min-width: 768px) {
+  .projects-layout.about-layout {
+    padding-top: calc(
+      clamp(1.85rem, 3.5vw, 3rem) + clamp(0.4rem, 0.8vw, 0.7rem)
+    );
+  }
+}
+
+
 
 @media (min-width: 768px) {
   .experience-copy {
@@ -335,12 +603,30 @@ body,
   }
 
   .experience-page .about-enter__bio,
-  .experience-page .about-enter__facts {
+  .experience-page .about-enter__facts,
+  .curriculum-page .about-enter__bio,
+  .curriculum-page .about-enter__facts {
     gap: 0.7rem;
   }
 
   .experience-copy {
     line-height: 1.35;
+  }
+}
+
+/* Currículo: colunas com scroll interno no desktop se a altura apertar */
+@media (min-width: 768px) {
+  .curriculum-page .about-layout__row {
+    min-height: 0;
+  }
+
+  .curriculum-page .about-enter__bio,
+  .curriculum-page .about-enter__facts {
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(82 82 82) transparent;
   }
 }
 
