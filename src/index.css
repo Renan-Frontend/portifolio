@@ -288,20 +288,19 @@ body,
    ============================================================================= */
 
 /*
-  Espaço título → conteúdo.
-  Mobile: mais respiro (conteúdo rola se precisar).
-  Desktop: compacto para caber na viewport.
+  Espaço título → conteúdo (Sobre Mim e Experiência no mesmo ritmo).
+  Mobile: mais respiro. Desktop: compacto para caber na viewport.
 */
 .about-layout {
   padding-top: calc(
-    clamp(3.25rem, 12vw, 4.75rem) + clamp(2.25rem, 3vw, 2.75rem)
+    clamp(2.75rem, 10vw, 4rem) + clamp(1.25rem, 2vw, 1.75rem)
   );
 }
 
 @media (min-width: 768px) {
   .about-layout {
     padding-top: calc(
-      clamp(3.5rem, 7vw, 5.5rem) + clamp(2.5rem, 2vw, 3rem)
+      clamp(2.75rem, 5vw, 4.25rem) + clamp(1.1rem, 1.4vw, 1.65rem)
     );
   }
 }
@@ -309,8 +308,39 @@ body,
 @media (min-width: 1024px) {
   .about-layout {
     padding-top: calc(
-      clamp(4.5rem, 7vw, 7rem) + clamp(3.25rem, 1.2vw, 4rem)
+      clamp(3.25rem, 5vw, 5rem) + clamp(1.35rem, 1vw, 1.85rem)
     );
+  }
+}
+
+/* Corpo de texto: confortável no mobile; compacto no desktop */
+.experience-copy {
+  font-size: clamp(1.05rem, 4.2vw, 1.22rem);
+  line-height: 1.55;
+}
+
+
+@media (min-width: 768px) {
+  .experience-copy {
+    font-size: clamp(0.96rem, 1.35vw, 1.14rem);
+    line-height: 1.42;
+  }
+}
+
+@media (max-height: 900px) and (min-width: 768px) {
+  .about-layout {
+    padding-top: calc(
+      clamp(2.5rem, 4.5vw, 3.75rem) + clamp(0.85rem, 1.1vw, 1.35rem)
+    );
+  }
+
+  .experience-page .about-enter__bio,
+  .experience-page .about-enter__facts {
+    gap: 0.7rem;
+  }
+
+  .experience-copy {
+    line-height: 1.35;
   }
 }
 
