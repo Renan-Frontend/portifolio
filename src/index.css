@@ -362,6 +362,7 @@ body,
 
 /* Escala do ativo: mais lenta e suave ao virar principal */
 .projects-carousel__card {
+  --frame-inset: 4px;
   transition:
     transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 550ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -370,10 +371,16 @@ body,
   will-change: transform, opacity;
 }
 
-/* Capa preenchendo o card; as quinas ficam por cima */
+@media (min-width: 768px) {
+  .projects-carousel__card {
+    --frame-inset: 5px;
+  }
+}
+
+/* Capa colada na face interna da moldura */
 .projects-carousel__media {
-  inset: 0;
-  border-radius: inherit;
+  inset: var(--frame-inset);
+  border-radius: calc(1rem - var(--frame-inset));
   z-index: 0;
 }
 
@@ -393,13 +400,11 @@ body,
     0 0 88px -20px rgb(168 85 247 / 0.22);
 }
 
-/*
-  Cantos luminosos minimalistas:
-  L com pontas arredondadas, espessura uniforme, brilho sutil.
-  Sem linhas entre as quinas e sem filete duplicado.
-*/
+/* Só as cantoneiras grossas nas quinas (sem linhas entre elas) */
 .projects-carousel__corners {
-  --corner-size: 1.75rem;
+  --card-radius: 1rem;
+  --corner-size: 1.6rem;
+  --corner-stroke: 4px;
   transition: color 550ms ease, opacity 550ms ease;
 }
 
@@ -407,59 +412,48 @@ body,
   position: absolute;
   width: var(--corner-size);
   height: var(--corner-size);
-  overflow: visible;
-}
-
-.projects-carousel__corner-path {
-  filter: drop-shadow(0 0 4px currentColor);
+  border-style: solid;
+  border-color: currentColor;
+  border-width: 0;
+  box-sizing: border-box;
 }
 
 .projects-carousel__corner--tl {
-  top: 0.55rem;
-  left: 0.55rem;
+  top: 0;
+  left: 0;
+  border-top-width: var(--corner-stroke);
+  border-left-width: var(--corner-stroke);
+  border-top-left-radius: var(--card-radius);
 }
 
 .projects-carousel__corner--tr {
-  top: 0.55rem;
-  right: 0.55rem;
-  transform: scaleX(-1);
+  top: 0;
+  right: 0;
+  border-top-width: var(--corner-stroke);
+  border-right-width: var(--corner-stroke);
+  border-top-right-radius: var(--card-radius);
 }
 
 .projects-carousel__corner--bl {
-  bottom: 0.55rem;
-  left: 0.55rem;
-  transform: scaleY(-1);
+  bottom: 0;
+  left: 0;
+  border-bottom-width: var(--corner-stroke);
+  border-left-width: var(--corner-stroke);
+  border-bottom-left-radius: var(--card-radius);
 }
 
 .projects-carousel__corner--br {
-  bottom: 0.55rem;
-  right: 0.55rem;
-  transform: scale(-1);
+  bottom: 0;
+  right: 0;
+  border-bottom-width: var(--corner-stroke);
+  border-right-width: var(--corner-stroke);
+  border-bottom-right-radius: var(--card-radius);
 }
 
 @media (min-width: 768px) {
   .projects-carousel__corners {
-    --corner-size: 2.05rem;
-  }
-
-  .projects-carousel__corner--tl,
-  .projects-carousel__corner--tr {
-    top: 0.7rem;
-  }
-
-  .projects-carousel__corner--bl,
-  .projects-carousel__corner--br {
-    bottom: 0.7rem;
-  }
-
-  .projects-carousel__corner--tl,
-  .projects-carousel__corner--bl {
-    left: 0.7rem;
-  }
-
-  .projects-carousel__corner--tr,
-  .projects-carousel__corner--br {
-    right: 0.7rem;
+    --corner-size: 1.85rem;
+    --corner-stroke: 5px;
   }
 }
 
