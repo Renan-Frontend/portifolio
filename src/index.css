@@ -395,43 +395,43 @@ body,
 .projects-carousel__corners {
   inset: 0;
   border-radius: 1rem;
-  border: 1.5px solid currentColor;
+  border: 3px solid currentColor;
   -webkit-mask-image:
     linear-gradient(
       to right,
       #000 0%,
-      #000 22%,
-      transparent 22%,
-      transparent 78%,
-      #000 78%,
+      #000 12%,
+      transparent 12%,
+      transparent 88%,
+      #000 88%,
       #000 100%
     ),
     linear-gradient(
       to bottom,
       #000 0%,
-      #000 22%,
-      transparent 22%,
-      transparent 78%,
-      #000 78%,
+      #000 12%,
+      transparent 12%,
+      transparent 88%,
+      #000 88%,
       #000 100%
     );
   mask-image:
     linear-gradient(
       to right,
       #000 0%,
-      #000 22%,
-      transparent 22%,
-      transparent 78%,
-      #000 78%,
+      #000 12%,
+      transparent 12%,
+      transparent 88%,
+      #000 88%,
       #000 100%
     ),
     linear-gradient(
       to bottom,
       #000 0%,
-      #000 22%,
-      transparent 22%,
-      transparent 78%,
-      #000 78%,
+      #000 12%,
+      transparent 12%,
+      transparent 88%,
+      #000 88%,
       #000 100%
     );
   -webkit-mask-composite: source-in;
@@ -444,7 +444,7 @@ body,
 
 @media (min-width: 768px) {
   .projects-carousel__corners {
-    border-width: 1.75px;
+    border-width: 3.5px;
   }
 }
 
