@@ -432,7 +432,7 @@ function ProjectsPage({
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className={[
-                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-4 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-5",
+                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-7 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-9",
                 isDragging
                   ? "is-dragging cursor-grabbing select-none"
                   : "cursor-grab",
