@@ -388,74 +388,100 @@ body,
 }
 
 /*
-  Cantoneiras na borda do card (inset 0),
-  com o mesmo raio do rounded-2xl (1rem).
-  A máscara deixa só as quinas, seguindo a curva.
+  Cantoneiras: 4 peças pequenas/grossas, coladas na borda,
+  com o mesmo raio do card (rounded-2xl = 1rem).
 */
 .projects-carousel__corners {
-  inset: 0;
-  border-radius: 1rem;
-  border: 3px solid currentColor;
-  -webkit-mask-image:
-    linear-gradient(
-      to right,
-      #000 0%,
-      #000 12%,
-      transparent 12%,
-      transparent 88%,
-      #000 88%,
-      #000 100%
-    ),
-    linear-gradient(
-      to bottom,
-      #000 0%,
-      #000 12%,
-      transparent 12%,
-      transparent 88%,
-      #000 88%,
-      #000 100%
-    );
-  mask-image:
-    linear-gradient(
-      to right,
-      #000 0%,
-      #000 12%,
-      transparent 12%,
-      transparent 88%,
-      #000 88%,
-      #000 100%
-    ),
-    linear-gradient(
-      to bottom,
-      #000 0%,
-      #000 12%,
-      transparent 12%,
-      transparent 88%,
-      #000 88%,
-      #000 100%
-    );
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
-  transition:
-    color 550ms ease,
-    opacity 550ms ease,
-    border-color 550ms ease;
+  transition: color 550ms ease, opacity 550ms ease;
+}
+
+.projects-carousel__corner {
+  position: absolute;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-style: solid;
+  border-color: currentColor;
+  border-width: 0;
+  box-sizing: border-box;
+}
+
+.projects-carousel__corner--tl {
+  top: 0;
+  left: 0;
+  border-top-width: 3.5px;
+  border-left-width: 3.5px;
+  border-top-left-radius: 1rem;
+}
+
+.projects-carousel__corner--tr {
+  top: 0;
+  right: 0;
+  border-top-width: 3.5px;
+  border-right-width: 3.5px;
+  border-top-right-radius: 1rem;
+}
+
+.projects-carousel__corner--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 3.5px;
+  border-left-width: 3.5px;
+  border-bottom-left-radius: 1rem;
+}
+
+.projects-carousel__corner--br {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 3.5px;
+  border-right-width: 3.5px;
+  border-bottom-right-radius: 1rem;
 }
 
 @media (min-width: 768px) {
-  .projects-carousel__corners {
-    border-width: 3.5px;
+  .projects-carousel__corner {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .projects-carousel__corner--tl,
+  .projects-carousel__corner--tr,
+  .projects-carousel__corner--bl,
+  .projects-carousel__corner--br {
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+  }
+
+  .projects-carousel__corner--tl {
+    border-top-width: 4px;
+    border-left-width: 4px;
+  }
+
+  .projects-carousel__corner--tr {
+    border-top-width: 4px;
+    border-right-width: 4px;
+  }
+
+  .projects-carousel__corner--bl {
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+  }
+
+  .projects-carousel__corner--br {
+    border-bottom-width: 4px;
+    border-right-width: 4px;
   }
 }
 
 .projects-carousel__corners--active {
-  color: rgb(216 180 254 / 0.9);
+  color: rgb(216 180 254 / 0.92);
   opacity: 1;
 }
 
 .projects-carousel__corners--side {
-  color: rgb(255 255 255 / 0.32);
-  opacity: 0.75;
+  color: rgb(255 255 255 / 0.34);
+  opacity: 0.8;
 }
 
 /* Dissolve o card nas laterais — sensação de borda infinita */
