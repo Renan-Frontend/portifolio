@@ -390,8 +390,8 @@ function ProjectsPage({
                       // Altura fixa: evita “pulo” ao trocar o ativo no meio do gesto
                       "projects-carousel__card relative flex h-[min(66vh,38rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl origin-center md:h-[min(70vh,42rem)] md:w-[min(52rem,62vw)]",
                       isActive
-                        ? "projects-carousel__card--active z-10 scale-100 border-purple-400/40 opacity-100"
-                        : "projects-carousel__card--side z-0 scale-[0.86] border-white/10 opacity-50",
+                        ? "projects-carousel__card--active z-10 scale-100 opacity-100"
+                        : "projects-carousel__card--side z-0 scale-[0.86] opacity-50",
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
