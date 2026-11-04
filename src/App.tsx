@@ -253,12 +253,12 @@ function App() {
               Renan&nbsp;Naves
             </h1>
 
-            <p className="mt-1.5 text-sm tracking-widest text-neutral-400 uppercase min-[390px]:mt-2 min-[390px]:text-base min-[430px]:text-lg md:mt-3 md:text-lg">
+            <p className="mt-1.5 text-base tracking-widest text-neutral-300 uppercase min-[390px]:mt-2 min-[390px]:text-[1.0625rem] min-[430px]:text-lg md:mt-3 md:text-lg">
               Desenvolvedor de Software
             </p>
           </div>
 
-          <nav className="home-enter__nav mt-10 flex w-fit max-w-full flex-col items-start gap-2.5 text-base font-semibold tracking-wide uppercase min-[390px]:mt-20 min-[390px]:gap-3 min-[390px]:text-lg min-[430px]:mt-24 min-[430px]:gap-3.5 min-[430px]:text-xl md:mt-12 md:gap-3.5 md:text-lg lg:mt-14">
+          <nav className="home-enter__nav mt-10 flex w-fit max-w-full flex-col items-start gap-2.5 text-base font-semibold tracking-wide uppercase min-[390px]:mt-20 min-[390px]:gap-3 min-[390px]:text-[1.0625rem] min-[430px]:mt-24 min-[430px]:gap-3.5 md:mt-12 md:gap-3.5 md:text-[1.0625rem] lg:mt-14">
             <a
               href="#about"
               onClick={select("about")}
@@ -301,7 +301,7 @@ function App() {
                 ].join(" ")}
               >
                 <div className="overflow-hidden">
-                  <div className="flex w-fit flex-col gap-2.5 border-l-2 border-purple-300/90 pt-1 pl-6 text-left min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3 md:pl-8">
+                  <div className="flex w-fit flex-col gap-2.5 border-l-2 border-purple-300/90 pt-1 pl-6 text-left text-[0.9375rem] font-semibold min-[390px]:gap-3 min-[390px]:text-base min-[430px]:gap-3.5 md:gap-3 md:pl-8 md:text-base">
                     {visibleProjects.map((project) => (
                       <a
                         key={project.id}
@@ -358,7 +358,7 @@ function App() {
             </p>
             <a
               href="mailto:renan.naves.frontend@gmail.com"
-              className="mt-1 block text-base break-all transition hover:text-purple-300 min-[390px]:text-lg xl:truncate xl:text-base"
+              className="mt-1 block text-[1.0625rem] break-all transition hover:text-purple-300 xl:truncate"
             >
               renan.naves.frontend@gmail.com
             </a>
@@ -373,7 +373,7 @@ function App() {
               href="https://wa.me/5562982941455"
               target="_blank"
               rel="noreferrer"
-              className="mt-1 block text-base transition hover:text-purple-300 min-[390px]:text-lg xl:text-base"
+              className="mt-1 block text-[1.0625rem] transition hover:text-purple-300"
             >
               +55 (62) 98294-1455
             </a>
@@ -388,7 +388,7 @@ function App() {
               href="https://www.linkedin.com/in/renannavesfrontend"
               target="_blank"
               rel="noreferrer"
-              className="mt-1 block text-base break-all transition hover:text-purple-300 min-[390px]:text-lg xl:truncate xl:text-base"
+              className="mt-1 block text-[1.0625rem] break-all transition hover:text-purple-300 xl:truncate"
             >
               linkedin.com/in/renannavesfrontend
             </a>
@@ -403,7 +403,7 @@ function App() {
               href="https://github.com/Renan-Frontend"
               target="_blank"
               rel="noreferrer"
-              className="mt-1 block text-base break-all transition hover:text-purple-300 min-[390px]:text-lg xl:truncate xl:text-base"
+              className="mt-1 block text-[1.0625rem] break-all transition hover:text-purple-300 xl:truncate"
             >
               github.com/Renan-Frontend
             </a>
