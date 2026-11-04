@@ -319,6 +319,32 @@ body,
   line-height: 1.55;
 }
 
+/* Carrossel de projetos: scroll horizontal limpo */
+.projects-carousel {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+
+.projects-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.projects-layout.about-layout {
+  padding-top: calc(
+    clamp(2.75rem, 10vw, 4rem) + clamp(1rem, 1.8vw, 1.5rem)
+  );
+}
+
+@media (min-width: 768px) {
+  .projects-layout.about-layout {
+    padding-top: calc(
+      clamp(2.75rem, 5vw, 4.25rem) + clamp(0.9rem, 1.2vw, 1.35rem)
+    );
+  }
+}
+
+
 
 @media (min-width: 768px) {
   .experience-copy {

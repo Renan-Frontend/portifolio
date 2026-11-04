@@ -3,6 +3,7 @@ import { ArrowRight, ChevronDown } from "lucide-react";
 import AboutPage from "./components/AboutPage";
 import ExperiencePage from "./components/ExperiencePage";
 import IntroPresentation from "./components/IntroPresentation";
+import ProjectsPage from "./components/ProjectsPage";
 
 // =============================================================================
 // DADOS
@@ -204,16 +205,19 @@ function App() {
     window.history.pushState(null, "", "#experience");
   }
 
-  /**
-   * Destaca Projetos na home (accordion).
-   * Página/carrossel de Projetos fica no PR separado.
-   */
+  /** Vai para a página Projetos (carrossel). */
   function goProjects() {
     setShowIntro(false);
     setIntroDone(true);
-    setProjectsOpen(true);
     setActive("projects");
     window.history.pushState(null, "", "#projects");
+  }
+
+  /** Abre a página Projetos pelo menu / Ver todos. */
+  function openProjectsPage(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    goProjects();
   }
 
   // ----- interface: página Sobre Mim -----
@@ -224,6 +228,17 @@ function App() {
   // ----- interface: página Experiência -----
   if (active === "experience") {
     return <ExperiencePage onBack={goHome} onProjects={goProjects} />;
+  }
+
+  // ----- interface: página Projetos -----
+  if (active === "projects" || isProjectId(active)) {
+    return (
+      <ProjectsPage
+        onBack={goHome}
+        onExperience={goExperience}
+        initialProjectId={isProjectId(active) ? active : undefined}
+      />
+    );
   }
 
   // ----- interface: home -----
@@ -296,17 +311,13 @@ function App() {
             <div className="flex w-fit flex-col items-start gap-2.5 min-[390px]:gap-3 min-[430px]:gap-3.5 md:gap-3">
               <a
                 href="#projects"
-                onClick={toggleProjects}
-                aria-expanded={projectsOpen}
+                onClick={openProjectsPage}
                 className={`${itemClass("projects")} inline-flex items-center gap-1.5`}
               >
                 Projetos
                 <ChevronDown
                   aria-hidden="true"
-                  className={[
-                    "h-4 w-4 shrink-0 transition-transform duration-300 ease-out min-[390px]:h-5 min-[390px]:w-5",
-                    projectsOpen ? "rotate-0" : "rotate-180",
-                  ].join(" ")}
+                  className="h-4 w-4 shrink-0 min-[390px]:h-5 min-[390px]:w-5"
                 />
               </a>
 
@@ -339,7 +350,7 @@ function App() {
 
                     <a
                       href="#projects"
-                      onClick={select("projects")}
+                      onClick={openProjectsPage}
                       tabIndex={projectsOpen ? 0 : -1}
                       className="inline-flex translate-x-0 items-center gap-2 text-purple-300 transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-200"
                     >
