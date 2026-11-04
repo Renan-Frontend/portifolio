@@ -432,7 +432,7 @@ function ProjectsPage({
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className={[
-                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-3 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-4",
+                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-8 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-10",
                 isDragging
                   ? "is-dragging cursor-grabbing select-none"
                   : "cursor-grab",
@@ -447,18 +447,18 @@ function ProjectsPage({
                     data-loop-index={slide.loopIndex}
                     data-logical-index={slide.logicalIndex}
                     className={[
-                      // Ocupa bem a tela na vertical (ainda sem scroll da página)
-                      "projects-carousel__card relative flex h-[min(64dvh,34rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl origin-center md:h-[min(68dvh,40rem)] md:w-[min(52rem,62vw)]",
+                      // overflow visible: o neon não é cortado; o clip fica só na capa
+                      "projects-carousel__card relative flex h-[min(64dvh,34rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-visible rounded-2xl origin-center md:h-[min(68dvh,40rem)] md:w-[min(52rem,62vw)]",
                       isActive
                         ? "projects-carousel__card--active z-10 scale-100"
                         : "projects-carousel__card--side z-0 scale-[0.86]",
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
-                    {/* Capa dentro da moldura (opacidade só aqui — quinas ficam nítidas) */}
+                    {/* Capa com clip arredondado (opacidade só aqui — quinas nítidas) */}
                     <div
                       className={[
-                        "projects-carousel__media pointer-events-none absolute overflow-hidden transition-opacity duration-300",
+                        "projects-carousel__media pointer-events-none absolute inset-0 overflow-hidden rounded-2xl transition-opacity duration-300",
                         isActive ? "opacity-100" : "opacity-50",
                       ].join(" ")}
                     >
