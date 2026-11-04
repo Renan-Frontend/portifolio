@@ -393,7 +393,7 @@ body,
 .projects-carousel__corners {
   --card-radius: 1rem;
   --corner-size: var(--card-radius);
-  --corner-stroke: 2.5px;
+  --corner-stroke: 4px;
   --edge-stroke: 1px;
   /* Centro da espessura da cantoneira */
   --edge-center: calc((var(--corner-stroke) - var(--edge-stroke)) / 2);
@@ -481,7 +481,7 @@ body,
 
 @media (min-width: 768px) {
   .projects-carousel__corners {
-    --corner-stroke: 3px;
+    --corner-stroke: 5px;
   }
 }
 
