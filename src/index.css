@@ -321,7 +321,7 @@ body,
 
 /* Carrossel de projetos: full-bleed, sem recorte duro nas laterais */
 .projects-page {
-  overflow-x: visible;
+  overflow: hidden;
 }
 
 .projects-carousel-shell {
@@ -522,14 +522,14 @@ body,
 
 .projects-layout.about-layout {
   padding-top: calc(
-    clamp(2.75rem, 10vw, 4rem) + clamp(1rem, 1.8vw, 1.5rem)
+    clamp(2.25rem, 8vw, 3.25rem) + clamp(0.65rem, 1.2vw, 1rem)
   );
 }
 
 @media (min-width: 768px) {
   .projects-layout.about-layout {
     padding-top: calc(
-      clamp(2.75rem, 5vw, 4.25rem) + clamp(0.9rem, 1.2vw, 1.35rem)
+      clamp(2.25rem, 4vw, 3.5rem) + clamp(0.55rem, 0.9vw, 0.9rem)
     );
   }
 }

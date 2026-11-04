@@ -351,7 +351,7 @@ function ProjectsPage({
 
   // ----- interface -----
   return (
-    <main className="projects-page relative isolate flex min-h-svh w-full flex-col bg-neutral-950 text-white">
+    <main className="projects-page relative isolate flex h-svh max-h-svh w-full flex-col overflow-hidden bg-neutral-950 text-white">
       {/* Marca d’água */}
       <h1
         className="about-enter__title font-script pointer-events-none absolute inset-x-0 top-2 z-0 px-4 text-center text-[clamp(2.25rem,9vw,5.75rem)] leading-none whitespace-nowrap text-[#9a92ad] select-none md:top-2"
@@ -360,8 +360,8 @@ function ProjectsPage({
         Projetos
       </h1>
 
-      <section className="projects-layout about-layout relative z-10 mx-auto flex w-full flex-1 flex-col justify-center px-0 pb-3 md:pb-2">
-        <div className="about-enter__facts relative w-full py-5 md:py-8">
+      <section className="projects-layout about-layout relative z-10 mx-auto flex min-h-0 w-full flex-1 flex-col justify-center px-0 pb-2">
+        <div className="about-enter__facts relative w-full py-3 md:py-4">
           <div className="projects-carousel-shell relative w-full">
             <div
               ref={trackRef}
@@ -372,7 +372,7 @@ function ProjectsPage({
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className={[
-                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-8 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-10",
+                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-5 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-6",
                 isDragging
                   ? "is-dragging cursor-grabbing select-none"
                   : "cursor-grab",
@@ -387,8 +387,8 @@ function ProjectsPage({
                     data-loop-index={slide.loopIndex}
                     data-logical-index={slide.logicalIndex}
                     className={[
-                      // Altura fixa: evita “pulo” ao trocar o ativo no meio do gesto
-                      "projects-carousel__card relative flex h-[min(66vh,38rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl origin-center md:h-[min(70vh,42rem)] md:w-[min(52rem,62vw)]",
+                      // Altura cabendo em 1 tela (sem scroll vertical da página)
+                      "projects-carousel__card relative flex h-[min(52vh,28rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl origin-center md:h-[min(56vh,32rem)] md:w-[min(52rem,62vw)]",
                       isActive
                         ? "projects-carousel__card--active z-10 scale-100"
                         : "projects-carousel__card--side z-0 scale-[0.86]",
