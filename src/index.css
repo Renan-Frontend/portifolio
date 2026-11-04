@@ -362,7 +362,6 @@ body,
 
 /* Escala do ativo: mais lenta e suave ao virar principal */
 .projects-carousel__card {
-  --frame-inset: 4px;
   transition:
     transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 550ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -371,16 +370,10 @@ body,
   will-change: transform, opacity;
 }
 
-@media (min-width: 768px) {
-  .projects-carousel__card {
-    --frame-inset: 5px;
-  }
-}
-
-/* Capa colada na face interna da moldura */
+/* Capa preenchendo o card — sem faixa preta dentro da moldura */
 .projects-carousel__media {
-  inset: var(--frame-inset);
-  border-radius: calc(1rem - var(--frame-inset));
+  inset: 0;
+  border-radius: inherit;
   z-index: 0;
 }
 
