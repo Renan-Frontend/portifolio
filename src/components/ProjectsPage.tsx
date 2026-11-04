@@ -174,6 +174,12 @@ function easeInOutCubic(t: number): number {
   return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
 }
 
+type ArrowAnimationHandle = {
+  promise: Promise<void>;
+  /** Cancela o rAF (ex.: unmount no meio da passagem). */
+  cancel: () => void;
+};
+
 /**
  * Anima o scroll até centralizar o card (mais suave que scrollIntoView).
  * Mantém snap desligado até o fim para não “puxar” no meio do caminho.
@@ -182,25 +188,42 @@ function animateCenterCard(
   track: HTMLDivElement,
   card: HTMLElement,
   durationMs = 720,
-): Promise<void> {
+): ArrowAnimationHandle {
   const startLeft = track.scrollLeft;
   const distance = centerDelta(track, card);
 
-  if (Math.abs(distance) < 1) return Promise.resolve();
+  if (Math.abs(distance) < 1) {
+    return { promise: Promise.resolve(), cancel: () => undefined };
+  }
 
   track.classList.add("is-arrow-animating");
 
-  return new Promise((resolve) => {
+  let rafId = 0;
+  let cancelled = false;
+
+  /** Interrompe a animação e limpa a classe de estado. */
+  function cancel() {
+    cancelled = true;
+    cancelAnimationFrame(rafId);
+    track.classList.remove("is-arrow-animating");
+  }
+
+  const promise = new Promise<void>((resolve) => {
     const startedAt = performance.now();
 
     /** Frame da animação de scroll das setas. */
     function frame(now: number) {
+      if (cancelled) {
+        resolve();
+        return;
+      }
+
       const elapsed = now - startedAt;
       const t = Math.min(1, elapsed / durationMs);
       track.scrollLeft = startLeft + distance * easeInOutCubic(t);
 
       if (t < 1) {
-        requestAnimationFrame(frame);
+        rafId = requestAnimationFrame(frame);
         return;
       }
 
@@ -210,8 +233,10 @@ function animateCenterCard(
       resolve();
     }
 
-    requestAnimationFrame(frame);
+    rafId = requestAnimationFrame(frame);
   });
+
+  return { promise, cancel };
 }
 
 // =============================================================================
@@ -246,6 +271,10 @@ function ProjectsPage({
   const isJumpingRef = useRef(false);
   /** Bloqueia setas enquanto a animação suave roda. */
   const isArrowAnimatingRef = useRef(false);
+  /** Cancela animação das setas no unmount. */
+  const cancelArrowAnimationRef = useRef<(() => void) | null>(null);
+  /** Último project id aplicado via prop (deep-link). */
+  const appliedProjectIdRef = useRef(initialProjectId);
 
   activeLoopIndexRef.current = activeLoopIndex;
 
@@ -255,6 +284,14 @@ function ProjectsPage({
   }
 
   // ----- efeitos -----
+
+  /** Cancela rAF das setas se a página desmontar no meio da animação. */
+  useEffect(() => {
+    return () => {
+      cancelArrowAnimationRef.current?.();
+      cancelArrowAnimationRef.current = null;
+    };
+  }, []);
 
   // ----- handlers (refs estáveis para listeners de mount) -----
 
@@ -335,7 +372,7 @@ function ProjectsPage({
   const normalizeLoopRef = useRef(normalizeLoopIfNeeded);
   normalizeLoopRef.current = normalizeLoopIfNeeded;
 
-  /** Posiciona na cópia do meio e escuta scrollend nativo. */
+  /** Posiciona na cópia do meio; scrollend nativo ou fallback por debounce. */
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -352,9 +389,58 @@ function ProjectsPage({
       normalizeLoopRef.current();
     }
 
-    track.addEventListener("scrollend", onScrollEnd);
-    return () => track.removeEventListener("scrollend", onScrollEnd);
+    const supportsScrollEnd = "onscrollend" in window;
+    let settleTimer = 0;
+
+    /** Fallback: após o scroll parar ~150ms, normaliza o loop. */
+    function onScrollSettle() {
+      if (supportsScrollEnd) return;
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(onScrollEnd, 150);
+    }
+
+    if (supportsScrollEnd) {
+      track.addEventListener("scrollend", onScrollEnd);
+    } else {
+      track.addEventListener("scroll", onScrollSettle, { passive: true });
+    }
+
+    return () => {
+      window.clearTimeout(settleTimer);
+      track.removeEventListener("scrollend", onScrollEnd);
+      track.removeEventListener("scroll", onScrollSettle);
+    };
   }, []);
+
+  /**
+   * Reage a mudança de deep-link (#monsterland → #portfolio) sem depender
+   * só do remount — reposiciona o carrossel e a contagem.
+   */
+  useEffect(() => {
+    if (initialProjectId === appliedProjectIdRef.current) return;
+
+    appliedProjectIdRef.current = initialProjectId;
+    const nextLogical = indexFromProjectId(initialProjectId);
+    const nextLoop = middleLoopIndex(nextLogical);
+    const track = trackRef.current;
+
+    cancelArrowAnimationRef.current?.();
+    cancelArrowAnimationRef.current = null;
+    isArrowAnimatingRef.current = false;
+
+    setActiveLoopIndex(nextLoop);
+    setCounterIndex(nextLogical);
+
+    if (!track) return;
+
+    isJumpingRef.current = true;
+    track.classList.add("is-jumping");
+    jumpCenterCard(track, nextLoop);
+    requestAnimationFrame(() => {
+      track.classList.remove("is-jumping");
+      isJumpingRef.current = false;
+    });
+  }, [initialProjectId]);
 
   /** Volta para a home. */
   function handleBack(event: MouseEvent<HTMLAnchorElement>) {
@@ -465,16 +551,24 @@ function ProjectsPage({
     );
     if (!card) return;
 
+    cancelArrowAnimationRef.current?.();
     isArrowAnimatingRef.current = true;
     setActiveLoopIndex(to);
     syncCounter(to);
 
-    void animateCenterCard(track, card, 560)
+    const animation = animateCenterCard(track, card, 560);
+    cancelArrowAnimationRef.current = animation.cancel;
+
+    void animation.promise
       .then(() => {
+        if (cancelArrowAnimationRef.current !== animation.cancel) return;
+        cancelArrowAnimationRef.current = null;
         isArrowAnimatingRef.current = false;
         normalizeLoopIfNeeded();
       })
       .catch(() => {
+        if (cancelArrowAnimationRef.current !== animation.cancel) return;
+        cancelArrowAnimationRef.current = null;
         isArrowAnimatingRef.current = false;
         track.classList.remove("is-arrow-animating");
       });

@@ -616,8 +616,15 @@ body,
 
 /* Currículo: colunas com scroll interno no desktop se a altura apertar */
 @media (min-width: 768px) {
+  .curriculum-page .about-layout__row {
+    min-height: 0;
+  }
+
   .curriculum-page .about-enter__bio,
   .curriculum-page .about-enter__facts {
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgb(82 82 82) transparent;
   }

@@ -232,8 +232,10 @@ function App() {
 
   // ----- interface: página Projetos -----
   if (active === "projects" || isProjectId(active)) {
+    const projectKey = isProjectId(active) ? active : "projects";
     return (
       <ProjectsPage
+        key={projectKey}
         onBack={goHome}
         onCurriculum={goCurriculum}
         initialProjectId={isProjectId(active) ? active : undefined}
