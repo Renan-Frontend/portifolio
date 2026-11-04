@@ -131,6 +131,11 @@ function middleLoopIndex(logicalIndex: number): number {
   return SLIDE_COUNT + logicalIndex;
 }
 
+/** Índice lógico (0..n-1) a partir do índice absoluto do loop. */
+function logicalFromLoop(loopIndex: number): number {
+  return ((loopIndex % SLIDE_COUNT) + SLIDE_COUNT) % SLIDE_COUNT;
+}
+
 /** Largura de uma cópia completa (todos os slides + gaps). */
 function measureSetWidth(track: HTMLDivElement): number {
   const first = track.querySelector<HTMLElement>('[data-loop-index="0"]');
@@ -155,6 +160,61 @@ function jumpCenterCard(track: HTMLDivElement, loopIndex: number) {
   track.scrollLeft += delta;
 }
 
+/** Deslocamento necessário para centralizar o card no track. */
+function centerDelta(track: HTMLDivElement, card: HTMLElement): number {
+  const trackBox = track.getBoundingClientRect();
+  const cardBox = card.getBoundingClientRect();
+  return (
+    cardBox.left + cardBox.width / 2 - (trackBox.left + trackBox.width / 2)
+  );
+}
+
+/** Easing suave (ease-in-out cúbico) para o scroll das setas. */
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+}
+
+/**
+ * Anima o scroll até centralizar o card (mais suave que scrollIntoView).
+ * Retorna uma Promise que resolve ao terminar.
+ */
+function animateCenterCard(
+  track: HTMLDivElement,
+  card: HTMLElement,
+  durationMs = 680,
+): Promise<void> {
+  const startLeft = track.scrollLeft;
+  const targetLeft = startLeft + centerDelta(track, card);
+  const distance = targetLeft - startLeft;
+
+  if (Math.abs(distance) < 1) return Promise.resolve();
+
+  track.classList.add("is-arrow-animating");
+
+  return new Promise((resolve) => {
+    const startedAt = performance.now();
+
+    /** Frame da animação de scroll das setas. */
+    function frame(now: number) {
+      const elapsed = now - startedAt;
+      const t = Math.min(1, elapsed / durationMs);
+      track.scrollLeft = startLeft + distance * easeInOutCubic(t);
+
+      if (t < 1) {
+        requestAnimationFrame(frame);
+        return;
+      }
+
+      track.classList.remove("is-arrow-animating");
+      // Corrige drift residual do easing/layout.
+      track.scrollLeft = startLeft + distance;
+      resolve();
+    }
+
+    requestAnimationFrame(frame);
+  });
+}
+
 // =============================================================================
 // COMPONENTE
 // =============================================================================
@@ -172,6 +232,10 @@ function ProjectsPage({
   const [activeLoopIndex, setActiveLoopIndex] = useState(() =>
     middleLoopIndex(indexFromProjectId(initialProjectId)),
   );
+  /** Contagem estável (só muda ao encaixar o slide, sem piscar no scroll). */
+  const [counterIndex, setCounterIndex] = useState(() =>
+    indexFromProjectId(initialProjectId),
+  );
   const trackRef = useRef<HTMLDivElement>(null);
   const activeLoopIndexRef = useRef(activeLoopIndex);
   /** Arraste com mouse. */
@@ -181,8 +245,15 @@ function ProjectsPage({
   const [isDragging, setIsDragging] = useState(false);
   /** Impede normalizar/atualizar no meio de um salto de loop. */
   const isJumpingRef = useRef(false);
+  /** Bloqueia setas enquanto a animação suave roda. */
+  const isArrowAnimatingRef = useRef(false);
 
   activeLoopIndexRef.current = activeLoopIndex;
+
+  /** Atualiza a contagem a partir do índice absoluto do loop. */
+  function syncCounter(loopIndex: number) {
+    setCounterIndex(logicalFromLoop(loopIndex));
+  }
 
   // ----- efeitos -----
 
@@ -232,6 +303,7 @@ function ProjectsPage({
       setActiveLoopIndex((current) =>
         current === closest ? current : closest,
       );
+      syncCounter(closest);
       return;
     }
 
@@ -246,6 +318,7 @@ function ProjectsPage({
     track.classList.add("is-jumping");
     track.scrollLeft += delta;
     setActiveLoopIndex(nextIndex);
+    syncCounter(nextIndex);
 
     requestAnimationFrame(() => {
       track.classList.remove("is-jumping");
@@ -356,12 +429,19 @@ function ProjectsPage({
   }
 
   /**
-   * Avança ou volta um slide com scroll suave.
-   * O loop é corrigido no scrollend (normalizeLoopIfNeeded).
+   * Avança ou volta um slide com animação suave (easing próprio).
+   * Depois normaliza o loop infinito, se preciso.
    */
   function goBy(delta: -1 | 1) {
     const track = trackRef.current;
-    if (!track || isDraggingRef.current || isJumpingRef.current) return;
+    if (
+      !track ||
+      isDraggingRef.current ||
+      isJumpingRef.current ||
+      isArrowAnimatingRef.current
+    ) {
+      return;
+    }
 
     const total = LOOP_COPIES * SLIDE_COUNT;
     const from = activeLoopIndexRef.current;
@@ -373,11 +453,13 @@ function ProjectsPage({
     );
     if (!card) return;
 
+    isArrowAnimatingRef.current = true;
     setActiveLoopIndex(to);
-    card.scrollIntoView({
-      behavior: "smooth",
-      inline: "center",
-      block: "nearest",
+    syncCounter(to);
+
+    void animateCenterCard(track, card, 720).then(() => {
+      isArrowAnimatingRef.current = false;
+      normalizeLoopIfNeeded();
     });
   }
 
@@ -391,8 +473,8 @@ function ProjectsPage({
     goBy(1);
   }
 
-  /** Índice lógico do slide selecionado (1-based para a contagem). */
-  const activeNumber = (activeLoopIndex % SLIDE_COUNT) + 1;
+  /** Número exibido na contagem (1-based). */
+  const activeNumber = counterIndex + 1;
 
   // ----- interface -----
   return (
@@ -554,9 +636,11 @@ function ProjectsPage({
             className="mt-3 text-center text-sm tracking-[0.18em] text-neutral-400 tabular-nums md:mt-4 md:text-base"
             aria-live="polite"
           >
-            {String(activeNumber).padStart(2, "0")}
+            <span className="text-neutral-300">
+              {String(activeNumber).padStart(2, "0")}
+            </span>
             <span className="mx-1.5 text-neutral-600">/</span>
-            {String(SLIDE_COUNT).padStart(2, "0")}
+            <span>{String(SLIDE_COUNT).padStart(2, "0")}</span>
           </p>
         </div>
       </section>
