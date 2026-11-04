@@ -233,13 +233,12 @@ function ProjectsPage({
     );
     if (cards.length === 0) return;
 
-    const trackCenter = track.scrollLeft + track.clientWidth / 2;
+    const trackLeft = track.getBoundingClientRect().left;
     let closest = 0;
     let closestDist = Number.POSITIVE_INFINITY;
 
     cards.forEach((card, index) => {
-      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-      const dist = Math.abs(cardCenter - trackCenter);
+      const dist = Math.abs(card.getBoundingClientRect().left - trackLeft);
       if (dist < closestDist) {
         closestDist = dist;
         closest = index;
@@ -260,46 +259,61 @@ function ProjectsPage({
         Projetos
       </h1>
 
-      <section className="projects-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-center px-0 pb-3 md:min-h-0 md:pb-2">
-        {/* Carrossel: ~2 cards visíveis no desktop; 1+ no mobile */}
-        <div className="about-enter__facts relative w-full">
+      <section className="projects-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-center px-5 pb-3 min-[390px]:px-6 md:min-h-0 md:px-10 md:pb-2 lg:px-14 xl:px-20">
+        {/*
+          Padding no wrapper (não no track): 100% = área visível.
+          Assim cabem exatamente 2 cards, sem “recortar” um terceiro na direita.
+        */}
+        <div className="about-enter__facts relative w-full overflow-x-hidden py-4 md:py-6">
           <div
             ref={trackRef}
             onScroll={handleTrackScroll}
-            className="projects-carousel flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 min-[390px]:gap-4 min-[390px]:px-6 md:gap-5 md:px-10 lg:px-14 xl:px-20"
+            className="projects-carousel flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-visible pb-2 min-[390px]:gap-4 md:gap-5"
             aria-label="Carrossel de projetos"
           >
-            {PROJECT_SLIDES.map((slide, index) => (
-              <article
-                key={slide.id}
-                data-slide-index={index}
-                className={[
-                  "projects-carousel__card relative flex shrink-0 snap-start flex-col justify-end overflow-hidden rounded-2xl border border-purple-500/25",
-                  "h-[min(56vh,30rem)] w-[min(88vw,24rem)] sm:w-[calc((100%-1rem)/2)] md:h-[min(60vh,34rem)] md:w-[calc((100%-1.25rem)/2)]",
-                  `bg-linear-to-br ${slide.accent}`,
-                  index === activeIndex
-                    ? "opacity-100 ring-1 ring-purple-400/40"
-                    : "opacity-75",
-                ].join(" ")}
-              >
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.18),transparent_55%)]" />
-                <div className="relative z-10 p-5 min-[390px]:p-6 md:p-8">
-                  <p className="text-xs tracking-[0.2em] text-purple-300/90 uppercase md:text-sm">
-                    {slide.tagline}
-                  </p>
-                  <h2 className="mt-2 text-[clamp(1.35rem,4vw,2.25rem)] font-semibold tracking-wide text-neutral-50">
-                    {slide.name}
-                  </h2>
-                  <p className="experience-copy mt-2 max-w-xl text-neutral-200">
-                    {avoidOrphan(slide.description)}
-                  </p>
-                </div>
-              </article>
-            ))}
+            {PROJECT_SLIDES.map((slide, index) => {
+              const isActive = index === activeIndex;
+              return (
+                <article
+                  key={slide.id}
+                  data-slide-index={index}
+                  className={[
+                    "projects-carousel__card relative flex shrink-0 snap-start flex-col justify-end overflow-hidden rounded-2xl border transition-[transform,opacity,box-shadow] duration-300 ease-out",
+                    "origin-center",
+                    // Largura: 1 card no mobile; exatamente 2 no sm+
+                    "w-[min(88vw,22rem)] sm:w-[calc((100%-1rem)/2)] md:w-[calc((100%-1.25rem)/2)]",
+                    isActive
+                      ? "z-10 h-[min(58vh,32rem)] scale-100 border-purple-400/50 opacity-100 shadow-[0_0_0_1px_rgba(192,132,252,0.35)] md:h-[min(64vh,36rem)] md:scale-[1.04]"
+                      : "z-0 h-[min(50vh,26rem)] scale-[0.92] border-purple-500/20 opacity-70 md:h-[min(54vh,30rem)] md:scale-[0.9]",
+                    `bg-linear-to-br ${slide.accent}`,
+                  ].join(" ")}
+                >
+                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.18),transparent_55%)]" />
+                  <div className="relative z-10 p-5 min-[390px]:p-6 md:p-8">
+                    <p className="text-xs tracking-[0.2em] text-purple-300/90 uppercase md:text-sm">
+                      {slide.tagline}
+                    </p>
+                    <h2
+                      className={[
+                        "mt-2 font-semibold tracking-wide text-neutral-50",
+                        isActive
+                          ? "text-[clamp(1.45rem,4.2vw,2.35rem)]"
+                          : "text-[clamp(1.2rem,3.5vw,1.85rem)]",
+                      ].join(" ")}
+                    >
+                      {slide.name}
+                    </h2>
+                    <p className="experience-copy mt-2 max-w-xl text-neutral-200">
+                      {avoidOrphan(slide.description)}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
 
           {/* Controles */}
-          <div className="mt-4 flex items-center justify-between gap-3 px-5 min-[390px]:px-6 md:px-10 lg:px-14 xl:px-20">
+          <div className="mt-4 flex items-center justify-between gap-3">
             <p className="text-sm tracking-wide text-neutral-400 tabular-nums">
               {String(activeIndex + 1).padStart(2, "0")} /{" "}
               {String(PROJECT_SLIDES.length).padStart(2, "0")}
