@@ -402,8 +402,8 @@ function ProjectsPage({
         Projetos
       </h1>
 
-      <section className="projects-layout about-layout relative z-10 mx-auto flex min-h-0 w-full flex-1 flex-col justify-center px-0 pb-2">
-        <div className="about-enter__facts relative w-full py-3 md:py-4">
+      <section className="projects-layout about-layout relative z-10 mx-auto flex min-h-0 w-full flex-1 flex-col justify-center px-0 pb-1">
+        <div className="about-enter__facts relative w-full py-1 md:py-2">
           <div className="projects-carousel-shell relative w-full">
             <button
               type="button"
@@ -432,7 +432,7 @@ function ProjectsPage({
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className={[
-                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-5 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-6",
+                "projects-carousel flex snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[max(1rem,calc((100%-min(42rem,88vw))/2))] py-3 md:gap-8 md:px-[max(1.5rem,calc((100%-min(52rem,62vw))/2))] md:py-4",
                 isDragging
                   ? "is-dragging cursor-grabbing select-none"
                   : "cursor-grab",
@@ -447,8 +447,8 @@ function ProjectsPage({
                     data-loop-index={slide.loopIndex}
                     data-logical-index={slide.logicalIndex}
                     className={[
-                      // Altura cabendo em 1 tela (sem scroll vertical da página)
-                      "projects-carousel__card relative flex h-[min(52vh,28rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl origin-center md:h-[min(56vh,32rem)] md:w-[min(52rem,62vw)]",
+                      // Ocupa bem a tela na vertical (ainda sem scroll da página)
+                      "projects-carousel__card relative flex h-[min(64dvh,34rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl origin-center md:h-[min(68dvh,40rem)] md:w-[min(52rem,62vw)]",
                       isActive
                         ? "projects-carousel__card--active z-10 scale-100"
                         : "projects-carousel__card--side z-0 scale-[0.86]",
