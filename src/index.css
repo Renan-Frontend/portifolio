@@ -405,8 +405,7 @@ body,
   de cada ponta da quina (sem borda contínua no card).
 */
 .projects-carousel__corners {
-  /* Raio menor que o rounded-2xl do card (1rem) — quinas menos redondas */
-  --corner-radius: 0.45rem;
+  --corner-radius: 1rem;
   --corner-size: 1.6rem;
   --corner-stroke: 4px;
   --edge-stroke: 1px;
@@ -460,7 +459,7 @@ body,
 .projects-carousel__edge {
   position: absolute;
   background: currentColor;
-  opacity: 0.85;
+  opacity: 1;
 }
 
 .projects-carousel__edge--top {
@@ -499,13 +498,13 @@ body,
 }
 
 .projects-carousel__corners--active {
-  color: rgb(216 180 254 / 0.92);
+  color: rgb(216 180 254);
   opacity: 1;
 }
 
 .projects-carousel__corners--side {
-  color: rgb(255 255 255 / 0.34);
-  opacity: 0.8;
+  color: rgb(255 255 255 / 0.55);
+  opacity: 1;
 }
 
 /* Dissolve o card nas laterais — sensação de borda infinita */

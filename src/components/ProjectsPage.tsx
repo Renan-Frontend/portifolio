@@ -390,13 +390,18 @@ function ProjectsPage({
                       // Altura fixa: evita “pulo” ao trocar o ativo no meio do gesto
                       "projects-carousel__card relative flex h-[min(66vh,38rem)] w-[min(42rem,88vw)] shrink-0 snap-center flex-col justify-end overflow-hidden rounded-2xl origin-center md:h-[min(70vh,42rem)] md:w-[min(52rem,62vw)]",
                       isActive
-                        ? "projects-carousel__card--active z-10 scale-100 opacity-100"
-                        : "projects-carousel__card--side z-0 scale-[0.86] opacity-50",
+                        ? "projects-carousel__card--active z-10 scale-100"
+                        : "projects-carousel__card--side z-0 scale-[0.86]",
                       `bg-linear-to-br ${slide.accent}`,
                     ].join(" ")}
                   >
-                    {/* Capa dentro da moldura */}
-                    <div className="projects-carousel__media pointer-events-none absolute overflow-hidden">
+                    {/* Capa dentro da moldura (opacidade só aqui — quinas ficam nítidas) */}
+                    <div
+                      className={[
+                        "projects-carousel__media pointer-events-none absolute overflow-hidden transition-opacity duration-300",
+                        isActive ? "opacity-100" : "opacity-50",
+                      ].join(" ")}
+                    >
                       <img
                         src={slide.cover}
                         alt=""
@@ -430,7 +435,12 @@ function ProjectsPage({
                       <span className="projects-carousel__edge projects-carousel__edge--left" />
                     </div>
 
-                    <div className="relative z-10 flex flex-col gap-5 p-6 md:gap-6 md:p-8 lg:p-9">
+                    <div
+                      className={[
+                        "relative z-10 flex flex-col gap-5 p-6 transition-opacity duration-300 md:gap-6 md:p-8 lg:p-9",
+                        isActive ? "opacity-100" : "opacity-50",
+                      ].join(" ")}
+                    >
                       <div>
                         <p className="text-xs tracking-[0.2em] text-purple-300/90 uppercase md:text-sm">
                           {slide.tagline}
