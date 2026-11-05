@@ -48,7 +48,7 @@ const PROJECT_SLIDES: CarouselSlide[] = [
     tagline: "Gestão comercial · Residência em TIC",
     description:
       "App de gestão comercial com CRM e geração de diagramas BPMN por IA — React no front e FastAPI no backend (Grupo 08).",
-    cover: "https://picsum.photos/seed/bp-company-crm/1400/900",
+    cover: publicUrl("projects/bp-company-cover.jpg"),
     url: "https://renan-frontend.github.io/Grupo08/",
     accent: "from-violet-600/40 via-neutral-900 to-neutral-950",
   },
@@ -58,7 +58,7 @@ const PROJECT_SLIDES: CarouselSlide[] = [
     tagline: "HTML · CSS · Origamid",
     description:
       "Site institucional de bicicletas elétricas — layout responsivo, páginas de produtos, orçamento e contato.",
-    cover: "https://picsum.photos/seed/bikcraft-bikes/1400/900",
+    cover: publicUrl("projects/bikcraft-cover.jpg"),
     url: "https://renan-frontend.github.io/bikcraft/",
     accent: "from-indigo-600/35 via-neutral-900 to-neutral-950",
   },
@@ -68,7 +68,7 @@ const PROJECT_SLIDES: CarouselSlide[] = [
     tagline: "React · Origamid",
     description:
       "Rede social para cachorros — projeto final do curso Origamid com React, JavaScript, CSS e HTML.",
-    cover: "https://picsum.photos/seed/dogs-social/1400/900",
+    cover: publicUrl("projects/dogs-cover.jpg"),
     url: "https://renan-frontend.github.io/Dogs/",
     accent: "from-fuchsia-600/30 via-neutral-900 to-neutral-950",
   },
@@ -78,7 +78,7 @@ const PROJECT_SLIDES: CarouselSlide[] = [
     tagline: "React · TypeScript · Vite",
     description:
       "Este próprio site — currículo interativo com intro, carrossel de projetos, certificados e download do PDF.",
-    cover: "https://picsum.photos/seed/portfolio-dark/1400/900",
+    cover: publicUrl("projects/portfolio-cover.jpg"),
     // Site publicado (mesmo projeto Curriculo-2.0 / portifolio).
     url: "https://renan-frontend.github.io/portifolio/",
     accent: "from-purple-500/35 via-neutral-900 to-neutral-950",

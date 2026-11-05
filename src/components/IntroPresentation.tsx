@@ -10,10 +10,30 @@ import { publicUrl } from "../utils/publicUrl";
  * `image` fica pronto para prints reais em /public/projects/ depois.
  */
 const INTRO_WORKS = [
-  { id: "bp-company", name: "BP Company", initials: "BP", image: null as string | null },
-  { id: "bikcraft", name: "Bikcraft", initials: "BK", image: null as string | null },
-  { id: "dogs", name: "Dogs", initials: "DG", image: null as string | null },
-  { id: "portfolio", name: "Portfólio", initials: "P", image: null as string | null },
+  {
+    id: "bp-company",
+    name: "BP Company",
+    initials: "BP",
+    image: publicUrl("projects/bp-company-cover.jpg"),
+  },
+  {
+    id: "bikcraft",
+    name: "Bikcraft",
+    initials: "BK",
+    image: publicUrl("projects/bikcraft-cover.jpg"),
+  },
+  {
+    id: "dogs",
+    name: "Dogs",
+    initials: "DG",
+    image: publicUrl("projects/dogs-cover.jpg"),
+  },
+  {
+    id: "portfolio",
+    name: "Portfólio",
+    initials: "P",
+    image: publicUrl("projects/portfolio-cover.jpg"),
+  },
 ];
 
 /**
