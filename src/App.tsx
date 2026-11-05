@@ -1,4 +1,4 @@
-import { useEffect, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import AboutPage from "./components/AboutPage";
 import CertificatesPage from "./components/CertificatesPage";
@@ -155,6 +155,27 @@ function App() {
     initialNav() === "home" ? "hidden" : "shown",
   );
 
+  /**
+   * True depois que o usuário saiu da home ao menos uma vez.
+   * Evita que o sync inicial da URL cancele a intro na primeira carga.
+   */
+  const hasLeftHomeRef = useRef(initialNav() !== "home");
+
+  // ----- handlers / helpers (usados pelos efeitos de URL) -----
+
+  /** Sai da home: encerra intro e deixa a cascata no estado estável (visível). */
+  function leaveHome() {
+    hasLeftHomeRef.current = true;
+    setShowIntro(false);
+    setHomeReveal("shown");
+  }
+
+  /** Home estável sem intro nem cascata (volta do rodapé / Voltar do browser). */
+  function enterHomeStable() {
+    setShowIntro(false);
+    setHomeReveal("shown");
+  }
+
   // ----- efeitos -----
 
   /**
@@ -166,10 +187,11 @@ function App() {
       const next = navFromHash(window.location.hash);
       setActive(next);
 
-      // Saiu da home pelo hash: encerra intro e não deixa a home preta na volta.
       if (next !== "home") {
-        setShowIntro(false);
-        setHomeReveal("shown");
+        leaveHome();
+      } else if (hasLeftHomeRef.current) {
+        // Voltou à home (Voltar do browser): home estável, sem reintro.
+        enterHomeStable();
       }
 
       if (next === "projects" || isProjectId(next)) {
@@ -204,7 +226,7 @@ function App() {
     return () => window.clearTimeout(timer);
   }, [homeReveal]);
 
-  // ----- handlers / helpers -----
+  // ----- handlers / navegação -----
 
   /**
    * Marca um item como ativo ao clicar e alinha a URL via pushState.
@@ -213,17 +235,21 @@ function App() {
    */
   const select = (id: NavId) => (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-    setActive(id);
 
     if (id === "home") {
+      setActive("home");
+      enterHomeStable();
       window.history.pushState(
         null,
         "",
         `${window.location.pathname}${window.location.search}`,
       );
-    } else {
-      window.history.pushState(null, "", `#${id}`);
+      return;
     }
+
+    leaveHome();
+    setActive(id);
+    window.history.pushState(null, "", `#${id}`);
 
     if (id === "projects" || isProjectId(id)) {
       setProjectsOpen(true);
@@ -278,7 +304,7 @@ function App() {
   /** Volta à home sem repetir a intro cinemática. */
   function goHome() {
     setActive("home");
-    setShowIntro(false);
+    enterHomeStable();
     window.history.pushState(
       null,
       "",
@@ -289,6 +315,7 @@ function App() {
 
   /** Vai para a página Experiência. */
   function goExperience() {
+    leaveHome();
     setActive("experience");
     window.history.pushState(null, "", "#experience");
     resetWindowScroll();
@@ -296,7 +323,7 @@ function App() {
 
   /** Vai para a página Certificados. */
   function goCertificates() {
-    setShowIntro(false);
+    leaveHome();
     setActive("certificates");
     window.history.pushState(null, "", "#certificates");
     resetWindowScroll();
@@ -304,7 +331,7 @@ function App() {
 
   /** Vai para a página Currículo. */
   function goCurriculum() {
-    setShowIntro(false);
+    leaveHome();
     setActive("curriculum");
     window.history.pushState(null, "", "#curriculum");
     resetWindowScroll();
@@ -312,10 +339,15 @@ function App() {
 
   /** Vai para a página Projetos (carrossel). */
   function goProjects() {
-    setShowIntro(false);
+    leaveHome();
     setActive("projects");
     window.history.pushState(null, "", "#projects");
     resetWindowScroll();
+  }
+
+  /** Alinha o `active` do App ao slide atual do carrossel (hash já via replaceState). */
+  function handleCarouselSlide(slideId: string) {
+    setActive(slideId as NavId);
   }
 
   /** Abre a página Projetos pelo “Ver todos”. */
@@ -364,31 +396,31 @@ function App() {
 
   // ----- interface: página Projetos -----
   if (active === "projects" || isProjectId(active)) {
-    const projectKey = isProjectId(active) ? active : "projects";
     return (
       <ProjectsPage
-        key={projectKey}
+        key="projects-page"
         variant="projects"
         onBack={goHome}
         onNext={goCertificates}
         nextLabel="Certificados"
         nextHref="#certificates"
         initialSlideId={isProjectId(active) ? active : undefined}
+        onActiveSlideChange={handleCarouselSlide}
       />
     );
   }
 
   // ----- interface: página Certificados -----
   if (active === "certificates" || isCertificateId(active)) {
-    const certificateKey = isCertificateId(active) ? active : "certificates";
     return (
       <CertificatesPage
-        key={certificateKey}
+        key="certificates-page"
         onBack={goHome}
         onCurriculum={goCurriculum}
         initialCertificateId={
           isCertificateId(active) ? active : undefined
         }
+        onActiveSlideChange={handleCarouselSlide}
       />
     );
   }

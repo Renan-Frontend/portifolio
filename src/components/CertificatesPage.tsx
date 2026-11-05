@@ -11,6 +11,8 @@ type CertificatesPageProps = {
   onCurriculum: () => void;
   /** Id do certificado a focar no carrossel (hash individual). */
   initialCertificateId?: string;
+  /** Notifica o App quando o slide ativo muda (para alinhar `active`/submenu). */
+  onActiveSlideChange?: (slideId: string) => void;
 };
 
 // =============================================================================
@@ -24,6 +26,7 @@ function CertificatesPage({
   onBack,
   onCurriculum,
   initialCertificateId,
+  onActiveSlideChange,
 }: CertificatesPageProps) {
   return (
     <ProjectsPage
@@ -33,6 +36,7 @@ function CertificatesPage({
       nextLabel="Currículo"
       nextHref="#curriculum"
       initialSlideId={initialCertificateId}
+      onActiveSlideChange={onActiveSlideChange}
     />
   );
 }
