@@ -30,6 +30,8 @@ type CarouselSlide = {
   cover: string;
   /** Tom de reforço sob a imagem (fallback se a capa falhar). */
   accent: string;
+  /** Arquivo original para download (certificados). */
+  file?: string;
 };
 
 /** Slides do carrossel de projetos. */
@@ -72,88 +74,120 @@ const PROJECT_SLIDES: CarouselSlide[] = [
   },
 ];
 
-/** Slides do carrossel de certificados (mesmo layout dos projetos). */
+/**
+ * Slides do carrossel de certificados (arquivos em /public/certificates).
+ * Capas geradas a partir dos PDFs/imagens originais da pasta local.
+ */
 export const CERTIFICATE_SLIDES: CarouselSlide[] = [
   {
     id: "ui-design",
     name: "UI Design para Iniciantes",
-    tagline: "Design de interfaces",
+    tagline: "Origamid · 34 horas",
     description:
-      "Fundamentos de UI para criar interfaces claras, hierarquia visual e consistência.",
-    cover: "https://picsum.photos/seed/cert-ui-design/1400/900",
+      "Concluído em 18/06/2025 — fundamentos de UI, hierarquia visual e consistência de interfaces.",
+    cover: "/certificates/ui-design-cover.jpg",
+    file: "/certificates/ui-design.pdf",
     accent: "from-violet-600/40 via-neutral-900 to-neutral-950",
   },
   {
     id: "react-completo",
     name: "React Completo",
-    tagline: "Front-end",
+    tagline: "Origamid · 36 horas",
     description:
-      "Componentes, estado e composição em React para aplicações modernas.",
-    cover: "https://picsum.photos/seed/cert-react/1400/900",
+      "Concluído em 04/02/2026 — componentes, estado e composição em React.",
+    cover: "/certificates/react-completo-cover.jpg",
+    file: "/certificates/react-completo.pdf",
     accent: "from-indigo-600/35 via-neutral-900 to-neutral-950",
   },
   {
     id: "css-grid",
     name: "CSS Grid Layout",
-    tagline: "Layout",
+    tagline: "Origamid · 10 horas",
     description:
-      "Grades responsivas e organização de páginas com CSS Grid.",
-    cover: "https://picsum.photos/seed/cert-css-grid/1400/900",
+      "Concluído em 31/07/2025 — grades responsivas e organização de layout com CSS Grid.",
+    cover: "/certificates/css-grid-cover.jpg",
+    file: "/certificates/css-grid.pdf",
     accent: "from-fuchsia-600/30 via-neutral-900 to-neutral-950",
   },
   {
     id: "css-flexbox",
     name: "CSS Flexbox",
-    tagline: "Layout",
+    tagline: "Origamid · 6 horas",
     description:
-      "Alinhamento e distribuição de elementos com Flexbox.",
-    cover: "https://picsum.photos/seed/cert-flexbox/1400/900",
+      "Concluído em 17/07/2025 — alinhamento e distribuição de elementos com Flexbox.",
+    cover: "/certificates/css-flexbox-cover.jpg",
+    file: "/certificates/css-flexbox.pdf",
     accent: "from-purple-500/35 via-neutral-900 to-neutral-950",
   },
   {
     id: "html-css",
     name: "HTML e CSS para Iniciantes",
-    tagline: "Fundamentos web",
+    tagline: "Origamid · 46 horas",
     description:
-      "Estrutura semântica e estilização base para páginas web.",
-    cover: "https://picsum.photos/seed/cert-html-css/1400/900",
+      "Concluído em 07/07/2025 — estrutura semântica e estilização base para a web.",
+    cover: "/certificates/html-css-cover.jpg",
+    file: "/certificates/html-css.pdf",
     accent: "from-violet-500/35 via-neutral-900 to-neutral-950",
   },
   {
     id: "js-es6",
     name: "JavaScript Completo ES6",
-    tagline: "Linguagem",
+    tagline: "Origamid · 74 horas",
     description:
-      "JavaScript moderno (ES6+) para lógica de interface e integração.",
-    cover: "https://picsum.photos/seed/cert-js-es6/1400/900",
+      "Concluído em 20/03/2025 — JavaScript moderno para lógica de interface e integração.",
+    cover: "/certificates/js-es6-cover.jpg",
+    file: "/certificates/js-es6.pdf",
     accent: "from-indigo-500/35 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "bootcamp-frontbase",
+    name: "Bootcamp Frontbase",
+    tagline: "60 horas · aulas ao vivo",
+    description:
+      "Concluído em 12/12/2024 — bootcamp de front-end com Gabriel Soares Salvador.",
+    cover: "/certificates/bootcamp-frontbase-cover.jpg",
+    file: "/certificates/bootcamp-frontbase.pdf",
+    accent: "from-fuchsia-500/30 via-neutral-900 to-neutral-950",
   },
   {
     id: "saga-start",
     name: "Curso Start — SAGA",
-    tagline: "Formação",
+    tagline: "SAGA Goiânia · 270 horas",
     description:
-      "Introdução prática a ferramentas e fluxo de trabalho criativo.",
-    cover: "https://picsum.photos/seed/cert-saga/1400/900",
-    accent: "from-fuchsia-500/30 via-neutral-900 to-neutral-950",
+      "Concluído em 27/07/2021 — Adobe, Maya, Animate e pipeline criativo (frequência 96%).",
+    cover: "/certificates/saga-start-cover.jpg",
+    file: "/certificates/saga-start.jpeg",
+    accent: "from-purple-600/35 via-neutral-900 to-neutral-950",
   },
   {
     id: "residencia-nivelamento",
     name: "Nivelamento — Residência em TIC",
-    tagline: "BRISA / SOFTEX / UFG",
+    tagline: "BRISA / SOFTEX / UFG · 180 horas",
     description:
-      "Etapa de nivelamento do Programa de Residência em TIC.",
-    cover: "https://picsum.photos/seed/cert-nivelamento/1400/900",
-    accent: "from-purple-600/35 via-neutral-900 to-neutral-950",
+      "Etapa de Nivelamento do Programa de Residência em TIC 16 (set–nov/2025), EaD.",
+    cover: "/certificates/residencia-nivelamento-cover.jpg",
+    file: "/certificates/residencia-nivelamento.pdf",
+    accent: "from-violet-600/35 via-neutral-900 to-neutral-950",
   },
   {
     id: "residencia-imersao",
     name: "Imersão em Computação Avançada",
-    tagline: "480 horas · UFG/BRISA",
+    tagline: "BRISA / SOFTEX / UFG · 480 horas",
     description:
-      "Conclusão da fase de imersão na Residência em TIC, com prática colaborativa.",
-    cover: "https://picsum.photos/seed/cert-imersao/1400/900",
-    accent: "from-violet-600/35 via-neutral-900 to-neutral-950",
+      "Fase de imersão da Residência em TIC 16 (dez/2025–jun/2026), com projetos presenciais.",
+    cover: "/certificates/residencia-imersao-cover.jpg",
+    file: "/certificates/residencia-imersao.pdf",
+    accent: "from-indigo-600/35 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "supera-jogos-3d",
+    name: "Desenvolvimento de Jogos 3D",
+    tagline: "SUPERA · 300 horas",
+    description:
+      "Capacitação em jogos 3D (Unreal, Maya, ZBrush e Substance), concluída em 13/02/2021.",
+    cover: "/certificates/supera-1-cover.jpg",
+    file: "/certificates/supera-1.jpeg",
+    accent: "from-fuchsia-600/30 via-neutral-900 to-neutral-950",
   },
 ];
 
@@ -869,9 +903,20 @@ function ProjectsPage({
                         </p>
                       </div>
 
-                      {!isCertificates ? (
+                      {(!isCertificates || slide.file) && (
                         <a
-                          href={`#${slide.id}`}
+                          href={
+                            isCertificates && slide.file
+                              ? slide.file
+                              : `#${slide.id}`
+                          }
+                          {...(isCertificates && slide.file
+                            ? {
+                                download: true,
+                                target: "_blank",
+                                rel: "noopener noreferrer",
+                              }
+                            : {})}
                           onPointerDown={stopCarouselDrag}
                           onClick={(event) => event.stopPropagation()}
                           className={[
@@ -889,7 +934,7 @@ function ProjectsPage({
                             aria-hidden="true"
                           />
                         </a>
-                      ) : null}
+                      )}
                     </div>
                   </article>
                 );

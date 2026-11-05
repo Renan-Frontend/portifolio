@@ -16,7 +16,7 @@ const CV_HEADLINE = "Vamos trabalhar juntos?";
 /** Apresentação da página, alinhada ao estágio em software com foco em IA. */
 const CV_INTRO = [
   "Busco um estágio em engenharia de software com foco em inteligência artificial.",
-  "Construo e integro produtos digitais. No Escreva+, entreguei o front-end e a integração com serviços de IA para correção textual. Na Residência em TIC (UFG/BRISA), desenvolvi um app de gerenciamento de empresa com IA, em React, TypeScript e APIs REST.",
+  "Construo e integro produtos digitais. No Escreva+, entreguei o front-end e a integração com serviços de IA para correção textual. Na Residência em TIC (UFG/BRISA), desenvolvi o BP Company: gestão comercial com CRM e geração de BPMN por IA, em React e FastAPI.",
   "Quero entrar em um time em que eu continue construindo software, aprenda com IA na prática e evolua em produtos reais.",
 ];
 
