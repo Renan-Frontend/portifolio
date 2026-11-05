@@ -49,7 +49,7 @@ const PROJECT_SLIDES: CarouselSlide[] = [
     description:
       "App de gestão comercial com CRM e geração de diagramas BPMN por IA — React no front e FastAPI no backend (Grupo 08).",
     cover: "https://picsum.photos/seed/bp-company-crm/1400/900",
-    url: "https://github.com/Renan-Frontend/Grupo08",
+    url: "https://renan-frontend.github.io/Grupo08/",
     accent: "from-violet-600/40 via-neutral-900 to-neutral-950",
   },
   {
@@ -640,16 +640,48 @@ function ProjectsPage({
     });
   }, [initialSlideId, slides]);
 
+  /**
+   * Sai da página; se o viewer estiver aberto, remove a entrada do histórico
+   * antes de navegar (evita state órfão certificateViewer).
+   */
+  function navigateAway(navigate: () => void) {
+    if (!viewerSlide) {
+      navigate();
+      return;
+    }
+
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      window.removeEventListener("popstate", onPop);
+      setViewerSlide(null);
+      navigate();
+    };
+
+    const onPop = () => finish();
+    window.addEventListener("popstate", onPop);
+
+    const state = window.history.state as { certificateViewer?: boolean } | null;
+    if (state?.certificateViewer) {
+      window.history.back();
+    } else {
+      finish();
+    }
+
+    window.setTimeout(finish, 150);
+  }
+
   /** Volta para a home. */
   function handleBack(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    onBack();
+    navigateAway(onBack);
   }
 
   /** Navega para o próximo passo do rodapé. */
   function handleNext(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    onNext();
+    navigateAway(onNext);
   }
 
   /** Atualiza destaque e contador conforme o card mais próximo do centro. */
@@ -1046,24 +1078,18 @@ function ProjectsPage({
                             />
                           </a>
                         </div>
-                      ) : !isCertificates ? (
+                      ) : !isCertificates && slide.url ? (
                         <a
-                          href={slide.url ?? `#${slide.id}`}
-                          {...(slide.url
-                            ? {
-                                target: "_blank",
-                                rel: "noopener noreferrer",
-                              }
-                            : {})}
+                          href={slide.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           onPointerDown={stopCarouselDrag}
                           onClick={(event) => event.stopPropagation()}
                           className={ctaClass(isActive, true)}
                           tabIndex={isActive ? 0 : -1}
                           aria-hidden={!isActive}
                         >
-                          <span>
-                            {slide.url ? "Ver no GitHub" : "Ver projeto"}
-                          </span>
+                          <span>Ver site</span>
                           <ArrowUpRight
                             className="h-4 w-4 shrink-0"
                             aria-hidden="true"

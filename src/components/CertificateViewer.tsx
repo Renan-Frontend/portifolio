@@ -59,26 +59,12 @@ export function CertificateViewer({
 
   // ----- efeitos -----
 
-  /** Fecha com Esc e trava o scroll do body enquanto o viewer está aberto. */
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") onCloseRef.current();
-    }
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, []);
-
   /**
    * Empilha uma entrada no histórico ao abrir.
    * Voltar do browser fecha o overlay; fechar pelo X/Esc remove essa entrada.
    * Em Strict Mode (dev), o remount não deve empilhar duas entradas.
+   * Se a página navegar com o overlay aberto, o carrossel chama history.back()
+   * antes (navigateAway) para não deixar state órfão.
    */
   useEffect(() => {
     let closedByPop = false;
@@ -109,6 +95,43 @@ export function CertificateViewer({
     };
   }, []);
 
+  /**
+   * Fecha via X/Esc/backdrop: volta no histórico se a entrada atual for do viewer
+   * (dispara popstate → onClose); senão fecha direto.
+   */
+  function dismissViewer() {
+    const state = window.history.state as { certificateViewer?: boolean } | null;
+    if (state?.certificateViewer) {
+      window.history.back();
+      return;
+    }
+    onClose();
+  }
+
+  /** Fecha com Esc e trava o scroll do body enquanto o viewer está aberto. */
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      const historyState = window.history.state as {
+        certificateViewer?: boolean;
+      } | null;
+      if (historyState?.certificateViewer) {
+        window.history.back();
+        return;
+      }
+      onCloseRef.current();
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
+
   // ----- interface -----
   const actionClass =
     "inline-flex items-center gap-1.5 rounded-full border border-purple-300/55 bg-purple-500/20 px-3 py-1.5 text-xs font-medium tracking-wide text-purple-100 transition-[background-color,border-color] hover:border-purple-200 hover:bg-purple-500/30 md:text-sm";
@@ -119,7 +142,7 @@ export function CertificateViewer({
       role="dialog"
       aria-modal="true"
       aria-label={title}
-      onClick={() => onClose()}
+      onClick={dismissViewer}
     >
       <div
         className="relative flex max-h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-neutral-900 shadow-2xl"
@@ -155,7 +178,7 @@ export function CertificateViewer({
             </a>
             <button
               type="button"
-              onClick={() => onClose()}
+              onClick={dismissViewer}
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-neutral-300 transition-[color,background-color,border-color] hover:border-white/30 hover:bg-white/5 hover:text-white"
               aria-label="Fechar certificado"
             >

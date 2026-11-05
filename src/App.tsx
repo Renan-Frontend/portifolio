@@ -176,6 +176,18 @@ function App() {
     setHomeReveal("shown");
   }
 
+  /** Abre Projetos e fecha Certificados (exclusão mútua no accordion). */
+  function openProjectsAccordion() {
+    setProjectsOpen(true);
+    setCertificatesOpen(false);
+  }
+
+  /** Abre Certificados e fecha Projetos (exclusão mútua no accordion). */
+  function openCertificatesAccordion() {
+    setCertificatesOpen(true);
+    setProjectsOpen(false);
+  }
+
   // ----- efeitos -----
 
   /**
@@ -195,11 +207,9 @@ function App() {
       }
 
       if (next === "projects" || isProjectId(next)) {
-        setProjectsOpen(true);
-      }
-
-      if (next === "certificates" || isCertificateId(next)) {
-        setCertificatesOpen(true);
+        openProjectsAccordion();
+      } else if (next === "certificates" || isCertificateId(next)) {
+        openCertificatesAccordion();
       }
     };
 
@@ -252,11 +262,9 @@ function App() {
     window.history.pushState(null, "", `#${id}`);
 
     if (id === "projects" || isProjectId(id)) {
-      setProjectsOpen(true);
-    }
-
-    if (id === "certificates" || isCertificateId(id)) {
-      setCertificatesOpen(true);
+      openProjectsAccordion();
+    } else if (id === "certificates" || isCertificateId(id)) {
+      openCertificatesAccordion();
     }
 
     if (
