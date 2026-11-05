@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { publicUrl } from "../utils/publicUrl";
 
 // =============================================================================
 // DADOS
@@ -55,7 +56,7 @@ const SLIDE_FADE_MS = 350;
 const EXIT_FADE_MS = 700;
 
 /** Foto usada no painel direito da intro. */
-const INTRO_PHOTO = "/profile/renan-profile.png";
+const INTRO_PHOTO = publicUrl("profile/renan-profile.png");
 
 // =============================================================================
 // TIPOS
