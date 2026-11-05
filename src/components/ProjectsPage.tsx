@@ -79,9 +79,19 @@ const PROJECT_SLIDES: CarouselSlide[] = [
     description:
       "Este próprio site — currículo interativo com intro, carrossel de projetos, certificados e download do PDF.",
     cover: publicUrl("projects/portfolio-cover.jpg"),
-    // Site publicado (mesmo projeto Curriculo-2.0 / portifolio).
-    url: "https://renan-frontend.github.io/portifolio/",
+    // Site na raiz do user Pages.
+    url: "https://renan-frontend.github.io/",
     accent: "from-purple-500/35 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "curriculo-v1",
+    name: "Currículo v1",
+    tagline: "HTML · CSS · JavaScript",
+    description:
+      "Primeira versão do currículo/portfólio — layout clássico com experiência, formação e contato.",
+    cover: publicUrl("projects/curriculo-v1-cover.jpg"),
+    url: "https://renan-frontend.github.io/curriculo-v1/",
+    accent: "from-sky-600/30 via-neutral-900 to-neutral-950",
   },
 ];
 

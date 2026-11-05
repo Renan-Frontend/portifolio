@@ -29,10 +29,10 @@ const INTRO_WORKS = [
     image: publicUrl("projects/dogs-cover.jpg"),
   },
   {
-    id: "portfolio",
-    name: "Portfólio",
-    initials: "P",
-    image: publicUrl("projects/portfolio-cover.jpg"),
+    id: "curriculo-v1",
+    name: "Currículo v1",
+    initials: "V1",
+    image: publicUrl("projects/curriculo-v1-cover.jpg"),
   },
 ];
 

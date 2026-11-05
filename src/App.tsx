@@ -20,6 +20,7 @@ const projects = [
   { id: "bikcraft", name: "Bikcraft", href: "#bikcraft" },
   { id: "dogs", name: "Dogs", href: "#dogs" },
   { id: "portfolio", name: "Portfólio", href: "#portfolio" },
+  { id: "curriculo-v1", name: "Currículo v1", href: "#curriculo-v1" },
 ];
 
 /** Projetos exibidos no menu (hoje: os 4 primeiros). */
