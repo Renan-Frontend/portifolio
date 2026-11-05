@@ -53,30 +53,34 @@ const PROJECT_SLIDES: CarouselSlide[] = [
     accent: "from-violet-600/40 via-neutral-900 to-neutral-950",
   },
   {
-    id: "plataforma-educacao",
-    name: "Plataforma Educação",
-    tagline: "Produto digital",
+    id: "bikcraft",
+    name: "Bikcraft",
+    tagline: "HTML · CSS · Origamid",
     description:
-      "Aplicação voltada à aprendizagem, com interfaces claras, responsivas e acessíveis.",
-    cover: "https://picsum.photos/seed/educacao-app/1400/900",
+      "Site institucional de bicicletas elétricas — layout responsivo, páginas de produtos, orçamento e contato.",
+    cover: "https://picsum.photos/seed/bikcraft-bikes/1400/900",
+    url: "https://renan-frontend.github.io/bikcraft/",
     accent: "from-indigo-600/35 via-neutral-900 to-neutral-950",
   },
   {
-    id: "rotina-tracker",
-    name: "Rotina Tracker",
-    tagline: "Produtividade",
+    id: "dogs",
+    name: "Dogs",
+    tagline: "React · Origamid",
     description:
-      "Ferramenta para organização de hábitos e rotinas, com foco em usabilidade e clareza.",
-    cover: "https://picsum.photos/seed/rotina-desk/1400/900",
+      "Rede social para cachorros — projeto final do curso Origamid com React, JavaScript, CSS e HTML.",
+    cover: "https://picsum.photos/seed/dogs-social/1400/900",
+    url: "https://renan-frontend.github.io/Dogs/",
     accent: "from-fuchsia-600/30 via-neutral-900 to-neutral-950",
   },
   {
     id: "portfolio",
     name: "Portfólio",
-    tagline: "Identidade digital",
+    tagline: "React · TypeScript · Vite",
     description:
-      "Este próprio site — apresentação profissional com navegação por seções e animações.",
+      "Este próprio site — currículo interativo com intro, carrossel de projetos, certificados e download do PDF.",
     cover: "https://picsum.photos/seed/portfolio-dark/1400/900",
+    // Site publicado (mesmo projeto Curriculo-2.0 / portifolio).
+    url: "https://renan-frontend.github.io/portifolio/",
     accent: "from-purple-500/35 via-neutral-900 to-neutral-950",
   },
 ];

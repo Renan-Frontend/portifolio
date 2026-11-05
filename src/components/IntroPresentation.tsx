@@ -11,13 +11,8 @@ import { publicUrl } from "../utils/publicUrl";
  */
 const INTRO_WORKS = [
   { id: "bp-company", name: "BP Company", initials: "BP", image: null as string | null },
-  {
-    id: "plataforma-educacao",
-    name: "Plataforma Educação",
-    initials: "PE",
-    image: null as string | null,
-  },
-  { id: "rotina-tracker", name: "Rotina Tracker", initials: "RT", image: null as string | null },
+  { id: "bikcraft", name: "Bikcraft", initials: "BK", image: null as string | null },
+  { id: "dogs", name: "Dogs", initials: "DG", image: null as string | null },
   { id: "portfolio", name: "Portfólio", initials: "P", image: null as string | null },
 ];
 
