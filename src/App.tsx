@@ -16,7 +16,7 @@ import { publicUrl } from "./utils/publicUrl";
 
 /** Lista completa de projetos do portfólio. */
 const projects = [
-  { id: "monsterland", name: "Monsterland", href: "#monsterland" },
+  { id: "bp-company", name: "BP Company", href: "#bp-company" },
   {
     id: "plataforma-educacao",
     name: "Plataforma Educação",
@@ -313,6 +313,14 @@ function App() {
     resetWindowScroll();
   }
 
+  /** Vai para a página Sobre Mim. */
+  function goAbout() {
+    leaveHome();
+    setActive("about");
+    window.history.pushState(null, "", "#about");
+    resetWindowScroll();
+  }
+
   /** Vai para a página Experiência. */
   function goExperience() {
     leaveHome();
@@ -428,7 +436,7 @@ function App() {
   // ----- interface: página Currículo -----
   if (active === "curriculum") {
     return (
-      <CurriculumPage onBack={goHome} onCertificates={goCertificates} />
+      <CurriculumPage onBack={goHome} onAbout={goAbout} />
     );
   }
 
