@@ -49,7 +49,7 @@ const PROJECT_SLIDES: CarouselSlide[] = [
     description:
       "App de gestão comercial com CRM e geração de diagramas BPMN por IA — React no front e FastAPI no backend (Grupo 08).",
     cover: "https://picsum.photos/seed/bp-company-crm/1400/900",
-    url: "https://github.com/Renan-Frontend/Grupo08",
+    url: "https://renan-frontend.github.io/Grupo08/",
     accent: "from-violet-600/40 via-neutral-900 to-neutral-950",
   },
   {
@@ -1062,7 +1062,7 @@ function ProjectsPage({
                           aria-hidden={!isActive}
                         >
                           <span>
-                            {slide.url ? "Ver no GitHub" : "Ver projeto"}
+                            {slide.url ? "Ver site" : "Ver projeto"}
                           </span>
                           <ArrowUpRight
                             className="h-4 w-4 shrink-0"
