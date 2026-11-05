@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - feat/pagina-projetos
+      - stage
+      - main
   workflow_dispatch:
 
 permissions:

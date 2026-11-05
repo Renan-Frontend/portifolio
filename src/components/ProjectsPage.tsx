@@ -4,6 +4,8 @@ import {
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
+  Download,
+  Eye,
 } from "lucide-react";
 import {
   useEffect,
@@ -12,6 +14,7 @@ import {
   type MouseEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { CertificateViewer } from "./CertificateViewer";
 import { publicUrl } from "../utils/publicUrl";
 import { avoidOrphan } from "../utils/text";
 
@@ -398,9 +401,10 @@ function ProjectsPage({
     : "Carrossel de projetos";
   const prevAria = isCertificates ? "Certificado anterior" : "Projeto anterior";
   const nextAria = isCertificates ? "Próximo certificado" : "Próximo projeto";
-  const ctaLabel = isCertificates ? "Ver certificado" : "Ver projeto";
 
   // ----- estado -----
+  /** Certificado aberto no overlay (só na variante certificados). */
+  const [viewerSlide, setViewerSlide] = useState<CarouselSlide | null>(null);
   const [activeLoopIndex, setActiveLoopIndex] = useState(() =>
     middleLoopIndex(slideCount, indexFromSlideId(slides, initialSlideId)),
   );
@@ -430,13 +434,31 @@ function ProjectsPage({
   const tapStartRef = useRef<{ x: number; y: number } | null>(null);
   /** Se o scroll moveu o bastante, ignora o clique no card. */
   const tapMovedRef = useRef(false);
+  /** Lista de slides atual (para sync do hash sem fechar sobre closures). */
+  const slidesRef = useRef(slides);
 
   activeLoopIndexRef.current = activeLoopIndex;
   slideCountRef.current = slideCount;
+  slidesRef.current = slides;
 
-  /** Atualiza a contagem a partir do índice absoluto do loop. */
+  /**
+   * Mantém o hash alinhado ao slide ativo (F5 / compartilhar link).
+   * Usa replaceState para não empilhar histórico a cada scroll.
+   */
+  function syncHashFromLoop(loopIndex: number) {
+    const logical = logicalFromLoop(slideCountRef.current, loopIndex);
+    const slide = slidesRef.current[logical];
+    if (!slide) return;
+
+    const nextHash = `#${slide.id}`;
+    if (window.location.hash === nextHash) return;
+    window.history.replaceState(null, "", nextHash);
+  }
+
+  /** Atualiza a contagem e o hash a partir do índice absoluto do loop. */
   function syncCounter(loopIndex: number) {
     setCounterIndex(logicalFromLoop(slideCountRef.current, loopIndex));
+    syncHashFromLoop(loopIndex);
   }
 
   // ----- efeitos -----
@@ -693,8 +715,38 @@ function ProjectsPage({
   }
 
   /** Impede que o clique no CTA inicie o arraste do carrossel. */
-  function stopCarouselDrag(event: ReactPointerEvent<HTMLAnchorElement>) {
+  function stopCarouselDrag(
+    event: ReactPointerEvent<HTMLAnchorElement | HTMLButtonElement>,
+  ) {
     event.stopPropagation();
+  }
+
+  /** Abre o certificado no overlay do site. */
+  function openCertificateViewer(
+    event: MouseEvent<HTMLButtonElement>,
+    slide: CarouselSlide,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!slide.file) return;
+    setViewerSlide(slide);
+  }
+
+  /** Fecha o overlay do certificado. */
+  function closeCertificateViewer() {
+    setViewerSlide(null);
+  }
+
+  /** Classes compartilhadas dos CTAs do card (ativo vs lateral). */
+  function ctaClass(isActive: boolean, emphasize = false): string {
+    return [
+      "inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium tracking-wide transition-[transform,background-color,border-color,opacity,color] duration-300 ease-out",
+      isActive
+        ? emphasize
+          ? "pointer-events-auto border-purple-300/55 bg-purple-500/20 text-purple-100 opacity-100 hover:border-purple-200 hover:bg-purple-500/30"
+          : "pointer-events-auto border-white/20 bg-white/5 text-neutral-100 opacity-100 hover:border-white/35 hover:bg-white/10"
+        : "pointer-events-none border-white/10 bg-white/5 text-neutral-400 opacity-0",
+    ].join(" ");
   }
 
   /**
@@ -926,38 +978,57 @@ function ProjectsPage({
                         </p>
                       </div>
 
-                      {(!isCertificates || slide.file) && (
+                      {isCertificates && slide.file ? (
+                        <div
+                          className="flex flex-wrap items-center gap-2.5"
+                          aria-hidden={!isActive}
+                        >
+                          <button
+                            type="button"
+                            onPointerDown={stopCarouselDrag}
+                            onClick={(event) =>
+                              openCertificateViewer(event, slide)
+                            }
+                            className={ctaClass(isActive, true)}
+                            tabIndex={isActive ? 0 : -1}
+                          >
+                            <span>Ver no site</span>
+                            <Eye
+                              className="h-4 w-4 shrink-0"
+                              aria-hidden="true"
+                            />
+                          </button>
+                          <a
+                            href={slide.file}
+                            download
+                            onPointerDown={stopCarouselDrag}
+                            onClick={(event) => event.stopPropagation()}
+                            className={ctaClass(isActive, false)}
+                            tabIndex={isActive ? 0 : -1}
+                          >
+                            <span>Baixar</span>
+                            <Download
+                              className="h-4 w-4 shrink-0"
+                              aria-hidden="true"
+                            />
+                          </a>
+                        </div>
+                      ) : !isCertificates ? (
                         <a
-                          href={
-                            isCertificates && slide.file
-                              ? slide.file
-                              : `#${slide.id}`
-                          }
-                          {...(isCertificates && slide.file
-                            ? {
-                                download: true,
-                                target: "_blank",
-                                rel: "noopener noreferrer",
-                              }
-                            : {})}
+                          href={`#${slide.id}`}
                           onPointerDown={stopCarouselDrag}
                           onClick={(event) => event.stopPropagation()}
-                          className={[
-                            "inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium tracking-wide transition-[transform,background-color,border-color,opacity,color] duration-300 ease-out",
-                            isActive
-                              ? "pointer-events-auto border-purple-300/55 bg-purple-500/20 text-purple-100 opacity-100 hover:border-purple-200 hover:bg-purple-500/30"
-                              : "pointer-events-none border-white/10 bg-white/5 text-neutral-400 opacity-0",
-                          ].join(" ")}
+                          className={ctaClass(isActive, true)}
                           tabIndex={isActive ? 0 : -1}
                           aria-hidden={!isActive}
                         >
-                          <span>{ctaLabel}</span>
+                          <span>Ver projeto</span>
                           <ArrowUpRight
                             className="h-4 w-4 shrink-0"
                             aria-hidden="true"
                           />
                         </a>
-                      )}
+                      ) : null}
                     </div>
                   </article>
                 );
@@ -1013,6 +1084,14 @@ function ProjectsPage({
           </a>
         </nav>
       </footer>
+
+      {viewerSlide?.file ? (
+        <CertificateViewer
+          title={viewerSlide.name}
+          fileUrl={viewerSlide.file}
+          onClose={closeCertificateViewer}
+        />
+      ) : null}
     </main>
   );
 }
