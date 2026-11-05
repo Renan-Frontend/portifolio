@@ -10,7 +10,7 @@ import { publicUrl } from "../utils/publicUrl";
  * `image` fica pronto para prints reais em /public/projects/ depois.
  */
 const INTRO_WORKS = [
-  { id: "monsterland", name: "Monsterland", initials: "M", image: null as string | null },
+  { id: "bp-company", name: "BP Company", initials: "BP", image: null as string | null },
   {
     id: "plataforma-educacao",
     name: "Plataforma Educação",

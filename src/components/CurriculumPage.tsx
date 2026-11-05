@@ -69,8 +69,8 @@ const CV_CONTACTS = [
 type CurriculumPageProps = {
   /** Volta para a home (sem repetir a intro). */
   onBack: () => void;
-  /** Vai para a página Certificados. */
-  onCertificates: () => void;
+  /** Vai para a página Sobre Mim. */
+  onAbout: () => void;
 };
 
 type CurriculumActionsProps = {
@@ -193,7 +193,7 @@ function CurriculumPreview() {
  * Página Currículo em duas colunas no desktop (texto | imagem).
  * “Entrar em contato” revela Email, WhatsApp, LinkedIn e GitHub.
  */
-function CurriculumPage({ onBack, onCertificates }: CurriculumPageProps) {
+function CurriculumPage({ onBack, onAbout }: CurriculumPageProps) {
   // ----- estado -----
   const [contactOpen, setContactOpen] = useState(false);
 
@@ -205,10 +205,10 @@ function CurriculumPage({ onBack, onCertificates }: CurriculumPageProps) {
     onBack();
   }
 
-  /** Navega para Certificados. */
-  function handleCertificates(event: MouseEvent<HTMLAnchorElement>) {
+  /** Navega para Sobre Mim. */
+  function handleAbout(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    onCertificates();
+    onAbout();
   }
 
   /** Abre/fecha o painel de redes sociais. */
@@ -338,11 +338,11 @@ function CurriculumPage({ onBack, onCertificates }: CurriculumPageProps) {
           </a>
 
           <a
-            href="#certificates"
-            onClick={handleCertificates}
+            href="#about"
+            onClick={handleAbout}
             className="inline-flex min-w-0 shrink translate-x-0 items-center gap-1.5 text-neutral-300 transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-300 min-[390px]:gap-2"
           >
-            <span className="truncate">Certificados</span>
+            <span className="truncate">Sobre Mim</span>
             <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
           </a>
         </nav>

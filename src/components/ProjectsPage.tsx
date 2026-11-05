@@ -36,17 +36,20 @@ type CarouselSlide = {
   accent: string;
   /** Arquivo original para download (certificados). */
   file?: string;
+  /** Link externo do projeto (GitHub, demo, etc.). */
+  url?: string;
 };
 
 /** Slides do carrossel de projetos. */
 const PROJECT_SLIDES: CarouselSlide[] = [
   {
-    id: "monsterland",
-    name: "Monsterland",
-    tagline: "Experiência interativa",
+    id: "bp-company",
+    name: "BP Company",
+    tagline: "Gestão comercial · Residência em TIC",
     description:
-      "Projeto focado em interfaces envolventes, exploração visual e interação com o usuário.",
-    cover: "https://picsum.photos/seed/monsterland-ui/1400/900",
+      "App de gestão comercial com CRM e geração de diagramas BPMN por IA — React no front e FastAPI no backend (Grupo 08).",
+    cover: "https://picsum.photos/seed/bp-company-crm/1400/900",
+    url: "https://github.com/Renan-Frontend/Grupo08",
     accent: "from-violet-600/40 via-neutral-900 to-neutral-950",
   },
   {
@@ -1045,14 +1048,22 @@ function ProjectsPage({
                         </div>
                       ) : !isCertificates ? (
                         <a
-                          href={`#${slide.id}`}
+                          href={slide.url ?? `#${slide.id}`}
+                          {...(slide.url
+                            ? {
+                                target: "_blank",
+                                rel: "noopener noreferrer",
+                              }
+                            : {})}
                           onPointerDown={stopCarouselDrag}
                           onClick={(event) => event.stopPropagation()}
                           className={ctaClass(isActive, true)}
                           tabIndex={isActive ? 0 : -1}
                           aria-hidden={!isActive}
                         >
-                          <span>Ver projeto</span>
+                          <span>
+                            {slide.url ? "Ver no GitHub" : "Ver projeto"}
+                          </span>
                           <ArrowUpRight
                             className="h-4 w-4 shrink-0"
                             aria-hidden="true"
