@@ -17,12 +17,8 @@ import { publicUrl } from "./utils/publicUrl";
 /** Lista completa de projetos do portfólio. */
 const projects = [
   { id: "bp-company", name: "BP Company", href: "#bp-company" },
-  {
-    id: "plataforma-educacao",
-    name: "Plataforma Educação",
-    href: "#plataforma-educacao",
-  },
-  { id: "rotina-tracker", name: "Rotina Tracker", href: "#rotina-tracker" },
+  { id: "bikcraft", name: "Bikcraft", href: "#bikcraft" },
+  { id: "dogs", name: "Dogs", href: "#dogs" },
   { id: "portfolio", name: "Portfólio", href: "#portfolio" },
 ];
 
