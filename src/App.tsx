@@ -98,10 +98,11 @@ function navFromHash(hash: string): NavId {
 }
 
 /**
- * Diz se o id informado pertence a um projeto da lista visível.
+ * Diz se o id informado pertence a qualquer projeto do portfólio
+ * (não só aos 4 do accordion — deep-link/carrossel precisam do restante).
  */
 function isProjectId(id: NavId): boolean {
-  return visibleProjects.some((project) => project.id === id);
+  return projects.some((project) => project.id === id);
 }
 
 /**

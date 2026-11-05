@@ -657,6 +657,7 @@ function ProjectsPage({
   /**
    * Sai da página; se o viewer estiver aberto, remove a entrada do histórico
    * antes de navegar (evita state órfão certificateViewer).
+   * Espera o popstate do back(); o timeout só é fallback e é cancelado no pop.
    */
   function navigateAway(navigate: () => void) {
     if (!viewerSlide) {
@@ -665,25 +666,33 @@ function ProjectsPage({
     }
 
     let finished = false;
+    let fallbackTimer: number | undefined;
+
     const finish = () => {
       if (finished) return;
       finished = true;
+      if (fallbackTimer !== undefined) {
+        window.clearTimeout(fallbackTimer);
+        fallbackTimer = undefined;
+      }
       window.removeEventListener("popstate", onPop);
       setViewerSlide(null);
       navigate();
     };
 
     const onPop = () => finish();
-    window.addEventListener("popstate", onPop);
 
     const state = window.history.state as { certificateViewer?: boolean } | null;
     if (state?.certificateViewer) {
+      window.addEventListener("popstate", onPop);
       window.history.back();
-    } else {
-      finish();
+      // Fallback só se o browser não emitir popstate (ex.: falha rara no back).
+      fallbackTimer = window.setTimeout(finish, 500);
+      return;
     }
 
-    window.setTimeout(finish, 150);
+    setViewerSlide(null);
+    navigate();
   }
 
   /** Volta para a home. */
