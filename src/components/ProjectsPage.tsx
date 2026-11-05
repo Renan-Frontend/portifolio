@@ -12,6 +12,7 @@ import {
   type MouseEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { publicUrl } from "../utils/publicUrl";
 import { avoidOrphan } from "../utils/text";
 
 // =============================================================================
@@ -85,8 +86,8 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "Origamid · 34 horas",
     description:
       "Concluído em 18/06/2025 — fundamentos de UI, hierarquia visual e consistência de interfaces.",
-    cover: "/certificates/ui-design-cover.jpg",
-    file: "/certificates/ui-design.pdf",
+    cover: publicUrl("certificates/ui-design-cover.jpg"),
+    file: publicUrl("certificates/ui-design.pdf"),
     accent: "from-violet-600/40 via-neutral-900 to-neutral-950",
   },
   {
@@ -95,8 +96,8 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "Origamid · 36 horas",
     description:
       "Concluído em 04/02/2026 — componentes, estado e composição em React.",
-    cover: "/certificates/react-completo-cover.jpg",
-    file: "/certificates/react-completo.pdf",
+    cover: publicUrl("certificates/react-completo-cover.jpg"),
+    file: publicUrl("certificates/react-completo.pdf"),
     accent: "from-indigo-600/35 via-neutral-900 to-neutral-950",
   },
   {
@@ -105,8 +106,8 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "Origamid · 10 horas",
     description:
       "Concluído em 31/07/2025 — grades responsivas e organização de layout com CSS Grid.",
-    cover: "/certificates/css-grid-cover.jpg",
-    file: "/certificates/css-grid.pdf",
+    cover: publicUrl("certificates/css-grid-cover.jpg"),
+    file: publicUrl("certificates/css-grid.pdf"),
     accent: "from-fuchsia-600/30 via-neutral-900 to-neutral-950",
   },
   {
@@ -115,8 +116,8 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "Origamid · 6 horas",
     description:
       "Concluído em 17/07/2025 — alinhamento e distribuição de elementos com Flexbox.",
-    cover: "/certificates/css-flexbox-cover.jpg",
-    file: "/certificates/css-flexbox.pdf",
+    cover: publicUrl("certificates/css-flexbox-cover.jpg"),
+    file: publicUrl("certificates/css-flexbox.pdf"),
     accent: "from-purple-500/35 via-neutral-900 to-neutral-950",
   },
   {
@@ -125,8 +126,8 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "Origamid · 46 horas",
     description:
       "Concluído em 07/07/2025 — estrutura semântica e estilização base para a web.",
-    cover: "/certificates/html-css-cover.jpg",
-    file: "/certificates/html-css.pdf",
+    cover: publicUrl("certificates/html-css-cover.jpg"),
+    file: publicUrl("certificates/html-css.pdf"),
     accent: "from-violet-500/35 via-neutral-900 to-neutral-950",
   },
   {
@@ -135,8 +136,8 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "Origamid · 74 horas",
     description:
       "Concluído em 20/03/2025 — JavaScript moderno para lógica de interface e integração.",
-    cover: "/certificates/js-es6-cover.jpg",
-    file: "/certificates/js-es6.pdf",
+    cover: publicUrl("certificates/js-es6-cover.jpg"),
+    file: publicUrl("certificates/js-es6.pdf"),
     accent: "from-indigo-500/35 via-neutral-900 to-neutral-950",
   },
   {
@@ -145,8 +146,8 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "60 horas · aulas ao vivo",
     description:
       "Concluído em 12/12/2024 — bootcamp de front-end com Gabriel Soares Salvador.",
-    cover: "/certificates/bootcamp-frontbase-cover.jpg",
-    file: "/certificates/bootcamp-frontbase.pdf",
+    cover: publicUrl("certificates/bootcamp-frontbase-cover.jpg"),
+    file: publicUrl("certificates/bootcamp-frontbase.pdf"),
     accent: "from-fuchsia-500/30 via-neutral-900 to-neutral-950",
   },
   {
@@ -155,8 +156,8 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "SAGA Goiânia · 270 horas",
     description:
       "Concluído em 27/07/2021 — Adobe, Maya, Animate e pipeline criativo (frequência 96%).",
-    cover: "/certificates/saga-start-cover.jpg",
-    file: "/certificates/saga-start.jpeg",
+    cover: publicUrl("certificates/saga-start-cover.jpg"),
+    file: publicUrl("certificates/saga-start.jpeg"),
     accent: "from-purple-600/35 via-neutral-900 to-neutral-950",
   },
   {
@@ -165,8 +166,8 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "BRISA / SOFTEX / UFG · 180 horas",
     description:
       "Etapa de Nivelamento do Programa de Residência em TIC 16 (set–nov/2025), EaD.",
-    cover: "/certificates/residencia-nivelamento-cover.jpg",
-    file: "/certificates/residencia-nivelamento.pdf",
+    cover: publicUrl("certificates/residencia-nivelamento-cover.jpg"),
+    file: publicUrl("certificates/residencia-nivelamento.pdf"),
     accent: "from-violet-600/35 via-neutral-900 to-neutral-950",
   },
   {
@@ -175,8 +176,8 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "BRISA / SOFTEX / UFG · 480 horas",
     description:
       "Fase de imersão da Residência em TIC 16 (dez/2025–jun/2026), com projetos presenciais.",
-    cover: "/certificates/residencia-imersao-cover.jpg",
-    file: "/certificates/residencia-imersao.pdf",
+    cover: publicUrl("certificates/residencia-imersao-cover.jpg"),
+    file: publicUrl("certificates/residencia-imersao.pdf"),
     accent: "from-indigo-600/35 via-neutral-900 to-neutral-950",
   },
   {
@@ -185,11 +186,14 @@ export const CERTIFICATE_SLIDES: CarouselSlide[] = [
     tagline: "SUPERA · 300 horas",
     description:
       "Capacitação em jogos 3D (Unreal, Maya, ZBrush e Substance), concluída em 13/02/2021.",
-    cover: "/certificates/supera-1-cover.jpg",
-    file: "/certificates/supera-1.jpeg",
+    cover: publicUrl("certificates/supera-1-cover.jpg"),
+    file: publicUrl("certificates/supera-1.jpeg"),
     accent: "from-fuchsia-600/30 via-neutral-900 to-neutral-950",
   },
 ];
+
+/** Distância mínima (px) para tratar o ponteiro do mouse como arraste, não clique. */
+const DRAG_THRESHOLD_PX = 10;
 
 /**
  * Três cópias: [A B C D][A B C D][A B C D].
@@ -407,8 +411,10 @@ function ProjectsPage({
   const trackRef = useRef<HTMLDivElement>(null);
   const activeLoopIndexRef = useRef(activeLoopIndex);
   const slideCountRef = useRef(slideCount);
-  /** Arraste com mouse. */
+  /** Arraste com mouse (só true depois do limiar de movimento). */
   const isDraggingRef = useRef(false);
+  /** Mouse down no track, ainda sem decidir se é clique ou arraste. */
+  const dragArmedRef = useRef(false);
   const dragStartXRef = useRef(0);
   const dragScrollLeftRef = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -621,29 +627,42 @@ function ProjectsPage({
     syncCounter(closest);
   }
 
-  /** Inicia o arraste horizontal com o mouse. */
+  /**
+   * Arma o arraste com o mouse sem capturar o ponteiro ainda.
+   * Assim o clique no card lateral ainda recebe pointerup e centraliza.
+   */
   function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.pointerType !== "mouse" || event.button !== 0) return;
 
     const track = trackRef.current;
     if (!track) return;
 
-    isDraggingRef.current = true;
+    dragArmedRef.current = true;
+    isDraggingRef.current = false;
     dragStartXRef.current = event.clientX;
     dragScrollLeftRef.current = track.scrollLeft;
-    setIsDragging(true);
-    track.setPointerCapture(event.pointerId);
-    event.preventDefault();
   }
 
-  /** Move o carrossel e já troca o ativo para o card mais próximo. */
+  /**
+   * Só vira arraste após o limiar; aí captura o ponteiro e move o carrossel.
+   */
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
-    if (!isDraggingRef.current) return;
+    if (!dragArmedRef.current && !isDraggingRef.current) return;
 
     const track = trackRef.current;
     if (!track) return;
 
     const dx = event.clientX - dragStartXRef.current;
+
+    if (!isDraggingRef.current) {
+      if (Math.abs(dx) < DRAG_THRESHOLD_PX) return;
+      isDraggingRef.current = true;
+      tapMovedRef.current = true;
+      setIsDragging(true);
+      track.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    }
+
     track.scrollLeft = dragScrollLeftRef.current - dx;
 
     const closest = closestLoopIndex();
@@ -651,17 +670,21 @@ function ProjectsPage({
     syncCounter(closest);
   }
 
-  /** Solta o arraste; o snap CSS encaixa e o scrollend normaliza o loop. */
+  /** Solta o arraste (ou o armamento); no drag, normaliza o loop após o snap. */
   function handlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
-    if (!isDraggingRef.current) return;
+    if (!dragArmedRef.current && !isDraggingRef.current) return;
 
     const track = trackRef.current;
+    const wasDragging = isDraggingRef.current;
+    dragArmedRef.current = false;
     isDraggingRef.current = false;
     setIsDragging(false);
 
     if (track?.hasPointerCapture(event.pointerId)) {
       track.releasePointerCapture(event.pointerId);
     }
+
+    if (!wasDragging) return;
 
     // Pequeno atraso para o snap voltar a atuar após remover is-dragging.
     requestAnimationFrame(() => {
@@ -754,7 +777,7 @@ function ProjectsPage({
     }
   }
 
-  /** Toque/clique no card: aplica o ativo e centraliza (efeito no mobile). */
+  /** Toque/clique no card: aplica o ativo e centraliza (mobile e desktop). */
   function handleCardPointerUp(
     event: ReactPointerEvent<HTMLElement>,
     loopIndex: number,
@@ -764,7 +787,7 @@ function ProjectsPage({
     if (!start || tapMovedRef.current) return;
     if (isDraggingRef.current) return;
 
-    // Clique curto: ativa o card tocado.
+    // Clique curto (sem arraste): ativa o card tocado.
     event.preventDefault();
     goToLoopIndex(loopIndex);
   }

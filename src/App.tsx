@@ -158,7 +158,8 @@ function App() {
   // ----- efeitos -----
 
   /**
-   * Sincroniza a view com o hash da URL ao carregar e em hashchange.
+   * Sincroniza a view com a URL ao carregar, em hashchange e em popstate.
+   * popstate cobre o voltar/avançar após pushState (ex.: goHome limpa o hash).
    */
   useEffect(() => {
     const syncFromUrl = () => {
@@ -182,8 +183,12 @@ function App() {
 
     syncFromUrl();
     window.addEventListener("hashchange", syncFromUrl);
+    window.addEventListener("popstate", syncFromUrl);
 
-    return () => window.removeEventListener("hashchange", syncFromUrl);
+    return () => {
+      window.removeEventListener("hashchange", syncFromUrl);
+      window.removeEventListener("popstate", syncFromUrl);
+    };
   }, []);
 
   /**
