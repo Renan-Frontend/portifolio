@@ -38,11 +38,12 @@ const INTRO_WORKS = [
 
 /**
  * Beats da apresentação (~7s no total).
- * `visual`: retrato à direita ou mosaico de trabalhos.
+ * `visual`: creative (abstrato), photo (retrato) ou works (mosaico).
+ * `photo` opcional: caminho público do retrato do beat.
  */
 const INTRO_SLIDES = [
   {
-    visual: "photo" as const,
+    visual: "creative" as const,
     durationMs: 2200,
     lines: [
       { text: "Bem-vindo", tone: "plain" as const },
@@ -51,6 +52,8 @@ const INTRO_SLIDES = [
   },
   {
     visual: "photo" as const,
+    photo: publicUrl("profile/renan-smile.jpg"),
+    photoPosition: "50% 18%",
     durationMs: 2200,
     lines: [
       { text: "Eu sou Renan Naves", tone: "script" as const },
@@ -59,7 +62,7 @@ const INTRO_SLIDES = [
   },
   {
     visual: "works" as const,
-    durationMs: 2100,
+    durationMs: 2800,
     lines: [{ text: "Este é o meu mundo", tone: "plain" as const }],
   },
 ];
@@ -69,9 +72,6 @@ const SLIDE_FADE_MS = 350;
 
 /** Duração do fade final da overlay (ms). */
 const EXIT_FADE_MS = 700;
-
-/** Foto usada no painel direito da intro. */
-const INTRO_PHOTO = publicUrl("profile/renan-profile.png");
 
 // =============================================================================
 // TIPOS
@@ -91,12 +91,37 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+/**
+ * Painel criativo do beat “Bem-vindo”: portal abstrato (código + órbitas),
+ * sem foto pessoal — convite visual para a vida/trabalho do Renan.
+ */
+function IntroCreativePanel() {
+  return (
+    <div className="intro-creative" aria-hidden="true">
+      <div className="intro-creative__glow" />
+      <div className="intro-creative__ring intro-creative__ring--a" />
+      <div className="intro-creative__ring intro-creative__ring--b" />
+      <div className="intro-creative__grid" />
+      <p className="intro-creative__line intro-creative__line--1">{`<life />`}</p>
+      <p className="intro-creative__line intro-creative__line--2">
+        {"const path = 'create'"}
+      </p>
+      <p className="intro-creative__line intro-creative__line--3">{"{ code }"}</p>
+      <p className="intro-creative__line intro-creative__line--4">design · build</p>
+      <span className="intro-creative__dot intro-creative__dot--1" />
+      <span className="intro-creative__dot intro-creative__dot--2" />
+      <span className="intro-creative__dot intro-creative__dot--3" />
+    </div>
+  );
+}
+
 // =============================================================================
 // COMPONENTE
 // =============================================================================
 
 /**
- * Apresentação em duas colunas: texto à esquerda, foto/mosaico menor à direita.
+ * Apresentação: texto à esquerda + visual full-bleed à direita
+ * (criativo → retrato → mosaico), no mesmo encaixe da foto da home.
  * Pode ser pulada a qualquer momento.
  */
 function IntroPresentation({ onComplete }: IntroPresentationProps) {
@@ -178,7 +203,14 @@ function IntroPresentation({ onComplete }: IntroPresentationProps) {
 
   // ----- interface -----
   const slide = INTRO_SLIDES[index];
-  const showWorks = slide.visual === "works";
+  const photoSrc =
+    "photo" in slide && slide.photo
+      ? slide.photo
+      : publicUrl("profile/renan-profile.png");
+  const photoPosition =
+    "photoPosition" in slide && slide.photoPosition
+      ? slide.photoPosition
+      : undefined;
 
   return (
     <div
@@ -190,22 +222,70 @@ function IntroPresentation({ onComplete }: IntroPresentationProps) {
       aria-modal="true"
       aria-label="Apresentação inicial"
     >
-      {/* Atmosfera suave no fundo (sem foto full-bleed) */}
+      {/* Visual à direita — mesmo encaixe full-bleed da home (sem caixa) */}
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(196,181,253,0.1),transparent_55%)]"
-        aria-hidden="true"
-      />
-
-      {/* Layout: texto | imagem — usa quase a tela toda */}
-      <div
-        key={`${index}-${phase}`}
+        key={`visual-${index}-${phase}`}
         className={[
-          "relative z-10 mx-auto flex h-full w-full max-w-[1600px] flex-col items-center justify-center gap-10 px-5 py-12 sm:px-8 md:flex-row md:items-center md:justify-between md:gap-10 md:px-10 md:py-10 lg:gap-14 lg:px-16 xl:px-20",
+          "intro-visual pointer-events-none absolute inset-0 -z-0",
+          phase === "in" ? "intro-line--in" : "intro-line--out",
+        ].join(" ")}
+        aria-hidden="true"
+      >
+        {slide.visual === "creative" ? (
+          <div className="intro-visual__bleed intro-visual__bleed--creative">
+            <IntroCreativePanel />
+            <div className="intro-visual__edge intro-visual__edge--soft" />
+          </div>
+        ) : slide.visual === "works" ? (
+          <div className="intro-visual__bleed intro-visual__bleed--works">
+            <ul className="intro-works">
+              {INTRO_WORKS.map((work, i) => (
+                <li
+                  key={work.id}
+                  className="intro-work-card"
+                  style={{ animationDelay: `${80 + i * 70}ms` }}
+                >
+                  {work.image ? (
+                    <img src={work.image} alt="" className="intro-work-card__img" />
+                  ) : (
+                    <span className="intro-work-card__mono">{work.initials}</span>
+                  )}
+                  <span className="intro-work-card__name">{work.name}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="intro-visual__edge intro-visual__edge--works" />
+          </div>
+        ) : (
+          <div className="intro-visual__bleed">
+            <img
+              src={photoSrc}
+              alt=""
+              className="intro-portrait__img"
+              style={photoPosition ? { objectPosition: photoPosition } : undefined}
+            />
+            <div className="intro-visual__edge" />
+            <div className="intro-portrait__fade" />
+          </div>
+        )}
+      </div>
+
+      {/* Texto à esquerda, sobre o visual */}
+      <div
+        key={`copy-${index}-${phase}`}
+        className={[
+          "relative z-10 flex h-full w-full flex-col justify-center px-5 py-12 sm:px-8 md:px-10 md:py-10 lg:px-16 xl:px-20",
           phase === "in" ? "intro-line--in" : "intro-line--out",
         ].join(" ")}
       >
-        {/* ----- Coluna esquerda: texto (grande, ocupa bem a metade) ----- */}
-        <div className="flex w-full flex-col items-start gap-4 text-left md:w-[50%] md:max-w-none md:gap-5 lg:gap-6">
+        <div
+          className={[
+            "flex w-full flex-col items-start gap-4 text-left md:gap-5 lg:gap-6",
+            slide.visual === "works"
+              ? "max-w-[min(92%,22rem)] md:max-w-[36%] lg:max-w-[34%]"
+              : "max-w-[min(92%,28rem)] md:max-w-[46%] lg:max-w-[44%]",
+          ].join(" ")}
+        >
           {slide.lines.map((line) => (
             <p
               key={line.text}
@@ -219,43 +299,6 @@ function IntroPresentation({ onComplete }: IntroPresentationProps) {
               {line.text}
             </p>
           ))}
-        </div>
-
-        {/* ----- Coluna direita: foto / mosaico (maior, ~metade da tela) ----- */}
-        <div className="flex w-full max-w-[min(92vw,420px)] shrink-0 justify-center min-[430px]:max-w-[min(88vw,480px)] md:max-w-[min(46vw,560px)] lg:max-w-[min(44vw,620px)]">
-          {showWorks ? (
-            <ul className="intro-works grid w-full grid-cols-2 gap-3 sm:gap-4 md:gap-5">
-              {INTRO_WORKS.map((work, i) => (
-                <li
-                  key={work.id}
-                  className="intro-work-card"
-                  style={{ animationDelay: `${80 + i * 70}ms` }}
-                >
-                  {work.image ? (
-                    <img
-                      src={work.image}
-                      alt=""
-                      className="absolute inset-0 h-full w-full object-cover opacity-70"
-                    />
-                  ) : (
-                    <span className="intro-work-card__mono" aria-hidden="true">
-                      {work.initials}
-                    </span>
-                  )}
-                  <span className="intro-work-card__name">{work.name}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="intro-portrait" aria-hidden="true">
-              <img
-                src={INTRO_PHOTO}
-                alt=""
-                className="intro-portrait__img"
-              />
-              <div className="intro-portrait__fade" />
-            </div>
-          )}
         </div>
       </div>
 
