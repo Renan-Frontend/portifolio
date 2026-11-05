@@ -2,17 +2,11 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// Subpath do GitHub Pages: https://renan-frontend.github.io/portifolio/
-const GITHUB_PAGES_BASE = '/portifolio/'
-
 /**
- * No dev e no build local a raiz fica "/".
- * O workflow de Pages define GITHUB_PAGES=true para publicar no subpath do repositório.
+ * Site na raiz do user Pages: https://renan-frontend.github.io/
+ * (o subpath /portifolio/ só redireciona para a raiz).
  */
-export default defineConfig(({ command }) => ({
-  base:
-    command === 'build' && process.env.GITHUB_PAGES === 'true'
-      ? GITHUB_PAGES_BASE
-      : '/',
+export default defineConfig({
+  base: '/',
   plugins: [react(), tailwindcss()],
-}))
+})

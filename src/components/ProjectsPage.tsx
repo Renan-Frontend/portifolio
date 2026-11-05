@@ -79,9 +79,19 @@ const PROJECT_SLIDES: CarouselSlide[] = [
     description:
       "Este próprio site — currículo interativo com intro, carrossel de projetos, certificados e download do PDF.",
     cover: publicUrl("projects/portfolio-cover.jpg"),
-    // Site publicado (mesmo projeto Curriculo-2.0 / portifolio).
-    url: "https://renan-frontend.github.io/portifolio/",
+    // Site na raiz do user Pages.
+    url: "https://renan-frontend.github.io/",
     accent: "from-purple-500/35 via-neutral-900 to-neutral-950",
+  },
+  {
+    id: "curriculo-v1",
+    name: "Currículo v1",
+    tagline: "HTML · CSS · JavaScript",
+    description:
+      "Primeira versão do currículo/portfólio — layout clássico com experiência, formação e contato.",
+    cover: publicUrl("projects/curriculo-v1-cover.jpg"),
+    url: "https://renan-frontend.github.io/curriculo-v1/",
+    accent: "from-sky-600/30 via-neutral-900 to-neutral-950",
   },
 ];
 
@@ -647,6 +657,7 @@ function ProjectsPage({
   /**
    * Sai da página; se o viewer estiver aberto, remove a entrada do histórico
    * antes de navegar (evita state órfão certificateViewer).
+   * Espera o popstate do back(); o timeout só é fallback e é cancelado no pop.
    */
   function navigateAway(navigate: () => void) {
     if (!viewerSlide) {
@@ -655,25 +666,33 @@ function ProjectsPage({
     }
 
     let finished = false;
+    let fallbackTimer: number | undefined;
+
     const finish = () => {
       if (finished) return;
       finished = true;
+      if (fallbackTimer !== undefined) {
+        window.clearTimeout(fallbackTimer);
+        fallbackTimer = undefined;
+      }
       window.removeEventListener("popstate", onPop);
       setViewerSlide(null);
       navigate();
     };
 
     const onPop = () => finish();
-    window.addEventListener("popstate", onPop);
 
     const state = window.history.state as { certificateViewer?: boolean } | null;
     if (state?.certificateViewer) {
+      window.addEventListener("popstate", onPop);
       window.history.back();
-    } else {
-      finish();
+      // Fallback só se o browser não emitir popstate (ex.: falha rara no back).
+      fallbackTimer = window.setTimeout(finish, 500);
+      return;
     }
 
-    window.setTimeout(finish, 150);
+    setViewerSlide(null);
+    navigate();
   }
 
   /** Volta para a home. */

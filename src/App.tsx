@@ -20,6 +20,7 @@ const projects = [
   { id: "bikcraft", name: "Bikcraft", href: "#bikcraft" },
   { id: "dogs", name: "Dogs", href: "#dogs" },
   { id: "portfolio", name: "Portfólio", href: "#portfolio" },
+  { id: "curriculo-v1", name: "Currículo v1", href: "#curriculo-v1" },
 ];
 
 /** Projetos exibidos no menu (hoje: os 4 primeiros). */
@@ -97,10 +98,11 @@ function navFromHash(hash: string): NavId {
 }
 
 /**
- * Diz se o id informado pertence a um projeto da lista visível.
+ * Diz se o id informado pertence a qualquer projeto do portfólio
+ * (não só aos 4 do accordion — deep-link/carrossel precisam do restante).
  */
 function isProjectId(id: NavId): boolean {
-  return visibleProjects.some((project) => project.id === id);
+  return projects.some((project) => project.id === id);
 }
 
 /**
