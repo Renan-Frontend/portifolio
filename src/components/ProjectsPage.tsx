@@ -1056,7 +1056,12 @@ function ProjectsPage({
                               }
                             : {})}
                           onPointerDown={stopCarouselDrag}
-                          onClick={(event) => event.stopPropagation()}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            // Sem URL externa: o hash já é do carrossel — evita
+                            // navegação nativa empilhando histórico.
+                            if (!slide.url) event.preventDefault();
+                          }}
                           className={ctaClass(isActive, true)}
                           tabIndex={isActive ? 0 : -1}
                           aria-hidden={!isActive}
