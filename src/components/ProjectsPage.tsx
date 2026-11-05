@@ -75,10 +75,12 @@ const PROJECT_SLIDES: CarouselSlide[] = [
   {
     id: "portfolio",
     name: "Portfólio",
-    tagline: "Identidade digital",
+    tagline: "React · TypeScript · Vite",
     description:
-      "Este próprio site — apresentação profissional com navegação por seções e animações.",
+      "Este próprio site — currículo interativo com intro, carrossel de projetos, certificados e download do PDF.",
     cover: "https://picsum.photos/seed/portfolio-dark/1400/900",
+    // Site publicado (mesmo projeto Curriculo-2.0 / portifolio).
+    url: "https://renan-frontend.github.io/portifolio/",
     accent: "from-purple-500/35 via-neutral-900 to-neutral-950",
   },
 ];
