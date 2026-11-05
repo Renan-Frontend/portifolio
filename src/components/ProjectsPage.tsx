@@ -923,6 +923,7 @@ function ProjectsPage({
                       className={[
                         "projects-carousel__media pointer-events-none absolute inset-0 overflow-hidden rounded-2xl transition-opacity duration-300",
                         isActive ? "opacity-100" : "opacity-50",
+                        isCertificates ? "bg-neutral-950" : "",
                       ].join(" ")}
                     >
                       <img
@@ -931,11 +932,25 @@ function ProjectsPage({
                         loading="lazy"
                         decoding="async"
                         draggable={false}
-                        className="absolute inset-0 h-full w-full object-cover object-center select-none"
+                        className={[
+                          "absolute inset-0 h-full w-full select-none",
+                          // Certificados: contain para não cortar o documento; projetos: cover.
+                          isCertificates
+                            ? "object-contain object-center p-3 md:p-4"
+                            : "object-cover object-center",
+                        ].join(" ")}
                       />
-                      <div className="absolute inset-0 bg-neutral-950/20" />
+                      {!isCertificates ? (
+                        <div className="absolute inset-0 bg-neutral-950/20" />
+                      ) : null}
                       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.16),transparent_55%)]" />
-                      <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5" />
+                      <div
+                        className={
+                          isCertificates
+                            ? "absolute inset-0 bg-linear-to-t from-neutral-950/95 via-neutral-950/50 to-transparent"
+                            : "absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5"
+                        }
+                      />
                     </div>
 
                     {/* Filete fino contínuo + quinas grossas (só nos cantos) */}
