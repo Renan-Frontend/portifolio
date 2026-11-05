@@ -230,6 +230,8 @@ type ProjectsPageProps = {
   variant?: CarouselVariant;
   /** Id do slide a focar no carrossel (deep-link). */
   initialSlideId?: string;
+  /** Notifica o App quando o slide ativo muda (alinhar hash/`active`). */
+  onActiveSlideChange?: (slideId: string) => void;
 };
 
 // =============================================================================
@@ -389,6 +391,7 @@ function ProjectsPage({
   nextHref,
   variant = "projects",
   initialSlideId,
+  onActiveSlideChange,
 }: ProjectsPageProps) {
   // ----- dados da variante -----
   const isCertificates = variant === "certificates";
@@ -436,14 +439,19 @@ function ProjectsPage({
   const tapMovedRef = useRef(false);
   /** Lista de slides atual (para sync do hash sem fechar sobre closures). */
   const slidesRef = useRef(slides);
+  /** Evita notificar o App com o mesmo id em sequência. */
+  const lastNotifiedSlideIdRef = useRef<string | null>(null);
+  const onActiveSlideChangeRef = useRef(onActiveSlideChange);
 
   activeLoopIndexRef.current = activeLoopIndex;
   slideCountRef.current = slideCount;
   slidesRef.current = slides;
+  onActiveSlideChangeRef.current = onActiveSlideChange;
 
   /**
    * Mantém o hash alinhado ao slide ativo (F5 / compartilhar link).
    * Usa replaceState para não empilhar histórico a cada scroll.
+   * Também notifica o App para alinhar `active` (submenu / deep-link).
    */
   function syncHashFromLoop(loopIndex: number) {
     const logical = logicalFromLoop(slideCountRef.current, loopIndex);
@@ -451,8 +459,15 @@ function ProjectsPage({
     if (!slide) return;
 
     const nextHash = `#${slide.id}`;
-    if (window.location.hash === nextHash) return;
-    window.history.replaceState(null, "", nextHash);
+    if (window.location.hash !== nextHash) {
+      window.history.replaceState(null, "", nextHash);
+    }
+
+    if (lastNotifiedSlideIdRef.current === slide.id) return;
+    lastNotifiedSlideIdRef.current = slide.id;
+    // Evita o efeito de initialSlideId reposicionar o carrossel à toa.
+    appliedSlideIdRef.current = slide.id;
+    onActiveSlideChangeRef.current?.(slide.id);
   }
 
   /** Atualiza a contagem e o hash a partir do índice absoluto do loop. */
@@ -923,6 +938,7 @@ function ProjectsPage({
                       className={[
                         "projects-carousel__media pointer-events-none absolute inset-0 overflow-hidden rounded-2xl transition-opacity duration-300",
                         isActive ? "opacity-100" : "opacity-50",
+                        isCertificates ? "bg-neutral-950" : "",
                       ].join(" ")}
                     >
                       <img
@@ -931,11 +947,25 @@ function ProjectsPage({
                         loading="lazy"
                         decoding="async"
                         draggable={false}
-                        className="absolute inset-0 h-full w-full object-cover object-center select-none"
+                        className={[
+                          "absolute inset-0 h-full w-full select-none",
+                          // Certificados: contain para não cortar o documento; projetos: cover.
+                          isCertificates
+                            ? "object-contain object-center p-3 md:p-4"
+                            : "object-cover object-center",
+                        ].join(" ")}
                       />
-                      <div className="absolute inset-0 bg-neutral-950/20" />
+                      {!isCertificates ? (
+                        <div className="absolute inset-0 bg-neutral-950/20" />
+                      ) : null}
                       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.16),transparent_55%)]" />
-                      <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5" />
+                      <div
+                        className={
+                          isCertificates
+                            ? "absolute inset-0 bg-linear-to-t from-neutral-950/95 via-neutral-950/50 to-transparent"
+                            : "absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/65 to-neutral-950/5"
+                        }
+                      />
                     </div>
 
                     {/* Filete fino contínuo + quinas grossas (só nos cantos) */}

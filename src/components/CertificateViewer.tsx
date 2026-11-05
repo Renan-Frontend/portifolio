@@ -78,10 +78,17 @@ export function CertificateViewer({
   /**
    * Empilha uma entrada no histórico ao abrir.
    * Voltar do browser fecha o overlay; fechar pelo X/Esc remove essa entrada.
+   * Em Strict Mode (dev), o remount não deve empilhar duas entradas.
    */
   useEffect(() => {
-    window.history.pushState({ certificateViewer: true }, "");
     let closedByPop = false;
+    let pushedByThisEffect = false;
+
+    const state = window.history.state as { certificateViewer?: boolean } | null;
+    if (state?.certificateViewer !== true) {
+      window.history.pushState({ certificateViewer: true }, "");
+      pushedByThisEffect = true;
+    }
 
     function onPopState() {
       closedByPop = true;
@@ -91,7 +98,12 @@ export function CertificateViewer({
     window.addEventListener("popstate", onPopState);
     return () => {
       window.removeEventListener("popstate", onPopState);
-      if (!closedByPop && window.history.state?.certificateViewer) {
+      if (
+        pushedByThisEffect &&
+        !closedByPop &&
+        (window.history.state as { certificateViewer?: boolean } | null)
+          ?.certificateViewer
+      ) {
         window.history.back();
       }
     };
