@@ -207,11 +207,23 @@ function App() {
   // ----- handlers / helpers -----
 
   /**
-   * Marca um item como ativo ao clicar.
-   * Se for projeto, também abre a lista (sem fechar ao clicar em outras opções).
+   * Marca um item como ativo ao clicar e alinha a URL via pushState.
+   * preventDefault evita depender só do href padrão do <a>.
+   * Se for projeto/certificado, também abre a lista correspondente.
    */
-  const select = (id: NavId) => () => {
+  const select = (id: NavId) => (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
     setActive(id);
+
+    if (id === "home") {
+      window.history.pushState(
+        null,
+        "",
+        `${window.location.pathname}${window.location.search}`,
+      );
+    } else {
+      window.history.pushState(null, "", `#${id}`);
+    }
 
     if (id === "projects" || isProjectId(id)) {
       setProjectsOpen(true);

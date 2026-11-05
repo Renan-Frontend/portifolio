@@ -434,13 +434,31 @@ function ProjectsPage({
   const tapStartRef = useRef<{ x: number; y: number } | null>(null);
   /** Se o scroll moveu o bastante, ignora o clique no card. */
   const tapMovedRef = useRef(false);
+  /** Lista de slides atual (para sync do hash sem fechar sobre closures). */
+  const slidesRef = useRef(slides);
 
   activeLoopIndexRef.current = activeLoopIndex;
   slideCountRef.current = slideCount;
+  slidesRef.current = slides;
 
-  /** Atualiza a contagem a partir do índice absoluto do loop. */
+  /**
+   * Mantém o hash alinhado ao slide ativo (F5 / compartilhar link).
+   * Usa replaceState para não empilhar histórico a cada scroll.
+   */
+  function syncHashFromLoop(loopIndex: number) {
+    const logical = logicalFromLoop(slideCountRef.current, loopIndex);
+    const slide = slidesRef.current[logical];
+    if (!slide) return;
+
+    const nextHash = `#${slide.id}`;
+    if (window.location.hash === nextHash) return;
+    window.history.replaceState(null, "", nextHash);
+  }
+
+  /** Atualiza a contagem e o hash a partir do índice absoluto do loop. */
   function syncCounter(loopIndex: number) {
     setCounterIndex(logicalFromLoop(slideCountRef.current, loopIndex));
+    syncHashFromLoop(loopIndex);
   }
 
   // ----- efeitos -----
