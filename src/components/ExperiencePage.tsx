@@ -170,7 +170,7 @@ function ExperiencePage({ step, onBack, onNext }: ExperiencePageProps) {
       </h1>
 
       {/* Sem h-svh fixo: a página cresce com o conteúdo e permite scroll natural. */}
-      <section className="experience-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-6 min-[390px]:px-6 md:justify-center md:px-10 md:pb-4 lg:px-14 xl:px-20">
+      <section className="experience-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-4 min-[390px]:px-6 md:justify-center md:px-10 md:pb-2 lg:px-14 xl:px-20">
         <ExperienceSplit
           key={step}
           left={
@@ -186,7 +186,19 @@ function ExperiencePage({ step, onBack, onNext }: ExperiencePageProps) {
         />
       </section>
 
-      <footer className="about-enter__footer relative z-20 mt-auto w-full shrink-0 border-t border-dotted border-neutral-700 px-5 py-3 min-[390px]:px-6 md:px-10 md:py-2.5 lg:px-14 xl:px-20">
+      {/* Contagem — mesma faixa do carrossel (acima do footer, fora do rodapé) */}
+      <p
+        className="relative z-20 mb-3 shrink-0 text-center text-sm tracking-[0.18em] text-neutral-400 tabular-nums md:mb-4 md:text-base"
+        aria-live="polite"
+      >
+        <span className="text-neutral-300">
+          {String(step).padStart(2, "0")}
+        </span>
+        <span className="mx-1.5 text-neutral-600">/</span>
+        <span>02</span>
+      </p>
+
+      <footer className="about-enter__footer relative z-20 w-full shrink-0 border-t border-dotted border-neutral-700 px-5 py-3 min-[390px]:px-6 md:px-10 md:py-2.5 lg:px-14 xl:px-20">
         <nav
           className="flex min-w-0 items-center justify-between gap-3 text-xs tracking-wide uppercase min-[390px]:gap-4 min-[390px]:text-sm md:text-base"
           aria-label={`Navegação da Experiência, parte ${step} de 2`}
@@ -199,8 +211,6 @@ function ExperiencePage({ step, onBack, onNext }: ExperiencePageProps) {
             <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span className="truncate">{backLabel}</span>
           </a>
-
-          <p className="shrink-0 text-neutral-500">{step} / 2</p>
 
           <a
             href={nextHref}
