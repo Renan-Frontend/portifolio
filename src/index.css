@@ -607,7 +607,36 @@ body,
   }
 }
 
-/* Corpo de texto: confortável no mobile; compacto no desktop */
+/*
+  Texto das páginas de leitura (Sobre, Experiência, Currículo).
+  Um só tamanho e uma só cor de corpo, para as páginas não divergirem.
+*/
+.page-copy {
+  font-size: clamp(0.98rem, 3.7vw, 1.12rem);
+  line-height: 1.6;
+  color: rgb(245 245 245);
+}
+
+.page-heading {
+  font-size: clamp(1.08rem, 4vw, 1.28rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  color: rgb(216 180 254);
+}
+
+@media (min-width: 768px) {
+  .page-copy {
+    font-size: clamp(1rem, 1.25vw, 1.2rem);
+    line-height: 1.55;
+  }
+
+  .page-heading {
+    font-size: clamp(1.08rem, 1.45vw, 1.35rem);
+  }
+}
+
+/* Descrição dos cards do carrossel (não é o corpo das páginas de leitura). */
 .experience-copy {
   font-size: clamp(1.05rem, 4.2vw, 1.22rem);
   line-height: 1.55;

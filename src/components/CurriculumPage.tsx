@@ -248,7 +248,7 @@ function CurriculumPage({ onBack, onAbout }: CurriculumPageProps) {
               {CV_INTRO.map((paragraph) => (
                 <p
                   key={paragraph.slice(0, 32)}
-                  className="text-pretty text-[clamp(0.95rem,1.45vw,1.12rem)] leading-[1.55] text-neutral-200"
+                  className="page-copy text-pretty"
                 >
                   {avoidOrphan(paragraph)}
                 </p>
@@ -295,7 +295,7 @@ function CurriculumPage({ onBack, onAbout }: CurriculumPageProps) {
               {CV_INTRO.map((paragraph) => (
                 <p
                   key={paragraph.slice(0, 32)}
-                  className="text-pretty text-[clamp(0.98rem,3.8vw,1.12rem)] leading-[1.65] text-neutral-200"
+                  className="page-copy text-pretty"
                 >
                   {avoidOrphan(paragraph)}
                 </p>
@@ -323,7 +323,7 @@ function CurriculumPage({ onBack, onAbout }: CurriculumPageProps) {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-20 mt-auto w-full shrink-0 border-t border-dotted border-neutral-700 px-5 py-3 min-[390px]:px-6 md:px-10 md:py-2.5 lg:px-14 xl:px-20">
+      <footer className="about-enter__footer relative z-20 mt-auto w-full shrink-0 border-t border-dotted border-neutral-700 px-5 py-3 min-[390px]:px-6 md:px-10 md:py-2.5 lg:px-14 xl:px-20">
         <nav
           className="flex min-w-0 items-center justify-between gap-3 text-xs tracking-wide uppercase min-[390px]:gap-4 min-[390px]:text-sm md:text-base"
           aria-label="Navegação da página Currículo"

@@ -128,17 +128,17 @@ function AboutPage({ onBack, onExperience }: AboutPageProps) {
         <div className="about-layout__row grid w-full grid-cols-1 items-stretch gap-8 md:grid-cols-[minmax(0,48fr)_auto_minmax(0,52fr)] md:items-center md:gap-0">
           {/* ----- Bio ----- */}
           <div className="about-enter__bio flex min-w-0 flex-col justify-center gap-3 md:gap-2 md:pr-2 lg:pr-2.5 xl:pr-3">
-            <p className="text-pretty text-left text-[clamp(1rem,4.2vw,1.45rem)] leading-[1.65] text-neutral-100 md:text-[clamp(1.1rem,2vw,1.45rem)] md:leading-[1.6]">
+            <p className="page-copy text-pretty text-left">
               {ABOUT_BIO.before}
               <strong className="font-semibold text-purple-300">
                 {ABOUT_BIO.highlight}
               </strong>
               {avoidOrphan(ABOUT_BIO.after)}
             </p>
-            <p className="text-pretty text-left text-[clamp(1rem,4.2vw,1.45rem)] leading-[1.65] text-neutral-300 md:text-[clamp(1.1rem,2vw,1.45rem)] md:leading-[1.6]">
+            <p className="page-copy text-pretty text-left">
               {avoidOrphan(ABOUT_BIO.second)}
             </p>
-            <p className="text-pretty text-left text-[clamp(1rem,4.2vw,1.45rem)] leading-[1.65] text-neutral-300 md:text-[clamp(1.1rem,2vw,1.45rem)] md:leading-[1.6]">
+            <p className="page-copy text-pretty text-left">
               {avoidOrphan(ABOUT_BIO.third)}
             </p>
           </div>
@@ -156,7 +156,7 @@ function AboutPage({ onBack, onExperience }: AboutPageProps) {
                 <dt className="text-xs tracking-[0.2em] text-purple-300/90 uppercase min-[390px]:text-sm">
                   {fact.label}
                 </dt>
-                <dd className="mt-1.5 text-pretty text-[clamp(1rem,4vw,1.45rem)] leading-snug text-neutral-100 md:text-[clamp(1.1rem,2vw,1.45rem)]">
+                <dd className="page-copy mt-1.5 text-pretty">
                   {avoidOrphan(fact.value)}
                 </dd>
               </div>
