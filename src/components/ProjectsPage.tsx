@@ -813,12 +813,12 @@ function ProjectsPage({
   /** Classes compartilhadas dos CTAs do card (ativo vs lateral). */
   function ctaClass(isActive: boolean, emphasize = false): string {
     return [
-      "inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium tracking-wide transition-[transform,background-color,border-color,opacity,color] duration-300 ease-out",
+      "inline-flex w-fit items-center gap-2 rounded-md border px-3.5 py-2 text-xs font-medium tracking-[0.12em] uppercase transition-[transform,background-color,border-color,opacity,color] duration-200 ease-out md:text-[0.8125rem]",
       isActive
         ? emphasize
-          ? "pointer-events-auto border-purple-300/55 bg-purple-500/20 text-purple-100 opacity-100 hover:border-purple-200 hover:bg-purple-500/30"
-          : "pointer-events-auto border-white/20 bg-white/5 text-neutral-100 opacity-100 hover:border-white/35 hover:bg-white/10"
-        : "pointer-events-none border-white/10 bg-white/5 text-neutral-400 opacity-0",
+          ? "pointer-events-auto border-purple-300/50 bg-purple-500/15 text-purple-100 opacity-100 hover:border-purple-200/80 hover:bg-purple-500/25"
+          : "pointer-events-auto border-white/18 bg-transparent text-neutral-200 opacity-100 hover:border-white/35 hover:bg-white/5 hover:text-white"
+        : "pointer-events-none border-white/10 bg-transparent text-neutral-400 opacity-0",
     ].join(" ");
   }
 
@@ -1080,9 +1080,9 @@ function ProjectsPage({
                             className={ctaClass(isActive, true)}
                             tabIndex={isActive ? 0 : -1}
                           >
-                            <span>Ver no site</span>
+                            <span>Ver certificado</span>
                             <Eye
-                              className="h-4 w-4 shrink-0"
+                              className="h-3.5 w-3.5 shrink-0"
                               aria-hidden="true"
                             />
                           </button>
@@ -1094,9 +1094,9 @@ function ProjectsPage({
                             className={ctaClass(isActive, false)}
                             tabIndex={isActive ? 0 : -1}
                           >
-                            <span>Baixar</span>
+                            <span>Baixar arquivo</span>
                             <Download
-                              className="h-4 w-4 shrink-0"
+                              className="h-3.5 w-3.5 shrink-0"
                               aria-hidden="true"
                             />
                           </a>
@@ -1112,9 +1112,9 @@ function ProjectsPage({
                           tabIndex={isActive ? 0 : -1}
                           aria-hidden={!isActive}
                         >
-                          <span>Ver site</span>
+                          <span>Visitar projeto</span>
                           <ArrowUpRight
-                            className="h-4 w-4 shrink-0"
+                            className="h-3.5 w-3.5 shrink-0"
                             aria-hidden="true"
                           />
                         </a>

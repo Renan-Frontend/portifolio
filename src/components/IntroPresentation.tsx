@@ -62,13 +62,13 @@ const INTRO_SLIDES = [
   },
   {
     visual: "works" as const,
-    durationMs: 2800,
+    durationMs: 3200,
     lines: [{ text: "Este é o meu mundo", tone: "plain" as const }],
   },
 ];
 
 /** Duração do fade entre beats (ms) — deve bater com o CSS. */
-const SLIDE_FADE_MS = 350;
+const SLIDE_FADE_MS = 380;
 
 /** Duração do fade final da overlay (ms). */
 const EXIT_FADE_MS = 700;
@@ -120,9 +120,8 @@ function IntroCreativePanel() {
 // =============================================================================
 
 /**
- * Apresentação: texto à esquerda + visual full-bleed à direita
- * (criativo → retrato → mosaico), no mesmo encaixe da foto da home.
- * Pode ser pulada a qualquer momento.
+ * Apresentação: texto entra da esquerda, visual da direita
+ * (criativo → retrato → mosaico). Pode ser pulada.
  */
 function IntroPresentation({ onComplete }: IntroPresentationProps) {
   // ----- estado -----
@@ -222,12 +221,12 @@ function IntroPresentation({ onComplete }: IntroPresentationProps) {
       aria-modal="true"
       aria-label="Apresentação inicial"
     >
-      {/* Visual à direita — mesmo encaixe full-bleed da home (sem caixa) */}
+      {/* Visual à direita — entra pela direita (key só no beat, sem remount na saída) */}
       <div
-        key={`visual-${index}-${phase}`}
+        key={`visual-${index}`}
         className={[
-          "intro-visual pointer-events-none absolute inset-0 -z-0",
-          phase === "in" ? "intro-line--in" : "intro-line--out",
+          "intro-visual pointer-events-none absolute inset-0 z-0",
+          phase === "in" ? "intro-from-right--in" : "intro-from-right--out",
         ].join(" ")}
         aria-hidden="true"
       >
@@ -242,8 +241,9 @@ function IntroPresentation({ onComplete }: IntroPresentationProps) {
               {INTRO_WORKS.map((work, i) => (
                 <li
                   key={work.id}
-                  className="intro-work-card"
-                  style={{ animationDelay: `${80 + i * 70}ms` }}
+                  className={["intro-work-card", `intro-work-card--${i + 1}`].join(
+                    " ",
+                  )}
                 >
                   {work.image ? (
                     <img src={work.image} alt="" className="intro-work-card__img" />
@@ -270,19 +270,19 @@ function IntroPresentation({ onComplete }: IntroPresentationProps) {
         )}
       </div>
 
-      {/* Texto à esquerda, sobre o visual */}
+      {/* Texto à esquerda — entra pela esquerda */}
       <div
-        key={`copy-${index}-${phase}`}
+        key={`copy-${index}`}
         className={[
           "relative z-10 flex h-full w-full flex-col justify-center px-5 py-12 sm:px-8 md:px-10 md:py-10 lg:px-16 xl:px-20",
-          phase === "in" ? "intro-line--in" : "intro-line--out",
+          phase === "in" ? "intro-from-left--in" : "intro-from-left--out",
         ].join(" ")}
       >
         <div
           className={[
             "flex w-full flex-col items-start gap-4 text-left md:gap-5 lg:gap-6",
             slide.visual === "works"
-              ? "max-w-[min(92%,22rem)] md:max-w-[36%] lg:max-w-[34%]"
+              ? "max-w-[min(92%,20rem)] md:max-w-[30%] lg:max-w-[28%]"
               : "max-w-[min(92%,28rem)] md:max-w-[46%] lg:max-w-[44%]",
           ].join(" ")}
         >

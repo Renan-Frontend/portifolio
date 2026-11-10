@@ -47,7 +47,8 @@ type HomeReveal = "hidden" | "playing" | "shown";
  * Duração da cascata da home.
  * O rodapé começa em 2.15s e a animação dura 750ms.
  */
-const HOME_ENTER_MS = 3100;
+/** Cascata da home: último item começa ~1.7s e dura 600ms. */
+const HOME_ENTER_MS = 2400;
 
 /** IDs válidos de navegação (home + seções + projetos + certificados). */
 type NavId =

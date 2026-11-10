@@ -133,12 +133,14 @@ export function CertificateViewer({
   }, []);
 
   // ----- interface -----
-  const actionClass =
-    "inline-flex items-center gap-1.5 rounded-full border border-purple-300/55 bg-purple-500/20 px-3 py-1.5 text-xs font-medium tracking-wide text-purple-100 transition-[background-color,border-color] hover:border-purple-200 hover:bg-purple-500/30 md:text-sm";
+  const primaryActionClass =
+    "inline-flex items-center gap-1.5 rounded-md border border-purple-300/50 bg-purple-500/15 px-3 py-1.5 text-xs font-medium tracking-[0.12em] text-purple-100 uppercase transition-[background-color,border-color] hover:border-purple-200/80 hover:bg-purple-500/25 md:text-[0.8125rem]";
+  const secondaryActionClass =
+    "inline-flex items-center gap-1.5 rounded-md border border-white/18 bg-transparent px-3 py-1.5 text-xs font-medium tracking-[0.12em] text-neutral-200 uppercase transition-[background-color,border-color,color] hover:border-white/35 hover:bg-white/5 hover:text-white md:text-[0.8125rem]";
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/90 p-3 backdrop-blur-sm md:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/92 p-3 md:p-6"
       role="dialog"
       aria-modal="true"
       aria-label={title}
@@ -159,27 +161,27 @@ export function CertificateViewer({
                 href={fileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={actionClass}
+                className={primaryActionClass}
               >
                 <ExternalLink
                   className="h-3.5 w-3.5 shrink-0"
                   aria-hidden="true"
                 />
-                <span>Abrir em nova aba</span>
+                <span>Abrir PDF</span>
               </a>
             ) : null}
             <a
               href={fileUrl}
               download={fileNameFromUrl(fileUrl)}
-              className={actionClass}
+              className={secondaryActionClass}
             >
               <Download className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              <span>Baixar</span>
+              <span>Baixar arquivo</span>
             </a>
             <button
               type="button"
               onClick={dismissViewer}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-neutral-300 transition-[color,background-color,border-color] hover:border-white/30 hover:bg-white/5 hover:text-white"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/15 text-neutral-300 transition-[color,background-color,border-color] hover:border-white/30 hover:bg-white/5 hover:text-white"
               aria-label="Fechar certificado"
             >
               <X className="h-4 w-4" aria-hidden="true" />
@@ -204,13 +206,13 @@ export function CertificateViewer({
                 href={fileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={actionClass}
+                className={primaryActionClass}
               >
                 <ExternalLink
                   className="h-3.5 w-3.5 shrink-0"
                   aria-hidden="true"
                 />
-                <span>Abrir certificado</span>
+                <span>Abrir PDF</span>
               </a>
             </div>
           ) : (
