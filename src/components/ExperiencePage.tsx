@@ -1,17 +1,10 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import type { MouseEvent } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import { avoidOrphan } from "../utils/text";
 
 // =============================================================================
-// DADOS
+// TIPOS
 // =============================================================================
-
-/** Visão geral da experiência. */
-const EXPERIENCE_SUMMARY = [
-  "Minha experiência em desenvolvimento de software envolve projetos colaborativos e independentes, passando pela construção e evolução de aplicações web, sistemas de gestão e plataformas com inteligência artificial.",
-  "Ao longo dessa trajetória, venho desenvolvendo habilidades em interfaces, implementação de funcionalidades, resolução de problemas e experiência do usuário.",
-  "A seguir, apresento algumas das experiências e projetos que contribuíram para minha evolução profissional, desde a participação em equipes de desenvolvimento até a criação de soluções independentes.",
-];
 
 type ExperienceItem = {
   id: string;
@@ -19,7 +12,35 @@ type ExperienceItem = {
   paragraphs: string[];
 };
 
-/** Coluna esquerda: Residência (após o resumo). */
+/** Parte 1: trajetória + Residência. Parte 2: Escreva+ e independentes. */
+type ExperienceStep = 1 | 2;
+
+type ExperiencePageProps = {
+  /** Qual das duas partes está na tela. */
+  step: ExperienceStep;
+  /** Volta: home na parte 1, parte 1 na parte 2. */
+  onBack: () => void;
+  /** Avança: parte 2 na parte 1, Projetos na parte 2. */
+  onNext: () => void;
+};
+
+// =============================================================================
+// DADOS
+// =============================================================================
+
+/** Parte 1, coluna esquerda: mesmo título e corpo das outras experiências. */
+const EXPERIENCE_INTRO: ExperienceItem = {
+  id: "trajetoria",
+  title: "Minha trajetória",
+  paragraphs: [
+    "Sou desenvolvedor de software em Goiânia e curso Tecnologia em Análise e Desenvolvimento de Sistemas no IPOG desde 2025. A base veio de HTML, CSS, JavaScript, React e UI, que fui colocando em prática em interfaces e em produtos com inteligência artificial.",
+    "No front-end uso React, TypeScript, Next.js, Tailwind CSS e Vite. Também trabalho com Python, APIs REST e bancos de dados, com Git, GitHub e Figma. Me importo com responsividade, acessibilidade e com código que outra pessoa consiga manter.",
+    "Na prática, entreguei o front-end do Escreva+ e a integração com serviços de IA para correção textual. Na Residência em TIC da UFG/BRISA, desenvolvi o BP Company, gestão comercial com CRM e diagramas BPMN por IA, em React e FastAPI.",
+    "Em paralelo mantenho projetos próprios, como este portfólio e outros estudos em React e JavaScript. Busco um estágio em engenharia de software com foco em IA, para continuar construindo e integrando produtos reais.",
+  ],
+};
+
+/** Parte 1, coluna direita: Residência em TIC. */
 const EXPERIENCE_LEFT: ExperienceItem = {
   id: "residencia-tic",
   title: "Residência em TIC — UFG/BRISA",
@@ -31,7 +52,7 @@ const EXPERIENCE_LEFT: ExperienceItem = {
   ],
 };
 
-/** Coluna direita: Escreva+ e Projetos Independentes. */
+/** Parte 2: Escreva+ (esquerda) e Projetos Independentes (direita). */
 const EXPERIENCE_RIGHT: ExperienceItem[] = [
   {
     id: "escreva-mais",
@@ -46,68 +67,30 @@ const EXPERIENCE_RIGHT: ExperienceItem[] = [
     id: "projetos-independentes",
     title: "Projetos Independentes",
     paragraphs: [
-      "Desenvolvo projetos independentes a partir de ideias próprias, explorando tecnologias e colocando em prática meus conhecimentos em desenvolvimento de software.",
-      "Nesses projetos, atuo de forma autônoma em todas as etapas, desde a concepção e planejamento até a arquitetura, construção das interfaces e implementação das funcionalidades. Esse processo me permite experimentar novas soluções, aprofundar conhecimentos e desenvolver minha capacidade de transformar ideias em produtos digitais.",
-      "Na próxima página, você pode conhecer melhor esses projetos, explorar suas funcionalidades e conferir algumas das soluções que desenvolvi.",
+      "Além do trabalho em equipe, desenvolvo projetos por conta própria para estudar tecnologias e publicar o resultado. O Bikcraft é um site institucional de bicicletas elétricas, em HTML e CSS, com páginas de produtos, orçamento e contato. O Dogs é uma rede social para cachorros, feita em React no fechamento dos estudos de JavaScript, CSS e HTML.",
+      "Também construí a primeira versão deste currículo, em HTML, CSS e JavaScript, com experiência, formação e contato. Este portfólio veio depois, em React, TypeScript e Vite: a introdução, a navegação entre as páginas, o carrossel de projetos, os certificados e o download do PDF.",
+      "Em cada um eu percorro o caminho inteiro, da ideia e do planejamento até a interface, as funcionalidades e a publicação. É onde experimento soluções novas e consolido o que aprendo nos cursos e nas experiências em equipe. Na próxima página dá para abrir cada projeto, ver o que ele faz e acessar o site.",
     ],
   },
 ];
-
-/** Ordem no mobile (coluna única). */
-const EXPERIENCE_MOBILE = [EXPERIENCE_LEFT, ...EXPERIENCE_RIGHT];
-
-// =============================================================================
-// TIPOS
-// =============================================================================
-
-type ExperiencePageProps = {
-  /** Volta para a home (sem repetir a intro). */
-  onBack: () => void;
-  /** Vai para a seção Projetos. */
-  onProjects: () => void;
-};
 
 // =============================================================================
 // FUNÇÕES AUXILIARES / SUBCOMPONENTES
 // =============================================================================
 
 /**
- * Intro da trajetória — sem card; rótulo editorial acima do texto.
- * Corpo no mesmo tamanho das descrições das experiências; texto em cinza.
- */
-function TrajectoryIntro() {
-  return (
-    <div className="flex min-w-0 flex-col gap-1.5 text-left md:gap-1">
-      <p className="mb-0.5 text-sm tracking-[0.2em] text-purple-300/90 uppercase md:text-xs">
-        Minha trajetória
-      </p>
-      {EXPERIENCE_SUMMARY.map((paragraph) => (
-        <p
-          key={paragraph.slice(0, 24)}
-          className="experience-copy text-pretty text-neutral-300"
-        >
-          {avoidOrphan(paragraph)}
-        </p>
-      ))}
-    </div>
-  );
-}
-
-/**
  * Bloco de uma experiência (título + parágrafos).
- * Título e espaçamentos padronizados nas três experiências (como labels de Sobre Mim).
+ * Título e corpo iguais em trajetória, Residência, Escreva+ e projetos independentes.
  */
 function ExperienceBlock({ item }: { item: ExperienceItem }) {
   return (
     <article className="experience-block min-w-0 text-left">
-      <h2 className="text-[clamp(1.12rem,4.2vw,1.3rem)] font-semibold tracking-wide text-purple-300 md:text-[clamp(1.02rem,1.55vw,1.22rem)]">
-        {item.title}
-      </h2>
+      <h2 className="page-heading">{item.title}</h2>
       <div className="mt-1.5 flex flex-col gap-1.5 md:mt-1 md:gap-1">
         {item.paragraphs.map((paragraph) => (
           <p
             key={paragraph.slice(0, 28)}
-            className="experience-copy text-pretty text-neutral-100"
+            className="page-copy text-pretty"
           >
             {avoidOrphan(paragraph)}
           </p>
@@ -122,22 +105,57 @@ function ExperienceBlock({ item }: { item: ExperienceItem }) {
 // =============================================================================
 
 /**
- * Página Experiência compacta no desktop (sem depender de overflow hidden).
- * Esquerda: resumo + Residência | Direita: Escreva+ + Projetos Independentes.
+ * Uma grade só, no mesmo ritmo de Sobre Mim.
+ * Esquerda entra pela esquerda, direita pela direita; a key da parte remonta e repete a entrada.
  */
-function ExperiencePage({ onBack, onProjects }: ExperiencePageProps) {
+function ExperienceSplit({
+  left,
+  right,
+}: {
+  left: ReactNode;
+  right: ReactNode;
+}) {
+  return (
+    <div className="about-layout__row grid w-full grid-cols-1 items-stretch gap-6 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-start md:gap-0">
+      <div className="about-enter__bio flex min-w-0 flex-col justify-start gap-4 md:pr-3 lg:pr-4 xl:pr-5">
+        {left}
+      </div>
+
+      <div
+        className="about-enter__divider about-layout__divider min-w-0 md:mx-4 lg:mx-6 xl:mx-8"
+        aria-hidden="true"
+      />
+
+      <div className="about-enter__facts flex min-w-0 flex-col justify-start gap-4 md:pl-3 lg:pl-4 xl:pl-5">
+        {right}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Experiência em duas partes para não empilhar resumo e os três blocos na mesma tela.
+ * Parte 1: trajetória + Residência. Parte 2: Escreva+ + Projetos Independentes.
+ */
+function ExperiencePage({ step, onBack, onNext }: ExperiencePageProps) {
+  const isFirst = step === 1;
+  const backLabel = isFirst ? "Página inicial" : "Parte anterior";
+  const nextLabel = isFirst ? "Próxima parte" : "Projetos";
+  const backHref = isFirst ? "#" : "#experience";
+  const nextHref = isFirst ? "#experience-2" : "#projects";
+
   // ----- handlers -----
 
-  /** Volta para a home. */
+  /** Volta para a home (parte 1) ou para a parte 1 (parte 2). */
   function handleBack(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     onBack();
   }
 
-  /** Navega para Projetos. */
-  function handleProjects(event: MouseEvent<HTMLAnchorElement>) {
+  /** Avança para a parte 2 ou para Projetos. */
+  function handleNext(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    onProjects();
+    onNext();
   }
 
   // ----- interface -----
@@ -152,69 +170,44 @@ function ExperiencePage({ onBack, onProjects }: ExperiencePageProps) {
       </h1>
 
       {/* Sem h-svh fixo: a página cresce com o conteúdo e permite scroll natural. */}
-      <section className="experience-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-3 min-[390px]:px-6 md:justify-center md:px-10 md:pb-2 lg:px-14 xl:px-20">
-        {/* ----- Desktop: duas colunas equilibradas ----- */}
-        <div className="about-layout__row hidden w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch md:grid">
-          {/* Esquerda — topo alinhado com a coluna direita (Escreva+) */}
-          <div className="about-enter__bio flex min-w-0 flex-col justify-start gap-3 pr-3 lg:gap-3.5 lg:pr-4 xl:pr-5">
-            <TrajectoryIntro />
-            <ExperienceBlock item={EXPERIENCE_LEFT} />
-          </div>
-
-          {/* Divisória */}
-          <div
-            className="about-enter__divider about-layout__divider mx-4 min-w-0 self-stretch lg:mx-6 xl:mx-8"
-            aria-hidden="true"
-          />
-
-          {/* Direita — mesmo início vertical do intro; espaçamento entre projetos padronizado */}
-          <div className="about-enter__facts flex min-w-0 flex-col justify-start gap-3 pl-3 lg:gap-3.5 lg:pl-4 xl:pl-5">
-            {EXPERIENCE_RIGHT.map((item) => (
-              <ExperienceBlock key={item.id} item={item} />
-            ))}
-          </div>
-        </div>
-
-        {/* ----- Mobile: coluna única com scroll natural ----- */}
-        <div className="flex w-full flex-col gap-6 md:hidden">
-          <div className="about-enter__bio">
-            <TrajectoryIntro />
-          </div>
-
-          <div
-            className="about-enter__divider about-layout__divider"
-            aria-hidden="true"
-          />
-
-          <div className="about-enter__facts flex flex-col gap-5">
-            {EXPERIENCE_MOBILE.map((item) => (
-              <ExperienceBlock key={item.id} item={item} />
-            ))}
-          </div>
-        </div>
+      <section className="experience-layout about-layout relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-start px-5 pb-6 min-[390px]:px-6 md:justify-center md:px-10 md:pb-4 lg:px-14 xl:px-20">
+        <ExperienceSplit
+          key={step}
+          left={
+            <ExperienceBlock
+              item={isFirst ? EXPERIENCE_INTRO : EXPERIENCE_RIGHT[0]}
+            />
+          }
+          right={
+            <ExperienceBlock
+              item={isFirst ? EXPERIENCE_LEFT : EXPERIENCE_RIGHT[1]}
+            />
+          }
+        />
       </section>
 
-      {/* Footer — após o conteúdo, sem overlay */}
       <footer className="about-enter__footer relative z-20 mt-auto w-full shrink-0 border-t border-dotted border-neutral-700 px-5 py-3 min-[390px]:px-6 md:px-10 md:py-2.5 lg:px-14 xl:px-20">
         <nav
           className="flex min-w-0 items-center justify-between gap-3 text-xs tracking-wide uppercase min-[390px]:gap-4 min-[390px]:text-sm md:text-base"
-          aria-label="Navegação da página Experiência"
+          aria-label={`Navegação da Experiência, parte ${step} de 2`}
         >
           <a
-            href="#"
+            href={backHref}
             onClick={handleBack}
             className="inline-flex min-w-0 shrink translate-x-0 items-center gap-1.5 text-neutral-300 transition-[color,transform] duration-200 ease-out hover:-translate-x-1.5 hover:text-purple-300 min-[390px]:gap-2"
           >
             <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
-            <span className="truncate">Página inicial</span>
+            <span className="truncate">{backLabel}</span>
           </a>
 
+          <p className="shrink-0 text-neutral-500">{step} / 2</p>
+
           <a
-            href="#projects"
-            onClick={handleProjects}
+            href={nextHref}
+            onClick={handleNext}
             className="inline-flex min-w-0 shrink translate-x-0 items-center gap-1.5 text-neutral-300 transition-[color,transform] duration-200 ease-out hover:translate-x-1.5 hover:text-purple-300 min-[390px]:gap-2"
           >
-            <span className="truncate">Projetos</span>
+            <span className="truncate">{nextLabel}</span>
             <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
           </a>
         </nav>

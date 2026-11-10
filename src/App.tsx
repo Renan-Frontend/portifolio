@@ -54,6 +54,7 @@ type NavId =
   | "home"
   | "about"
   | "experience"
+  | "experience-2"
   | "projects"
   | "certificates"
   | "curriculum"
@@ -78,6 +79,7 @@ function navFromHash(hash: string): NavId {
   if (
     id === "about" ||
     id === "experience" ||
+    id === "experience-2" ||
     id === "projects" ||
     id === "certificates" ||
     id === "curriculum" ||
@@ -268,6 +270,7 @@ function App() {
     if (
       id === "about" ||
       id === "experience" ||
+      id === "experience-2" ||
       id === "projects" ||
       id === "certificates" ||
       id === "curriculum" ||
@@ -283,6 +286,8 @@ function App() {
    */
   const isActive = (id: NavId) =>
     active === id ||
+    (id === "experience" &&
+      (active === "experience" || active === "experience-2")) ||
     (id === "projects" && (active === "projects" || isProjectId(active))) ||
     (id === "certificates" &&
       (active === "certificates" || isCertificateId(active)));
@@ -327,11 +332,19 @@ function App() {
     resetWindowScroll();
   }
 
-  /** Vai para a página Experiência. */
+  /** Vai para a primeira parte da Experiência. */
   function goExperience() {
     leaveHome();
     setActive("experience");
     window.history.pushState(null, "", "#experience");
+    resetWindowScroll();
+  }
+
+  /** Vai para a segunda parte da Experiência (Escreva+ e independentes). */
+  function goExperienceNext() {
+    leaveHome();
+    setActive("experience-2");
+    window.history.pushState(null, "", "#experience-2");
     resetWindowScroll();
   }
 
@@ -404,8 +417,16 @@ function App() {
   }
 
   // ----- interface: página Experiência -----
-  if (active === "experience") {
-    return <ExperiencePage onBack={goHome} onProjects={goProjects} />;
+  if (active === "experience" || active === "experience-2") {
+    const isSecond = active === "experience-2";
+
+    return (
+      <ExperiencePage
+        step={isSecond ? 2 : 1}
+        onBack={isSecond ? goExperience : goHome}
+        onNext={isSecond ? goProjects : goExperienceNext}
+      />
+    );
   }
 
   // ----- interface: página Projetos -----
